@@ -560,9 +560,9 @@ button{font:inherit;cursor:pointer;border:none;background:none;color:inherit;}
 /* ============================================================
    CONFIG
    ============================================================ */
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxPGU96ESlH7ysFsTpUIHW_zWkgWweYwfW9lBmVWufJV7oX_K0MI7wkYnw3BcKqMGVkhQ/exec';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxjuZJSxbZAnUA5JlpJwKKxge7f_vDbw5QfCoJplLXk425ipzNBbOjcX1ix2ggrKwvCYg/exec';
 const GENERAL_ID = 'group_general';
-const MAIN_SESSION_KEY = 'uc_sess';   // session key from Index.html
+const MAIN_SESSION_KEY = 'uc_sess';
 
 /* ============================================================
    STATE
@@ -630,25 +630,42 @@ function apiCall(action, params = {}, timeout = 20000){
 }
 
 /* ============================================================
-   READ SESSION FROM MAIN APP (Index.html)
+   READ SESSION
+   1) URL params (works across any origin / iframe)
+   2) localStorage / sessionStorage (works same-origin)
    ============================================================ */
 function readMainSession(){
+  // --- 1) URL params ---
   try{
-    // Try localStorage (remember me) first, then sessionStorage
+    const u = new URL(window.location.href);
+    const mobile = u.searchParams.get('mobile');
+    if(mobile){
+      return {
+        name:   u.searchParams.get('name')  || 'User',
+        mobile: String(mobile).trim(),
+        level:  (u.searchParams.get('level') || 'MEMBER').toUpperCase()
+      };
+    }
+  }catch(e){}
+
+  // --- 2) Storage ---
+  try{
     let raw = localStorage.getItem(MAIN_SESSION_KEY) || sessionStorage.getItem(MAIN_SESSION_KEY);
     if(!raw) return null;
 
     const s = JSON.parse(raw);
     if(!s) return null;
 
-    // Expired?
-    if(s.expiry && Date.now() > s.expiry) return null;
+    let exp = s.expiry;
+    if(exp && exp < 1e12) exp = exp * 1000;   // seconds → ms
+    if(exp && Date.now() > exp) return null;
 
-    if(!s.mobile) return null;
+    const mobile = s.mobile || s.username;
+    if(!mobile) return null;
 
     return {
       name:   s.name || 'User',
-      mobile: String(s.mobile).trim(),
+      mobile: String(mobile).trim(),
       level:  (s.level || s.role || 'MEMBER').toUpperCase()
     };
   }catch(e){ return null; }
@@ -679,7 +696,7 @@ function unreadCount(chatId){
 }
 
 /* ============================================================
-   BOOT — read session from main app, verify, enter chat
+   BOOT
    ============================================================ */
 async function bootFromMainSession(){
   const sess = readMainSession();
@@ -689,7 +706,6 @@ async function bootFromMainSession(){
     return;
   }
 
-  // Show verifying state
   $('hdrAvatar').textContent = initials(sess.name);
   $('hdrTitle').textContent = 'ChatBox';
   $('hdrSub').innerHTML = `<span class="dot"></span> <span>Verifying…</span>`;
@@ -698,7 +714,6 @@ async function bootFromMainSession(){
   $('chatView').style.display = 'none';
   $('inputBar').style.display = 'none';
 
-  // Confirm with server that this user is ALLOWED
   const r = await apiCall('verifyUser', { mobile: sess.mobile });
 
   if(!r || !r.success || !r.allowed){
@@ -779,7 +794,7 @@ function showBlocked(title, msg, kind){
 }
 
 /* ============================================================
-   PERMISSION WATCH — kick if revoked while chatting
+   PERMISSION WATCH
    ============================================================ */
 function startPermWatch(){
   stopPermWatch();
@@ -938,11 +953,9 @@ function closeChat(){
 $('btnBack').addEventListener('click', () => {
   if(CURRENT_CHAT) closeChat();
   else if(window.parent && window.parent !== window) {
-    // We're inside an iframe — ask parent to close
     try {
       if(window.parent.postMessage){ window.parent.postMessage({type:'closeFrame'}, '*'); }
     } catch(e){}
-    // Fallback
     if(history.length > 1) history.back();
   }
   else if(history.length > 1) history.back();
@@ -1338,7 +1351,6 @@ document.addEventListener('visibilitychange', () => {
 autoGrow($('msgText'));
 
 (function init(){
-  // Read the main app's session and boot
   bootFromMainSession();
 })();
 </script>
