@@ -889,22 +889,28 @@ const API_URL = 'https://script.google.com/macros/s/AKfycbxSPFbPRCQe3icJexfVcSod
    MENU ITEMS
    ============================================================ */
 const MENU_ITEMS = [
-  { id:'dashboard', label:'Dashboard',    icon:'fa-gauge-high', color:'bg-blue',
-    url:'dashboard.htm', levels:['PUBLIC','MEMBER','CASHIER','ADMIN'],
+  { id:'events', label:'Upcoming Events',    icon:'fa-gauge-high', color:'bg-blue',
+    url:'events.htm', levels:['PUBLIC','MEMBER','CASHIER','ADMIN'],
     bottom:true, bottomIcon:'fa-house' },
-
-  { id:'profile',   label:'Profile',      icon:'fa-user',        color:'bg-purple',
-    url:'', levels:['PUBLIC','MEMBER','CASHIER','ADMIN'],
-    bottom:true, bottomIcon:'fa-user' },
+    
+  { id: 'upi',label: 'Donate',  icon: 'fa-indian-rupee-sign',   // UPI / Rupee icon
+  color: 'bg-orange',url: 'donate.htm', levels: ['PUBLIC', 'MEMBER', 'CASHIER', 'ADMIN']},
+  
+  {id: 'profile',label: 'Live TV',icon: 'fa-tv', // or 'fa-satellite-dish' / 'fa-circle-play'  
+  color: 'bg-purple',url: 'tv.htm',levels: ['PUBLIC', 'MEMBER', 'CASHIER', 'ADMIN'],
+  bottom: true, 
+  bottomIcon: 'fa-tv'
+},
 
   { id:'alerts',    label:'Alerts',       icon:'fa-bell',        color:'bg-pink',
     url:'', levels:['PUBLIC','MEMBER','CASHIER','ADMIN'],
     bottom:true, bottomIcon:'fa-bell' },
-
-  { id:'orders',    label:'Orders',       icon:'fa-receipt',     color:'bg-orange',
-    url:'', levels:['MEMBER','CASHIER','ADMIN'],
-    bottom:true, bottomIcon:'fa-receipt' },
-
+  { 
+  id: 'chatboat',label: 'ChatBoat',icon: 'fa-brands fa-whatsapp',   // WhatsApp icon
+  color: 'bg-green',url: 'chat.htm',levels: ['MEMBER', 'CASHIER', 'ADMIN'],
+  bottom: true,
+  bottomIcon: 'fa-brands fa-whatsapp'
+},
   { id:'wallet',    label:'Wallet',       icon:'fa-wallet',      color:'bg-green',
     url:'', levels:['MEMBER','CASHIER','ADMIN'] },
 
