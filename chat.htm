@@ -32,7 +32,6 @@
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Poppins','Roboto',system-ui,sans-serif;}
 html,body{height:100%;}
 body{
-  /* Professional deep navy gradient */
   background:
     radial-gradient(circle at 0% 0%, rgba(99,102,241,.18) 0%, transparent 45%),
     radial-gradient(circle at 100% 100%, rgba(34,211,238,.12) 0%, transparent 45%),
@@ -50,7 +49,7 @@ button{font:inherit;cursor:pointer;border:none;background:none;color:inherit;}
   position:relative;overflow:hidden;
 }
 
-/* ===== HEADER (Professional slate) ===== */
+/* ===== HEADER ===== */
 .chat-head{
   display:flex;align-items:center;gap:10px;
   padding:calc(12px + var(--safe-top)) 14px 12px;
@@ -563,8 +562,7 @@ button{font:inherit;cursor:pointer;border:none;background:none;color:inherit;}
    ============================================================ */
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxPGU96ESlH7ysFsTpUIHW_zWkgWweYwfW9lBmVWufJV7oX_K0MI7wkYnw3BcKqMGVkhQ/exec';
 const GENERAL_ID = 'group_general';
-const SESSION_KEY = 'chat_sess';
-const SESSION_HOURS = 8;
+const MAIN_SESSION_KEY = 'uc_sess';   // session key from the main app
 
 /* ============================================================
    STATE
@@ -632,31 +630,31 @@ function apiCall(action, params = {}, timeout = 20000){
 }
 
 /* ============================================================
-   CHAT SESSION
+   SESSION  —  read from main app's uc_sess (no extra login)
    ============================================================ */
-function saveChatSession(user){
-  const sess = {
-    name: user.name,
-    mobile: user.mobile,
-    level: user.level,
-    expires: Date.now() + SESSION_HOURS * 3600 * 1000
-  };
-  try { localStorage.setItem(SESSION_KEY, JSON.stringify(sess)); } catch(e){}
-}
-function loadChatSession(){
+function readMainSession(){
   try{
-    const raw = localStorage.getItem(SESSION_KEY);
+    let raw = localStorage.getItem(MAIN_SESSION_KEY) || sessionStorage.getItem(MAIN_SESSION_KEY);
     if(!raw) return null;
+
     const s = JSON.parse(raw);
-    if(!s || !s.mobile || !s.expires || Date.now() > s.expires){
-      localStorage.removeItem(SESSION_KEY);
+    if(!s) return null;
+
+    if(s.expiry && Date.now() > s.expiry){
+      try {
+        localStorage.removeItem(MAIN_SESSION_KEY);
+        sessionStorage.removeItem(MAIN_SESSION_KEY);
+      } catch(e){}
       return null;
     }
-    return s;
+    if(!s.mobile) return null;
+
+    return {
+      name:   s.name || 'User',
+      mobile: String(s.mobile).trim(),
+      level:  (s.level || s.role || 'MEMBER').toUpperCase()
+    };
   }catch(e){ return null; }
-}
-function clearChatSession(){
-  try { localStorage.removeItem(SESSION_KEY); } catch(e){}
 }
 
 /* ============================================================
@@ -684,132 +682,43 @@ function unreadCount(chatId){
 }
 
 /* ============================================================
-   LOGIN SCREEN
+   BOOT  —  verify session with server, then enter chat
    ============================================================ */
-function showLogin(){
-  const v = $('listView');
-  v.style.display = 'block';
-  $('chatView').style.display = 'none';
-  $('chatView').classList.add('hidden');
-  $('inputBar').style.display = 'none';
+async function bootFromMainSession(){
+  const sess = readMainSession();
 
-  $('hdrAvatar').textContent = '🔐';
-  $('hdrTitle').textContent = 'Sign in to Chat';
-  $('hdrSub').innerHTML = `<span style="color:#CBD5E1;">Enter mobile &amp; password</span>`;
-
-  v.innerHTML = `
-    <div style="padding:18px 6px 20px;max-width:400px;margin:0 auto;">
-      <div style="text-align:center;margin:10px 0 22px;">
-        <div style="width:76px;height:76px;border-radius:50%;margin:0 auto 12px;
-          background:linear-gradient(145deg,#6366F1,#4F46E5);color:#fff;
-          font-size:32px;font-weight:800;display:flex;align-items:center;justify-content:center;
-          box-shadow:0 8px 20px rgba(79,70,229,.4), inset 0 1px 0 rgba(255,255,255,.2);">
-          <i class="fas fa-comments"></i>
-        </div>
-        <div style="font-size:20px;font-weight:800;color:#F1F5F9;letter-spacing:-.3px;">Welcome back</div>
-        <div style="font-size:13px;color:#94A3B8;font-weight:600;margin-top:4px;">Sign in with mobile &amp; password</div>
-      </div>
-
-      <form id="loginForm" autocomplete="off">
-        <div style="margin-bottom:14px;">
-          <label style="display:block;font-size:11px;font-weight:800;color:#A5B4FC;
-            text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px;">Mobile Number</label>
-          <div style="display:flex;align-items:center;gap:10px;
-            background:linear-gradient(145deg,#0B1220,#1E293B);
-            border:1.5px solid #334155;border-radius:12px;padding:0 14px;
-            box-shadow:inset 0 2px 4px rgba(0,0,0,.4);">
-            <i class="fas fa-phone-alt" style="color:#94A3B8;font-size:15px;"></i>
-            <input type="tel" id="loginMobile" placeholder="9876543210" inputmode="numeric"
-              style="flex:1;padding:14px 0;background:transparent;border:none;outline:none;
-              color:#F1F5F9;font-size:15px;font-weight:600;min-width:0;">
-          </div>
-        </div>
-
-        <div style="margin-bottom:16px;">
-          <label style="display:block;font-size:11px;font-weight:800;color:#A5B4FC;
-            text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px;">Password</label>
-          <div style="display:flex;align-items:center;gap:10px;
-            background:linear-gradient(145deg,#0B1220,#1E293B);
-            border:1.5px solid #334155;border-radius:12px;padding:0 14px;
-            box-shadow:inset 0 2px 4px rgba(0,0,0,.4);">
-            <i class="fas fa-key" style="color:#94A3B8;font-size:15px;"></i>
-            <input type="password" id="loginPass" placeholder="••••••"
-              style="flex:1;padding:14px 0;background:transparent;border:none;outline:none;
-              color:#F1F5F9;font-size:15px;font-weight:600;min-width:0;">
-          </div>
-        </div>
-
-        <button type="submit" id="btnLogin"
-          style="width:100%;padding:15px;border-radius:12px;color:#fff;
-          font-weight:800;font-size:15px;letter-spacing:.2px;cursor:pointer;
-          background:linear-gradient(145deg,#6366F1,#4F46E5);
-          box-shadow:0 8px 16px rgba(79,70,229,.4), inset 0 1px 0 rgba(255,255,255,.15);
-          display:flex;align-items:center;justify-content:center;gap:10px;">
-          <i class="fas fa-arrow-right-to-bracket"></i> Sign In
-        </button>
-
-        <div id="loginMsg" style="display:none;margin-top:14px;padding:12px 14px;
-          border-radius:10px;font-size:13px;font-weight:700;line-height:1.4;"></div>
-      </form>
-
-      <div style="margin-top:22px;font-size:11.5px;color:#94A3B8;line-height:1.5;
-        background:rgba(99,102,241,.08);border-left:3px solid #6366F1;
-        padding:10px 12px;border-radius:8px;font-weight:500;">
-        <b style="color:#A5B4FC;">Note:</b> Use the same mobile &amp; password you use in the main app. New accounts must be approved by an admin before they can chat.
-      </div>
-    </div>
-  `;
-
-  $('loginForm').addEventListener('submit', handleLogin);
-  setTimeout(() => { const m = $('loginMobile'); if(m) m.focus(); }, 250);
-}
-
-async function handleLogin(e){
-  e.preventDefault();
-  const mobile = $('loginMobile').value.trim();
-  const password = $('loginPass').value;
-  const msg = $('loginMsg');
-  const btn = $('btnLogin');
-
-  const showMsg = (text, kind) => {
-    msg.style.display = 'block';
-    msg.textContent = text;
-    if(kind === 'ok'){
-      msg.style.background = 'rgba(34,197,94,.12)';
-      msg.style.color = '#4ADE80';
-      msg.style.border = '1px solid rgba(34,197,94,.3)';
-    } else {
-      msg.style.background = 'rgba(239,68,68,.12)';
-      msg.style.color = '#F87171';
-      msg.style.border = '1px solid rgba(239,68,68,.3)';
-    }
-  };
-
-  if(!mobile || !password){ showMsg('Please enter mobile and password.', 'er'); return; }
-
-  btn.disabled = true;
-  const original = btn.innerHTML;
-  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Signing in…';
-
-  const r = await apiCall('chatLogin', { mobile, password });
-
-  btn.disabled = false;
-  btn.innerHTML = original;
-
-  if(!r || !r.success){
-    showMsg((r && r.message) || 'Login failed.', 'er');
+  if(!sess){
+    showNotSignedIn();
     return;
   }
 
-  saveChatSession(r.data);
-  showMsg('Welcome ' + r.data.name + '!', 'ok');
+  $('hdrAvatar').textContent = initials(sess.name);
+  $('hdrTitle').textContent = 'ChatBox';
+  $('hdrSub').innerHTML = `<span class="dot"></span> <span>Verifying…</span>`;
+  $('listView').style.display = 'block';
+  $('listView').innerHTML = '<div class="chat-loading"><span class="spin-lg"></span><div>Verifying access…</div></div>';
+  $('chatView').style.display = 'none';
+  $('inputBar').style.display = 'none';
 
-  setTimeout(async () => { await bootAsUser(r.data); }, 500);
+  const r = await apiCall('verifyUser', { mobile: sess.mobile });
+
+  if(!r || !r.success || !r.allowed){
+    showBlocked(
+      'Access Denied',
+      (r && r.message) || 'Your account is not allowed to use Chat.',
+      'denied'
+    );
+    return;
+  }
+
+  const u = r.data || {};
+  await bootAsUser({
+    name:   u.name   || sess.name,
+    mobile: u.mobile || sess.mobile,
+    level:  u.level  || u.role || sess.level
+  });
 }
 
-/* ============================================================
-   BOOT
-   ============================================================ */
 async function bootAsUser(user){
   ME = {
     name:   user.name,
@@ -831,6 +740,34 @@ async function bootAsUser(user){
   startPolling();
 }
 
+/* ============================================================
+   NOT SIGNED IN  —  fallback screen
+   ============================================================ */
+function showNotSignedIn(){
+  stopPolling(); stopPermWatch();
+  $('hdrAvatar').textContent = '🔒';
+  $('hdrTitle').textContent = 'Not signed in';
+  $('hdrSub').innerHTML = `<span style="color:#CBD5E1;">Please sign in to the main app</span>`;
+
+  $('chatView').style.display = 'none';
+  $('inputBar').style.display = 'none';
+  const v = $('listView');
+  v.style.display = 'block';
+
+  v.innerHTML = `
+    <div class="chat-empty">
+      <i class="fas fa-user-lock" style="color:#F87171;"></i>
+      <div style="color:#F1F5F9;font-size:16px;font-weight:800;margin-bottom:8px;">
+        You are not signed in
+      </div>
+      <div style="color:#94A3B8;font-size:13px;line-height:1.6;max-width:280px;">
+        Please open the main app and sign in with your mobile &amp; password first.
+        Chat will then work automatically.
+      </div>
+    </div>
+  `;
+}
+
 function showBlocked(title, msg, kind){
   stopPolling(); stopPermWatch();
   const icon = kind === 'denied' ? 'fa-lock' : 'fa-user-lock';
@@ -839,15 +776,7 @@ function showBlocked(title, msg, kind){
       <i class="fas ${icon}" style="color:#F87171;"></i>
       <div style="color:#F1F5F9;font-size:16px;font-weight:800;margin-bottom:8px;">${esc(title)}</div>
       <div style="color:#94A3B8;font-size:13px;line-height:1.5;">${esc(msg)}</div>
-      <button id="btnSignOut" style="margin-top:18px;padding:11px 20px;border-radius:10px;
-        background:linear-gradient(145deg,#334155,#1E293B);color:#CBD5E1;
-        font-weight:800;font-size:13px;cursor:pointer;
-        box-shadow:0 2px 6px rgba(0,0,0,.3), inset 0 1px 0 rgba(255,255,255,.06);">
-        <i class="fas fa-right-from-bracket"></i> Sign in again
-      </button>
     </div>`;
-  const b = $('btnSignOut');
-  if(b) b.addEventListener('click', () => { clearChatSession(); ME = null; showLogin(); });
 }
 
 /* ============================================================
@@ -860,9 +789,9 @@ function startPermWatch(){
     const r = await apiCall('verifyUser', { mobile: ME.mobile });
     if(!r || !r.success || !r.allowed){
       stopPolling();
-      clearChatSession();
       showBlocked('Access Revoked', (r && r.message) || 'Your permission was removed.', 'denied');
       toast('Your chat access was revoked.', 'err');
+      ME = null;
     }
   }, 30000);
 }
@@ -946,18 +875,6 @@ function renderLists(){
     });
   }
 
-  html += `
-    <div style="margin-top:22px;padding:0 8px 20px;">
-      <button id="btnSignOutList" style="width:100%;padding:13px;border-radius:12px;
-        background:linear-gradient(145deg,#334155,#1E293B);color:#CBD5E1;
-        font-weight:800;font-size:13.5px;cursor:pointer;
-        display:flex;align-items:center;justify-content:center;gap:8px;
-        box-shadow:0 2px 6px rgba(0,0,0,.3), inset 0 1px 0 rgba(255,255,255,.06);">
-        <i class="fas fa-right-from-bracket"></i> Sign Out
-      </button>
-    </div>
-  `;
-
   v.innerHTML = html;
 
   v.querySelectorAll('.contact-row').forEach(row => {
@@ -971,19 +888,6 @@ function renderLists(){
   });
   const ng = $('btnNewGroup');
   if(ng) ng.addEventListener('click', openNewGroupModal);
-  const so = $('btnSignOutList');
-  if(so) so.addEventListener('click', doSignOut);
-}
-
-function doSignOut(){
-  stopPolling();
-  stopPermWatch();
-  clearChatSession();
-  ME = null;
-  CURRENT_CHAT = null;
-  MESSAGES = [];
-  toast('Signed out', 'ok');
-  showLogin();
 }
 
 function makePrivateChatId(a, b){
@@ -1114,7 +1018,6 @@ async function loadMessages(silent = false){
   const r = await apiCall('getMessages', params);
   if(!r || !r.success){
     if(r && r.allowed === false){
-      clearChatSession();
       showBlocked('Access Denied', r.message || 'You are not allowed.', 'denied');
       return;
     }
@@ -1169,7 +1072,6 @@ async function sendText(){
     renderMessages(true);
   } else {
     if(r && r.allowed === false){
-      clearChatSession();
       showBlocked('Access Denied', r.message || 'You are not allowed.', 'denied');
       return;
     }
@@ -1247,7 +1149,6 @@ $('previewSend').addEventListener('click', async () => {
       toast('Sent', 'ok');
     } else {
       if(data && data.allowed === false){
-        clearChatSession();
         showBlocked('Access Denied', data.message || 'You are not allowed.', 'denied');
       } else {
         toast((data && data.message) || 'Upload failed', 'err');
@@ -1307,6 +1208,7 @@ function stopPolling(){
   if(POLL_TIMER){ clearInterval(POLL_TIMER); POLL_TIMER = null; }
 }
 async function refreshUnreadOnly(){
+  if(!ME) return;
   const uRes = await apiCall('unreadCounts', { senderMobile: ME.mobile });
   if(uRes && uRes.success && uRes.data){
     UNREAD_LATEST = uRes.data.latest || {};
@@ -1429,20 +1331,8 @@ document.addEventListener('visibilitychange', () => {
 autoGrow($('msgText'));
 
 (function init(){
-  const saved = loadChatSession();
-  if(saved){
-    apiCall('verifyUser', { mobile: saved.mobile }).then(r => {
-      if(r && r.success && r.allowed){
-        bootAsUser(r.data || saved);
-      } else {
-        clearChatSession();
-        showLogin();
-        if(r && r.message) toast(r.message, 'err');
-      }
-    });
-  } else {
-    showLogin();
-  }
+  // Boot from the main app's session — no second login
+  bootFromMainSession();
 })();
 </script>
 </body>
