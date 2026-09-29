@@ -1,0 +1,1171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#0B1120">
+  <title>Special Balance</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    /* ----- PROFESSIONAL PALETTE (Blue accents for Balance) ----- */
+    :root {
+      --bg-deep: #0B1120;
+      --bg-surface: #131C2E;
+      --bg-card: #1A253A;
+      --bg-input: #0F172A;
+      --primary: #3B82F6;
+      --primary-light: #60A5FA;
+      --primary-glow: rgba(59, 130, 246, 0.25);
+      --accent: #FBBF24;
+      --success: #34D399;
+      --danger: #F87171;
+      --text-primary: #F1F5F9;
+      --text-secondary: #94A3B8;
+      --border-subtle: #2D3A52;
+      --shadow-card: 0 8px 20px rgba(0, 0, 0, 0.5);
+      --radius-lg: 16px;
+      --radius-md: 12px;
+      --radius-sm: 10px;
+      --safe-top: env(safe-area-inset-top, 0px);
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', 'Roboto', system-ui, sans-serif;
+    }
+
+    html, body {
+      height: 100%;
+    }
+
+    body {
+      background: var(--bg-deep);
+      color: var(--text-primary);
+      overflow: hidden;
+      font-size: 14px;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+    }
+
+    button {
+      font: inherit;
+      cursor: pointer;
+      border: none;
+      background: none;
+      color: inherit;
+    }
+
+    /* ----- APP SHELL ----- */
+    .app {
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      height: 100dvh;
+      overflow: hidden;
+      position: relative;
+      max-width: 520px;
+      margin: 0 auto;
+      background: var(--bg-deep);
+      padding-top: var(--safe-top);
+    }
+
+    /* ----- MAIN ----- */
+    .main {
+      flex: 1;
+      overflow-y: auto;
+      overflow-x: hidden;
+      -webkit-overflow-scrolling: touch;
+      background: var(--bg-deep);
+      position: relative;
+      padding-bottom: 100px;
+    }
+
+    .main::before {
+      content: '';
+      position: sticky;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 32px;
+      background: linear-gradient(to bottom, var(--bg-deep) 10%, transparent);
+      pointer-events: none;
+      z-index: 5;
+      display: block;
+      margin-bottom: -32px;
+    }
+
+    /* ----- DATE GROUP ----- */
+    .date-group {
+      background: var(--bg-surface);
+      padding: 14px 18px 10px;
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--primary-light);
+      border-bottom: 1px solid var(--border-subtle);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      letter-spacing: 0.2px;
+      text-transform: uppercase;
+      font-size: 12px;
+      letter-spacing: 0.8px;
+    }
+
+    /* ----- ENTRY ROW ----- */
+    .entry-row {
+      background: var(--bg-card);
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 6px 12px;
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-card);
+      border: 1px solid var(--border-subtle);
+      transition: transform 0.1s ease, box-shadow 0.1s ease;
+    }
+
+    .entry-row:active {
+      transform: scale(0.99);
+    }
+
+    .entry-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .entry-info .name {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text-primary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .entry-info .cat {
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-top: 3px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .entry-info .cat i {
+      font-size: 10px;
+      color: var(--primary);
+    }
+
+    .entry-amount {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--accent);
+      text-align: right;
+      flex-shrink: 0;
+      letter-spacing: -0.2px;
+    }
+
+    .entry-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+
+    .entry-edit,
+    .entry-del {
+      width: 34px;
+      height: 34px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      flex-shrink: 0;
+      transition: background 0.15s;
+      border: 1px solid var(--border-subtle);
+    }
+
+    .entry-edit {
+      color: var(--primary-light);
+      background: var(--bg-surface);
+    }
+
+    .entry-edit:hover {
+      background: var(--primary);
+      color: #fff;
+      border-color: var(--primary);
+    }
+
+    .entry-del {
+      color: var(--danger);
+      background: var(--bg-surface);
+    }
+
+    .entry-del:hover {
+      background: var(--danger);
+      color: #fff;
+      border-color: var(--danger);
+    }
+
+    /* ----- FAB ----- */
+    .fab {
+      position: fixed;
+      bottom: calc(24px + var(--safe-bottom));
+      right: calc(20px + (100vw - min(520px, 100vw))/2);
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: var(--primary);
+      color: #fff;
+      font-size: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 8px 24px rgba(59, 130, 246, 0.45), 0 2px 6px rgba(0, 0, 0, 0.4);
+      z-index: 100;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+      border: 2px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .fab:active {
+      transform: scale(0.92);
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    }
+
+    /* ----- SHEET / MODAL ----- */
+    .sheet-scrim {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+      z-index: 200;
+    }
+
+    .sheet-scrim.on {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .sheet {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      max-width: 520px;
+      margin: 0 auto;
+      background: var(--bg-surface);
+      border-radius: 24px 24px 0 0;
+      transform: translateY(105%);
+      transition: transform 0.32s cubic-bezier(0.4, 0, 0.2, 1);
+      z-index: 210;
+      display: flex;
+      flex-direction: column;
+      max-height: 92vh;
+      max-height: 92dvh;
+      box-shadow: 0 -12px 40px rgba(0, 0, 0, 0.7);
+      padding-bottom: var(--safe-bottom);
+      border-top: 1px solid var(--border-subtle);
+    }
+
+    .sheet.on {
+      transform: translateY(0);
+    }
+
+    .sheet-grip {
+      width: 40px;
+      height: 4px;
+      border-radius: 4px;
+      background: var(--border-subtle);
+      margin: 12px auto 4px;
+      flex-shrink: 0;
+    }
+
+    .sheet-head {
+      padding: 6px 20px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+    }
+
+    .sheet-head h2 {
+      font-size: 17px;
+      font-weight: 700;
+      letter-spacing: -0.2px;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .sheet-head h2 i {
+      color: var(--primary);
+      font-size: 16px;
+    }
+
+    .sheet-close {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--bg-input);
+      color: var(--text-secondary);
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--border-subtle);
+      transition: background 0.15s;
+    }
+
+    .sheet-close:hover {
+      background: var(--border-subtle);
+      color: #fff;
+    }
+
+    .sheet-body {
+      flex: 1;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      padding: 0 20px 20px;
+    }
+
+    /* ----- FORM FIELDS ----- */
+    .field {
+      margin-bottom: 16px;
+    }
+
+    .field label {
+      display: block;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.7px;
+      margin-bottom: 8px;
+    }
+
+    .field .in {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--bg-input);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 0 14px;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+
+    .field .in:focus-within {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px var(--primary-glow);
+    }
+
+    .field .in i {
+      color: var(--primary-light);
+      font-size: 15px;
+      flex-shrink: 0;
+      width: 18px;
+      text-align: center;
+    }
+
+    .field .in input,
+    .field .in select {
+      flex: 1;
+      padding: 14px 0;
+      border: none;
+      background: transparent;
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--text-primary);
+      outline: none;
+      min-width: 0;
+      color-scheme: dark;
+    }
+
+    .field .in select {
+      cursor: pointer;
+      appearance: none;
+      -webkit-appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2394A3B8' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 0 center;
+      padding-right: 20px;
+    }
+
+    .field .in select option {
+      background: var(--bg-surface);
+      color: var(--text-primary);
+    }
+
+    .field .in input::placeholder {
+      color: #475569;
+    }
+
+    /* ----- BALANCE DISPLAY ----- */
+    .balance-display {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 16px 18px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: var(--shadow-card);
+    }
+
+    .balance-display .lbl {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.7px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .balance-display .lbl i {
+      color: var(--primary);
+    }
+
+    .balance-display .val {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--accent);
+      letter-spacing: -0.3px;
+    }
+
+    /* ----- BUTTONS ----- */
+    .btn {
+      width: 100%;
+      padding: 16px;
+      background: var(--primary);
+      border-radius: var(--radius-md);
+      color: #fff;
+      font-weight: 700;
+      font-size: 15px;
+      letter-spacing: 0.2px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      box-shadow: 0 6px 18px rgba(59, 130, 246, 0.35);
+      transition: background 0.15s, transform 0.1s;
+      margin-top: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .btn:hover {
+      background: #2563EB;
+    }
+
+    .btn:active {
+      transform: scale(0.98);
+    }
+
+    .btn:disabled {
+      opacity: 0.5;
+      pointer-events: none;
+    }
+
+    /* ----- MESSAGES / TOAST ----- */
+    .msg {
+      font-size: 13px;
+      font-weight: 500;
+      padding: 12px 14px;
+      border-radius: var(--radius-sm);
+      margin-top: 14px;
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      animation: fadeUp 0.2s ease;
+      line-height: 1.4;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .msg.ok {
+      background: rgba(52, 211, 153, 0.1);
+      color: var(--success);
+      border: 1px solid rgba(52, 211, 153, 0.25);
+    }
+
+    .msg.er {
+      background: rgba(248, 113, 113, 0.1);
+      color: var(--danger);
+      border: 1px solid rgba(248, 113, 113, 0.25);
+    }
+
+    .msg.hide {
+      display: none;
+    }
+
+    .spin {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      border-radius: 50%;
+      border-top-color: #fff;
+      animation: spin 0.65s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .toast {
+      position: fixed;
+      bottom: calc(90px + var(--safe-bottom));
+      left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: var(--bg-card);
+      color: var(--text-primary);
+      padding: 14px 22px;
+      border-radius: 40px;
+      font-size: 13px;
+      font-weight: 600;
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.6);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s, transform 0.25s;
+      z-index: 300;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      max-width: calc(100vw - 40px);
+      border: 1px solid var(--border-subtle);
+    }
+
+    .toast.on {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .toast.err {
+      background: #7F1D1D;
+      border-color: #B91C1C;
+      color: #FCA5A5;
+    }
+
+    .toast.ok {
+      background: #064E3B;
+      border-color: #047857;
+      color: #6EE7B7;
+    }
+
+    /* ----- EMPTY / LOADING ----- */
+    .empty {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--text-secondary);
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .empty i {
+      font-size: 40px;
+      display: block;
+      margin-bottom: 16px;
+      opacity: 0.4;
+      color: var(--primary);
+    }
+
+    .loading {
+      text-align: center;
+      padding: 60px 20px;
+    }
+
+    .loading .spin-lg {
+      display: inline-block;
+      width: 36px;
+      height: 36px;
+      border: 3px solid var(--border-subtle);
+      border-radius: 50%;
+      border-top-color: var(--primary);
+      animation: spin 0.65s linear infinite;
+    }
+
+    .loading p {
+      margin-top: 14px;
+      color: var(--text-secondary);
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    /* ----- CONFIRM MODAL ----- */
+    .confirm-scrim {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+      z-index: 400;
+    }
+
+    .confirm-scrim.on {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .confirm-box {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0.9);
+      width: calc(100% - 40px);
+      max-width: 360px;
+      background: var(--bg-surface);
+      border-radius: var(--radius-lg);
+      padding: 24px 22px 20px;
+      z-index: 410;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.22s ease, transform 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7);
+      text-align: center;
+      border: 1px solid var(--border-subtle);
+    }
+
+    .confirm-box.on {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translate(-50%, -50%) scale(1);
+    }
+
+    .confirm-icon {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      margin: 0 auto 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      background: var(--bg-input);
+      border: 1px solid var(--border-subtle);
+    }
+
+    .confirm-icon.warn {
+      color: #FBBF24;
+      border-color: #FBBF24;
+    }
+
+    .confirm-icon.danger {
+      color: var(--danger);
+      border-color: var(--danger);
+    }
+
+    .confirm-title {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 8px;
+      letter-spacing: -0.2px;
+    }
+
+    .confirm-msg {
+      font-size: 13.5px;
+      color: var(--text-secondary);
+      line-height: 1.5;
+      margin-bottom: 20px;
+      font-weight: 400;
+    }
+
+    .confirm-msg b {
+      color: var(--text-primary);
+      font-weight: 600;
+    }
+
+    .confirm-actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    .confirm-btn {
+      flex: 1;
+      padding: 13px;
+      border-radius: var(--radius-sm);
+      font-weight: 600;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: background 0.15s, transform 0.1s;
+      border: 1px solid var(--border-subtle);
+    }
+
+    .confirm-btn.cancel {
+      background: var(--bg-input);
+      color: var(--text-secondary);
+    }
+
+    .confirm-btn.cancel:hover {
+      background: var(--border-subtle);
+      color: var(--text-primary);
+    }
+
+    .confirm-btn.ok {
+      background: var(--primary);
+      color: #fff;
+      border-color: var(--primary);
+    }
+
+    .confirm-btn.ok:hover {
+      background: #2563EB;
+    }
+
+    .confirm-btn.danger {
+      background: var(--danger);
+      color: #fff;
+      border-color: var(--danger);
+    }
+
+    .confirm-btn.danger:hover {
+      background: #EF4444;
+    }
+
+    .confirm-btn:active {
+      transform: scale(0.97);
+    }
+
+    /* scrollbar */
+    ::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--border-subtle);
+      border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--primary);
+    }
+  </style>
+</head>
+<body>
+
+<div class="app">
+  <main class="main" id="main">
+    <div class="loading" id="loadingState">
+      <span class="spin-lg"></span>
+      <p>Loading entries…</p>
+    </div>
+    <div id="entriesList"></div>
+  </main>
+
+  <button class="fab" id="btnAdd" aria-label="Add entry"><i class="fas fa-plus"></i></button>
+</div>
+
+<!-- BOTTOM SHEET -->
+<div class="sheet-scrim" id="formScrim"></div>
+<section class="sheet" id="formSheet">
+  <div class="sheet-grip"></div>
+  <div class="sheet-head">
+    <h2 id="formTitle"><i class="fas fa-plus-circle"></i> New Balance Entry</h2>
+    <button class="sheet-close" id="formClose"><i class="fas fa-xmark"></i></button>
+  </div>
+  <div class="sheet-body">
+    <div class="balance-display">
+      <span class="lbl"><i class="fas fa-wallet"></i> Total Balance</span>
+      <span class="val" id="liveBalance">₹0</span>
+    </div>
+
+    <form id="entryForm">
+      <input type="hidden" id="fSlNo">
+
+      <div class="field">
+        <label>Date</label>
+        <div class="in">
+          <i class="fas fa-calendar-day"></i>
+          <input type="date" id="fDate" required>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Description of Balance</label>
+        <div class="in">
+          <i class="fas fa-list"></i>
+          <select id="fName" required>
+            <option value="" disabled selected>Select description</option>
+            <option value="Opening Balance">Opening Balance</option>
+            <option value="Bank Withdrawal">Bank Withdrawal</option>
+            <option value="Cash Adjustment">Cash Adjustment</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Amount (₹)</label>
+        <div class="in">
+          <i class="fas fa-indian-rupee-sign"></i>
+          <input type="number" id="fAmount" placeholder="0" inputmode="numeric" required min="1">
+        </div>
+      </div>
+
+      <button type="submit" class="btn" id="btnSubmit">
+        <i class="fas fa-check"></i> Save Entry
+      </button>
+      <div class="msg hide" id="formMsg"></div>
+    </form>
+  </div>
+</section>
+
+<!-- CONFIRM MODAL -->
+<div class="confirm-scrim" id="confirmScrim"></div>
+<div class="confirm-box" id="confirmBox">
+  <div class="confirm-icon" id="confirmIcon"><i class="fas fa-question"></i></div>
+  <div class="confirm-title" id="confirmTitle">Are you sure?</div>
+  <div class="confirm-msg" id="confirmMsg">This action cannot be undone.</div>
+  <div class="confirm-actions">
+    <button class="confirm-btn cancel" id="confirmCancel"><i class="fas fa-xmark"></i> Cancel</button>
+    <button class="confirm-btn ok" id="confirmOk"><i class="fas fa-check"></i> Confirm</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  /* ============================================================
+     CONFIG
+     ============================================================ */
+  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzt-otQpIGlqjwUbUTqsiA7owFxvhzpVUc1CXd6mMJNdve8I8B_CffB7SDtJL2ogGw/exec';
+
+  /* ============================================================
+     STATE
+     ============================================================ */
+  let ENTRIES = [];
+  let LIVE_BALANCE = 0;
+  let EDITING_SLNO = null;
+
+  const $ = id => document.getElementById(id);
+  const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m]));
+
+  function todayStr() {
+    const d = new Date();
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${y}-${m}-${day}`;
+  }
+
+  function fmtDateDisplay(iso) {
+    if (!iso) return '';
+    const d = new Date(iso + 'T00:00:00');
+    if (isNaN(d)) return iso;
+    return `${d.getMonth() + 1}/${d.getDate()}/${d.getFullYear()}`;
+  }
+
+  function fmtMoney(n) {
+    const num = Number(n) || 0;
+    return num.toLocaleString('en-IN');
+  }
+
+  /* ============================================================
+     CONFIRM MODAL
+     ============================================================ */
+  function askConfirm(opts) {
+    return new Promise(resolve => {
+      const { title, message, okText, danger, icon } = opts;
+      $('confirmTitle').textContent = title;
+      $('confirmMsg').innerHTML = message;
+      const okBtn = $('confirmOk');
+      okBtn.innerHTML = `<i class="fas ${danger ? 'fa-trash' : 'fa-check'}"></i> ${okText}`;
+      okBtn.className = 'confirm-btn ' + (danger ? 'danger' : 'ok');
+      const ico = $('confirmIcon');
+      ico.className = 'confirm-icon ' + (danger ? 'danger' : 'warn');
+      ico.innerHTML = `<i class="fas ${icon || (danger ? 'fa-triangle-exclamation' : 'fa-question')}"></i>`;
+
+      $('confirmScrim').classList.add('on');
+      $('confirmBox').classList.add('on');
+
+      const cleanup = () => {
+        $('confirmScrim').classList.remove('on');
+        $('confirmBox').classList.remove('on');
+        $('confirmOk').removeEventListener('click', onOk);
+        $('confirmCancel').removeEventListener('click', onCancel);
+        $('confirmScrim').removeEventListener('click', onCancel);
+      };
+      const onOk = () => { cleanup(); resolve(true); };
+      const onCancel = () => { cleanup(); resolve(false); };
+
+      $('confirmOk').addEventListener('click', onOk);
+      $('confirmCancel').addEventListener('click', onCancel);
+      $('confirmScrim').addEventListener('click', onCancel);
+    });
+  }
+
+  /* ============================================================
+     JSONP CALL
+     ============================================================ */
+  let jsonpCounter = 0;
+  function apiCall(action, params = {}, timeout = 20000) {
+    return new Promise(resolve => {
+      const cb = '__cb_' + (++jsonpCounter) + '_' + Date.now();
+      const sc = document.createElement('script');
+      const done = ok => {
+        delete window[cb];
+        if (sc.parentNode) sc.parentNode.removeChild(sc);
+        resolve(ok);
+      };
+      const t = setTimeout(() => done({ success: false, message: 'Timed out' }), timeout);
+      window[cb] = d => { clearTimeout(t); done(d); };
+      const q = new URLSearchParams({ action, callback: cb, ...params }).toString();
+      sc.src = `${SCRIPT_URL}?${q}`;
+      sc.onerror = () => { clearTimeout(t); done({ success: false, message: 'Network error' }); };
+      document.body.appendChild(sc);
+    });
+  }
+
+  /* ============================================================
+     LOAD ENTRIES
+     ============================================================ */
+  async function loadEntries() {
+    $('loadingState').style.display = 'block';
+    $('entriesList').innerHTML = '';
+
+    const r = await apiCall('getEntries');
+
+    if (!r || !r.success || !r.data) {
+      $('loadingState').innerHTML = '<div class="empty"><i class="fas fa-triangle-exclamation"></i>Failed to load data.<br><small>Check your Web App URL &amp; deployment.</small></div>';
+      return;
+    }
+
+    ENTRIES = r.data.entries || [];
+    LIVE_BALANCE = r.data.liveBalance || 0;
+    $('liveBalance').textContent = '₹' + fmtMoney(LIVE_BALANCE);
+    renderEntries();
+    $('loadingState').style.display = 'none';
+  }
+
+  /* ============================================================
+     RENDER LIST
+     ============================================================ */
+  function renderEntries() {
+    const list = $('entriesList');
+    if (!ENTRIES.length) {
+      list.innerHTML = '<div class="empty"><i class="fas fa-inbox"></i>No entries yet.<br>Tap + to add one.</div>';
+      return;
+    }
+
+    const sorted = [...ENTRIES].sort((a, b) => {
+      const na = Number(a.slNo), nb = Number(b.slNo);
+      if (!isNaN(na) && !isNaN(nb)) return nb - na;
+      return String(b.slNo).localeCompare(String(a.slNo));
+    });
+
+    const groups = {};
+    sorted.forEach(e => {
+      const d = e.date || 'Unknown';
+      if (!groups[d]) groups[d] = [];
+      groups[d].push(e);
+    });
+
+    const dates = Object.keys(groups).sort((a, b) => b.localeCompare(a));
+
+    let html = '';
+    dates.forEach(d => {
+      html += `<div class="date-group">${esc(fmtDateDisplay(d) || d)}</div>`;
+      groups[d].forEach(e => {
+        html += `
+          <div class="entry-row" data-slno="${esc(e.slNo)}">
+            <div class="entry-info">
+              <div class="name">${esc(e.name)}</div>
+              <div class="cat"><i class="fas fa-hashtag"></i> Sl No: ${esc(e.slNo)}</div>
+            </div>
+            <div class="entry-amount">₹${fmtMoney(e.amount)}</div>
+            <div class="entry-actions">
+              <button class="entry-edit" data-edit="${esc(e.slNo)}" aria-label="Edit">
+                <i class="fas fa-pen"></i>
+              </button>
+              <button class="entry-del" data-del="${esc(e.slNo)}" aria-label="Delete">
+                <i class="fas fa-trash"></i>
+              </button>
+            </div>
+          </div>
+        `;
+      });
+    });
+
+    list.innerHTML = html;
+
+    list.querySelectorAll('[data-edit]').forEach(b => {
+      b.addEventListener('click', ev => { ev.stopPropagation(); requestEdit(b.dataset.edit); });
+    });
+    list.querySelectorAll('[data-del]').forEach(b => {
+      b.addEventListener('click', ev => { ev.stopPropagation(); requestDelete(b.dataset.del); });
+    });
+  }
+
+  /* ============================================================
+     EDIT FLOW
+     ============================================================ */
+  async function requestEdit(slNo) {
+    const e = ENTRIES.find(x => x.slNo === slNo);
+    if (!e) return;
+    const ok = await askConfirm({
+      title: 'Edit this record?',
+      message: `Do you want to edit <b>${esc(e.name)}</b> with amount <b>₹${fmtMoney(e.amount)}</b>?`,
+      okText: 'Edit',
+      danger: false,
+      icon: 'fa-pen-to-square'
+    });
+    if (ok) openForm(slNo);
+  }
+
+  /* ============================================================
+     DELETE FLOW
+     ============================================================ */
+  async function requestDelete(slNo) {
+    const e = ENTRIES.find(x => x.slNo === slNo);
+    if (!e) return;
+    const ok = await askConfirm({
+      title: 'Delete this record?',
+      message: `Are you sure you want to permanently delete <b>${esc(e.name)}</b> with amount <b>₹${fmtMoney(e.amount)}</b>?<br><br>This action <b>cannot be undone</b>.`,
+      okText: 'Delete',
+      danger: true,
+      icon: 'fa-triangle-exclamation'
+    });
+    if (!ok) return;
+
+    const r = await apiCall('deleteEntry', { slNo });
+    if (r && r.success) {
+      toast('Entry deleted', 'ok');
+      await loadEntries();
+    } else {
+      toast((r && r.message) || 'Delete failed', 'err');
+    }
+  }
+
+  /* ============================================================
+     OPEN / CLOSE FORM
+     ============================================================ */
+  function openForm(editSlNo = null) {
+    EDITING_SLNO = editSlNo;
+    const form = $('entryForm');
+    form.reset();
+    $('formMsg').classList.add('hide');
+
+    if (editSlNo) {
+      const e = ENTRIES.find(x => x.slNo === editSlNo);
+      if (e) {
+        $('formTitle').innerHTML = '<i class="fas fa-pen-to-square"></i> Edit Entry';
+        $('fSlNo').value = e.slNo;
+        $('fDate').value = e.date || todayStr();
+        $('fName').value = e.name || '';
+        $('fAmount').value = e.amount || '';
+      }
+    } else {
+      $('formTitle').innerHTML = '<i class="fas fa-plus-circle"></i> New Balance Entry';
+      $('fSlNo').value = '';
+      $('fDate').value = todayStr();
+      $('fName').value = '';
+      $('fAmount').value = '';
+    }
+
+    $('liveBalance').textContent = '₹' + fmtMoney(LIVE_BALANCE);
+    $('formScrim').classList.add('on');
+    $('formSheet').classList.add('on');
+  }
+
+  function closeForm() {
+    $('formScrim').classList.remove('on');
+    $('formSheet').classList.remove('on');
+  }
+
+  $('btnAdd').addEventListener('click', () => openForm(null));
+  $('formClose').addEventListener('click', closeForm);
+  $('formScrim').addEventListener('click', closeForm);
+
+  /* ============================================================
+     SUBMIT
+     ============================================================ */
+  $('entryForm').addEventListener('submit', async e => {
+    e.preventDefault();
+    const msg = $('formMsg');
+    const btn = $('btnSubmit');
+
+    const date = $('fDate').value;
+    const name = $('fName').value.trim();
+    const amount = $('fAmount').value;
+
+    if (!date || !name || !amount) {
+      msg.className = 'msg er';
+      msg.textContent = 'All fields are required.';
+      return;
+    }
+
+    const original = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spin"></span> Saving…';
+
+    const payload = { date, name, amount };
+    if (EDITING_SLNO) payload.slNo = EDITING_SLNO;
+
+    const action = EDITING_SLNO ? 'updateEntry' : 'addEntry';
+    const r = await apiCall(action, payload);
+
+    btn.disabled = false;
+    btn.innerHTML = original;
+
+    if (r && r.success) {
+      msg.className = 'msg ok';
+      msg.textContent = '✅ ' + (r.message || 'Saved successfully!');
+      toast(EDITING_SLNO ? 'Entry updated' : 'Entry added', 'ok');
+      setTimeout(async () => {
+        closeForm();
+        await loadEntries();
+      }, 700);
+    } else {
+      msg.className = 'msg er';
+      msg.textContent = '❌ ' + ((r && r.message) || 'Save failed.');
+    }
+  });
+
+  /* ============================================================
+     TOAST
+     ============================================================ */
+  let toastTimer = null;
+  function toast(m, kind = '') {
+    const t = $('toast');
+    const ico = kind === 'ok' ? 'fa-circle-check' : kind === 'err' ? 'fa-circle-exclamation' : 'fa-circle-info';
+    t.className = 'toast ' + kind;
+    t.innerHTML = `<i class="fas ${ico}"></i> <span>${esc(m)}</span>`;
+    t.classList.add('on');
+    if (toastTimer) clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove('on'), 2600);
+  }
+
+  /* ============================================================
+     INIT
+     ============================================================ */
+  loadEntries();
+</script>
+</body>
+</html>
