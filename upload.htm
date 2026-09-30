@@ -1,0 +1,1221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<meta name="theme-color" content="#0f0c29" />
+<title>Media Upload Portal</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+/* ============================================================
+   RESET & TOKENS
+   ============================================================ */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+:root {
+  --bg-1: #0f0c29;
+  --bg-2: #302b63;
+  --bg-3: #24243e;
+
+  --brand-1: #667eea;
+  --brand-2: #764ba2;
+  --brand-3: #f093fb;
+  --accent:  #00d4ff;
+
+  --glass-bg: rgba(255, 255, 255, 0.08);
+  --glass-bd: rgba(255, 255, 255, 0.18);
+  --glass-hi: rgba(255, 255, 255, 0.12);
+
+  --text: #ffffff;
+  --muted: rgba(255, 255, 255, 0.68);
+  --soft: rgba(255, 255, 255, 0.45);
+
+  --ok:   #34d399;
+  --err:  #f87171;
+  --warn: #fbbf24;
+
+  --radius-lg: 24px;
+  --radius-md: 16px;
+  --radius-sm: 12px;
+
+  --shadow-lg: 0 24px 60px -12px rgba(0, 0, 0, 0.55);
+  --shadow-md: 0 12px 32px -8px rgba(0, 0, 0, 0.4);
+  --shadow-glow: 0 0 40px -8px rgba(102, 126, 234, 0.6);
+}
+
+html, body { min-height: 100%; }
+
+body {
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  color: var(--text);
+  background: linear-gradient(135deg, var(--bg-1) 0%, var(--bg-2) 50%, var(--bg-3) 100%);
+  background-attachment: fixed;
+  min-height: 100vh;
+  overflow-x: hidden;
+  padding: 24px 16px 48px;
+  -webkit-font-smoothing: antialiased;
+  position: relative;
+}
+
+/* Animated aurora background */
+body::before, body::after {
+  content: '';
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.55;
+  pointer-events: none;
+  z-index: 0;
+  will-change: transform;
+}
+body::before {
+  width: 480px; height: 480px;
+  background: radial-gradient(circle, var(--brand-1), transparent 70%);
+  top: -160px; left: -160px;
+  animation: floatA 18s ease-in-out infinite;
+}
+body::after {
+  width: 520px; height: 520px;
+  background: radial-gradient(circle, var(--brand-3), transparent 70%);
+  bottom: -200px; right: -180px;
+  animation: floatB 22s ease-in-out infinite;
+}
+@keyframes floatA {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50%      { transform: translate(80px, 60px) scale(1.15); }
+}
+@keyframes floatB {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50%      { transform: translate(-100px, -60px) scale(1.1); }
+}
+
+/* ============================================================
+   LAYOUT
+   ============================================================ */
+.container {
+  max-width: 780px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+}
+
+.card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(24px) saturate(160%);
+  -webkit-backdrop-filter: blur(24px) saturate(160%);
+  border: 1px solid var(--glass-bd);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+  animation: rise 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@keyframes rise {
+  from { opacity: 0; transform: translateY(28px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ============================================================
+   HEADER
+   ============================================================ */
+.header {
+  padding: 32px 28px 24px;
+  text-align: center;
+  border-bottom: 1px solid var(--glass-bd);
+  position: relative;
+  overflow: hidden;
+}
+.header::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse at 50% 0%, rgba(102,126,234,0.28), transparent 60%);
+  pointer-events: none;
+}
+.brand-mark {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 62px; height: 62px; border-radius: 18px;
+  background: linear-gradient(135deg, var(--brand-1) 0%, var(--brand-2) 50%, var(--brand-3) 100%);
+  box-shadow: 0 12px 32px -8px rgba(118, 75, 162, 0.7), inset 0 1px 0 rgba(255,255,255,0.3);
+  font-size: 30px;
+  margin-bottom: 16px;
+  animation: pulse-glow 3.5s ease-in-out infinite;
+  position: relative;
+}
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 12px 32px -8px rgba(118,75,162,0.7), inset 0 1px 0 rgba(255,255,255,0.3); }
+  50%      { box-shadow: 0 12px 44px -4px rgba(240,147,251,0.65), inset 0 1px 0 rgba(255,255,255,0.4); }
+}
+.header h1 {
+  font-size: clamp(22px, 5vw, 28px);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  background: linear-gradient(135deg, #fff 0%, #c7d2fe 60%, #f0abfc 100%);
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 6px;
+}
+.header p {
+  color: var(--muted);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+}
+
+/* ============================================================
+   BODY
+   ============================================================ */
+.body { padding: 24px; }
+@media (max-width: 480px) { .body { padding: 18px; } }
+
+/* Info chip */
+.chip {
+  display: flex; align-items: center; gap: 10px;
+  padding: 12px 16px;
+  border-radius: var(--radius-sm);
+  background: rgba(0, 212, 255, 0.08);
+  border: 1px solid rgba(0, 212, 255, 0.22);
+  color: rgba(190, 235, 255, 0.95);
+  font-size: 12.5px;
+  line-height: 1.5;
+  margin-bottom: 22px;
+  animation: rise 0.7s 0.05s cubic-bezier(0.22,1,0.36,1) both;
+}
+.chip .dot {
+  flex-shrink: 0;
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 12px var(--accent);
+  animation: blink 2s infinite;
+}
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.35; }
+}
+
+/* ============================================================
+   SOURCE CARDS
+   ============================================================ */
+.section-label {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--soft);
+  margin-bottom: 12px;
+  padding-left: 4px;
+}
+
+.source-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 22px;
+}
+@media (max-width: 560px) {
+  .source-grid { grid-template-columns: repeat(2, 1fr); }
+  .source-grid .source-card:nth-child(3) { grid-column: 1 / -1; }
+}
+
+.source-card {
+  position: relative;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 10px;
+  padding: 22px 12px 18px;
+  border-radius: var(--radius-md);
+  background: var(--glass-hi);
+  border: 1px solid var(--glass-bd);
+  cursor: pointer;
+  overflow: hidden;
+  transition: transform 0.35s cubic-bezier(0.22,1,0.36,1),
+              box-shadow 0.35s ease,
+              border-color 0.35s ease;
+  font-family: inherit;
+  color: var(--text);
+  text-align: center;
+  animation: rise 0.7s cubic-bezier(0.22,1,0.36,1) both;
+}
+.source-card:nth-child(1) { animation-delay: 0.10s; }
+.source-card:nth-child(2) { animation-delay: 0.16s; }
+.source-card:nth-child(3) { animation-delay: 0.22s; }
+
+.source-card::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(135deg, var(--g1, var(--brand-1)), var(--g2, var(--brand-2)));
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  z-index: 0;
+}
+.source-card > * { position: relative; z-index: 1; }
+
+.source-card:hover:not(:disabled),
+.source-card:focus-visible:not(:disabled) {
+  transform: translateY(-4px) scale(1.02);
+  border-color: rgba(255,255,255,0.35);
+  box-shadow: 0 20px 44px -14px var(--glow, rgba(102,126,234,0.85));
+  outline: none;
+}
+.source-card:hover:not(:disabled)::before,
+.source-card:focus-visible:not(:disabled)::before { opacity: 0.22; }
+
+.source-card:active:not(:disabled) { transform: translateY(-1px) scale(0.99); }
+
+.source-card:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  filter: grayscale(0.5);
+}
+
+.source-icon {
+  width: 56px; height: 56px;
+  border-radius: 16px;
+  display: grid; place-items: center;
+  background: linear-gradient(135deg, var(--g1, var(--brand-1)), var(--g2, var(--brand-2)));
+  box-shadow: 0 10px 24px -10px var(--glow, rgba(102,126,234,0.9)),
+              inset 0 1px 0 rgba(255,255,255,0.25);
+  transition: transform 0.35s cubic-bezier(0.22,1,0.36,1);
+}
+.source-card:hover:not(:disabled) .source-icon {
+  transform: scale(1.08) rotate(-3deg);
+}
+.source-icon svg { width: 28px; height: 28px; }
+
+.source-title {
+  font-size: 14.5px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: #fff;
+}
+.source-sub {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--muted);
+  line-height: 1.3;
+}
+
+/* Color themes per card */
+.source-card[data-kind="camera"]   { --g1:#667eea; --g2:#4f46e5; --glow:rgba(102,126,234,0.9); }
+.source-card[data-kind="camcorder"]{ --g1:#f093fb; --g2:#f5576c; --glow:rgba(245,87,108,0.9); }
+.source-card[data-kind="folder"]   { --g1:#22d3ee; --g2:#0ea5e9; --glow:rgba(14,165,233,0.9); }
+
+/* Hidden inputs */
+.hidden-input {
+  position: absolute;
+  width: 1px; height: 1px;
+  opacity: 0; pointer-events: none;
+}
+
+/* ============================================================
+   RECORDING BADGE
+   ============================================================ */
+.recording {
+  display: none;
+  align-items: center; gap: 10px;
+  padding: 12px 16px;
+  border-radius: var(--radius-sm);
+  background: rgba(245, 87, 108, 0.12);
+  border: 1px solid rgba(245, 87, 108, 0.4);
+  color: #ffd5dc;
+  font-size: 13px;
+  font-weight: 500;
+  margin-bottom: 18px;
+  animation: rise 0.4s cubic-bezier(0.22,1,0.36,1) both;
+}
+.recording.active { display: flex; }
+.rec-dot {
+  width: 10px; height: 10px; border-radius: 50%;
+  background: #f5576c;
+  box-shadow: 0 0 14px #f5576c;
+  animation: blink 1s infinite;
+}
+
+/* ============================================================
+   PREVIEW
+   ============================================================ */
+.preview {
+  display: none;
+  margin-bottom: 18px;
+  padding: 16px;
+  border-radius: var(--radius-md);
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid var(--glass-bd);
+  animation: rise 0.5s cubic-bezier(0.22,1,0.36,1) both;
+}
+.preview.active { display: block; }
+
+.preview-head {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 12px;
+}
+.preview-head h3 {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--soft);
+}
+.preview-badge {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--brand-1), var(--brand-3));
+  color: #fff;
+  text-transform: uppercase;
+}
+
+.preview-media-wrap {
+  position: relative;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  background: #000;
+  box-shadow: 0 12px 30px -12px rgba(0,0,0,0.7);
+}
+.preview-media {
+  display: block;
+  width: 100%;
+  max-height: 400px;
+  object-fit: contain;
+  background: #000;
+}
+
+.details {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+  margin-top: 12px;
+}
+@media (max-width: 480px) { .details { grid-template-columns: 1fr; } }
+
+.detail-row {
+  display: flex; justify-content: space-between; gap: 8px;
+  padding: 10px 12px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--glass-bd);
+  border-radius: 10px;
+  font-size: 12.5px;
+}
+.detail-row span:first-child { color: var(--muted); font-weight: 500; }
+.detail-row span:last-child  { color: #fff; font-weight: 600; text-align: right; word-break: break-word; }
+
+.warn {
+  display: none;
+  margin-top: 10px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: rgba(251, 191, 36, 0.12);
+  border-left: 3px solid var(--warn);
+  color: #fde68a;
+  font-size: 12.5px;
+  line-height: 1.4;
+}
+.warn.active { display: block; }
+
+/* ============================================================
+   BUTTONS
+   ============================================================ */
+.btn {
+  display: inline-flex;
+  align-items: center; justify-content: center; gap: 10px;
+  width: 100%;
+  padding: 15px 22px;
+  border: none;
+  border-radius: 14px;
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  cursor: pointer;
+  transition: transform 0.25s cubic-bezier(0.22,1,0.36,1),
+              box-shadow 0.25s ease,
+              background 0.25s ease,
+              opacity 0.25s ease;
+  margin-bottom: 10px;
+}
+.btn svg { width: 18px; height: 18px; }
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--brand-1) 0%, var(--brand-2) 55%, var(--brand-3) 100%);
+  color: #fff;
+  box-shadow: 0 12px 30px -12px rgba(118, 75, 162, 0.9),
+              inset 0 1px 0 rgba(255,255,255,0.28);
+  background-size: 200% 200%;
+  animation: gradient-shift 6s ease infinite;
+}
+@keyframes gradient-shift {
+  0%, 100% { background-position: 0% 50%; }
+  50%      { background-position: 100% 50%; }
+}
+.btn-primary:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 18px 40px -12px rgba(240, 147, 251, 0.85),
+              inset 0 1px 0 rgba(255,255,255,0.35);
+}
+.btn-primary:active:not(:disabled) { transform: translateY(0); }
+.btn-primary:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  animation: none;
+}
+
+.btn-ghost {
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text);
+  border: 1px solid var(--glass-bd);
+}
+.btn-ghost:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.12);
+  transform: translateY(-2px);
+}
+
+/* ============================================================
+   PROGRESS
+   ============================================================ */
+.progress {
+  display: none;
+  height: 8px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.08);
+  overflow: hidden;
+  margin-bottom: 16px;
+  position: relative;
+}
+.progress.active { display: block; }
+.progress-fill {
+  height: 100%;
+  width: 0%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--brand-1), var(--brand-3), var(--accent));
+  background-size: 200% 100%;
+  animation: gradient-shift 2s linear infinite;
+  transition: width 0.3s ease;
+  box-shadow: 0 0 12px rgba(240,147,251,0.6);
+}
+
+/* ============================================================
+   STATUS
+   ============================================================ */
+.status {
+  display: none;
+  padding: 13px 16px;
+  border-radius: var(--radius-sm);
+  font-size: 13.5px;
+  font-weight: 500;
+  line-height: 1.5;
+  margin-bottom: 16px;
+  animation: rise 0.35s cubic-bezier(0.22,1,0.36,1) both;
+}
+.status.active { display: block; }
+.status.success { background: rgba(52, 211, 153, 0.12); color: #a7f3d0; border-left: 3px solid var(--ok); }
+.status.error   { background: rgba(248, 113, 113, 0.12); color: #fecaca; border-left: 3px solid var(--err); }
+.status.loading { background: rgba(251, 191, 36, 0.12); color: #fde68a; border-left: 3px solid var(--warn); }
+
+/* ============================================================
+   LINK RESULTS
+   ============================================================ */
+.linkbox {
+  display: none;
+  margin-top: 16px;
+  padding: 16px;
+  border-radius: var(--radius-md);
+  background: rgba(52, 211, 153, 0.06);
+  border: 1px solid rgba(52, 211, 153, 0.22);
+  animation: rise 0.5s cubic-bezier(0.22,1,0.36,1) both;
+}
+.linkbox.active { display: block; }
+.linkbox h3 {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #6ee7b7;
+  margin-bottom: 12px;
+}
+.link-row {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 12px;
+  background: rgba(0, 0, 0, 0.28);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 10px;
+  margin-bottom: 8px;
+}
+.link-row:last-child { margin-bottom: 0; }
+.link-row .lbl {
+  font-size: 11px; font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--soft);
+  flex-shrink: 0;
+  min-width: 68px;
+}
+.link-row .url {
+  flex: 1;
+  font-size: 12px;
+  color: #c7d2fe;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.copy {
+  padding: 7px 12px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  border: none;
+  border-radius: 8px;
+  background: rgba(102, 126, 234, 0.25);
+  color: #c7d2fe;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.2s;
+}
+.copy:hover { background: rgba(102, 126, 234, 0.45); color: #fff; }
+.copy.done { background: rgba(52,211,153,0.4); color: #a7f3d0; }
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+.foot {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 11.5px;
+  color: var(--soft);
+  letter-spacing: 0.05em;
+}
+.foot .heart { color: #f5576c; }
+
+/* ============================================================
+   CAMERA MODAL (for camcorder / getUserMedia)
+   ============================================================ */
+.modal {
+  display: none;
+  position: fixed; inset: 0;
+  background: rgba(5, 5, 15, 0.92);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  animation: fade 0.3s ease both;
+}
+.modal.active { display: flex; }
+@keyframes fade { from { opacity: 0; } to { opacity: 1; } }
+
+.modal-inner {
+  width: 100%;
+  max-width: 640px;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-bd);
+  border-radius: var(--radius-lg);
+  padding: 22px;
+  box-shadow: var(--shadow-lg);
+  animation: rise 0.5s cubic-bezier(0.22,1,0.36,1) both;
+}
+.modal-head {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 16px;
+}
+.modal-head h2 {
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+.modal-close {
+  width: 36px; height: 36px;
+  border-radius: 10px;
+  border: 1px solid var(--glass-bd);
+  background: rgba(255,255,255,0.06);
+  color: var(--text);
+  cursor: pointer;
+  display: grid; place-items: center;
+  transition: all 0.2s;
+}
+.modal-close:hover { background: rgba(248,113,113,0.25); border-color: rgba(248,113,113,0.5); }
+
+#liveCam {
+  width: 100%;
+  max-height: 60vh;
+  border-radius: var(--radius-md);
+  background: #000;
+  display: block;
+  box-shadow: 0 12px 30px -10px rgba(0,0,0,0.8);
+}
+.rec-bar {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 12px;
+  margin-top: 16px;
+}
+.rec-timer {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: #fff;
+  padding: 8px 16px;
+  border-radius: 12px;
+  background: rgba(0,0,0,0.35);
+  border: 1px solid var(--glass-bd);
+  min-width: 100px;
+  text-align: center;
+}
+.rec-timer.recording {
+  color: #fecaca;
+  border-color: rgba(248,113,113,0.5);
+  background: rgba(248,113,113,0.15);
+}
+.rec-actions { display: flex; gap: 10px; flex: 1; }
+.rec-actions .btn { margin-bottom: 0; padding: 12px 18px; font-size: 14px; }
+
+/* Shutter button style */
+.shutter {
+  width: 66px; height: 66px;
+  border-radius: 50%;
+  background: #fff;
+  border: 4px solid rgba(255,255,255,0.3);
+  cursor: pointer;
+  display: grid; place-items: center;
+  transition: all 0.2s;
+  box-shadow: 0 8px 24px -6px rgba(255,255,255,0.4);
+  position: relative;
+}
+.shutter::after {
+  content: '';
+  width: 50px; height: 50px;
+  border-radius: 50%;
+  background: #fff;
+  transition: all 0.25s;
+}
+.shutter.recording::after {
+  width: 24px; height: 24px;
+  border-radius: 6px;
+  background: #f5576c;
+}
+.shutter:hover { transform: scale(1.06); }
+
+/* Flip camera */
+.flip {
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.12);
+  border: 1px solid var(--glass-bd);
+  color: #fff;
+  cursor: pointer;
+  display: grid; place-items: center;
+  transition: all 0.2s;
+}
+.flip:hover { background: rgba(255,255,255,0.2); transform: rotate(180deg); }
+
+.hint {
+  text-align: center;
+  font-size: 12px;
+  color: var(--soft);
+  margin-top: 12px;
+  letter-spacing: 0.02em;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="card">
+
+    <!-- ========== HEADER ========== -->
+    <div class="header">
+      <div class="brand-mark">📤</div>
+      <h1>Media Upload Portal</h1>
+      <p>Capture or choose — photos &amp; videos up to 3 minutes</p>
+    </div>
+
+    <!-- ========== BODY ========== -->
+    <div class="body">
+
+      <div class="chip">
+        <span class="dot"></span>
+        <span>Images: JPG · PNG · GIF · WebP &nbsp;|&nbsp; Videos: MP4 · WebM · MOV (≤ 3 min)</span>
+      </div>
+
+      <div id="status" class="status"></div>
+
+      <div class="recording" id="recordingBadge">
+        <span class="rec-dot"></span>
+        <span>Camera is opening — take your photo or record a video</span>
+      </div>
+
+      <!-- ========== SOURCE CHOICES ========== -->
+      <div class="section-label">Choose Source</div>
+
+      <div class="source-grid">
+
+        <!-- 📷 CAMERA (photo only) -->
+        <button class="source-card" id="cameraBtn" data-kind="camera" type="button">
+          <span class="source-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" fill="rgba(255,255,255,0.15)"/>
+              <circle cx="12" cy="13" r="4" fill="rgba(255,255,255,0.25)"/>
+            </svg>
+          </span>
+          <span class="source-title">Camera</span>
+          <span class="source-sub">Take a photo</span>
+        </button>
+
+        <!-- 🎥 CAMCORDER (video) -->
+        <button class="source-card" id="camcorderBtn" data-kind="camcorder" type="button">
+          <span class="source-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="6" width="14" height="12" rx="3" fill="rgba(255,255,255,0.15)"/>
+              <path d="M22 8l-6 4 6 4V8z" fill="rgba(255,255,255,0.28)"/>
+              <circle cx="9" cy="12" r="2.5" fill="rgba(255,255,255,0.3)"/>
+            </svg>
+          </span>
+          <span class="source-title">Camcorder</span>
+          <span class="source-sub">Record a video</span>
+        </button>
+
+        <!-- 📁 FOLDER / GALLERY -->
+        <button class="source-card" id="folderBtn" data-kind="folder" type="button">
+          <span class="source-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" fill="rgba(255,255,255,0.15)"/>
+              <circle cx="12" cy="13" r="2" fill="rgba(255,255,255,0.35)"/>
+              <path d="M12 11v4M10 13h4" stroke="rgba(255,255,255,0.7)"/>
+            </svg>
+          </span>
+          <span class="source-title">Gallery</span>
+          <span class="source-sub">Pick from folder</span>
+        </button>
+
+      </div>
+
+      <!-- Hidden inputs -->
+      <input type="file" id="cameraInput"    class="hidden-input" accept="image/*" capture="environment" />
+      <input type="file" id="camcorderInput" class="hidden-input" accept="video/*" capture="environment" />
+      <input type="file" id="folderInput"    class="hidden-input" accept="image/*,video/*" />
+
+      <!-- ========== PREVIEW ========== -->
+      <div class="preview" id="previewBox">
+        <div class="preview-head">
+          <h3>Preview</h3>
+          <span class="preview-badge" id="previewBadge">Image</span>
+        </div>
+        <div class="preview-media-wrap" id="previewWrap"></div>
+        <div class="details" id="details"></div>
+        <div class="warn" id="warnBox">
+          ⚠️ Your video exceeds the 3-minute limit. Please record or choose a shorter clip.
+        </div>
+      </div>
+
+      <!-- ========== PROGRESS ========== -->
+      <div class="progress" id="progressBar">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+
+      <!-- ========== ACTIONS ========== -->
+      <button class="btn btn-primary" id="uploadBtn" disabled type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+          <polyline points="17 8 12 3 7 8"/>
+          <line x1="12" y1="3" x2="12" y2="15"/>
+        </svg>
+        Upload to Google Drive
+      </button>
+
+      <button class="btn btn-ghost" id="clearBtn" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="3 6 5 6 21 6"/>
+          <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
+          <path d="M10 11v6M14 11v6"/>
+        </svg>
+        Clear &amp; Choose Again
+      </button>
+
+      <!-- ========== LINKS ========== -->
+      <div class="linkbox" id="linkBox">
+        <h3>✅ Upload Complete — Generated Links</h3>
+        <div id="linksContent"></div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="foot">Made with <span class="heart">❤</span> · Secure uploads to Google Drive</div>
+</div>
+
+<!-- ============================================================
+     CAMERA / CAMCORDER MODAL — live in-browser capture
+     ============================================================ -->
+<div class="modal" id="camModal">
+  <div class="modal-inner">
+    <div class="modal-head">
+      <h2 id="modalTitle">📷 Camera</h2>
+      <button class="modal-close" id="modalClose" aria-label="Close">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round">
+          <line x1="18" y1="6" x2="6" y2="18"/>
+          <line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+    </div>
+
+    <video id="liveCam" autoplay playsinline muted></video>
+
+    <div class="rec-bar">
+      <div class="rec-timer" id="recTimer">00:00</div>
+
+      <button class="shutter" id="shutterBtn" aria-label="Capture"></button>
+
+      <button class="flip" id="flipBtn" aria-label="Switch camera">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20">
+          <path d="M23 4v6h-6"/>
+          <path d="M1 20v-6h6"/>
+          <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10"/>
+          <path d="M20.49 15a9 9 0 0 1-14.85 3.36L1 14"/>
+        </svg>
+      </button>
+    </div>
+
+    <div class="hint" id="modalHint">Tap the shutter to take a photo</div>
+  </div>
+</div>
+
+<script>
+/* ================================================================
+   CONFIG — paste your Apps Script Web App URL here
+   ================================================================ */
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxSrP_pS0bWSQp9Mfim6s62Y_3h9MoSEQURQ8F8_XELhCNxdraeO_nY0egYUIbzIBhFBQ/exec';
+const MAX_VIDEO_SECONDS = 180;
+
+/* ================================================================
+   REFS
+   ================================================================ */
+const cameraBtn     = document.getElementById('cameraBtn');
+const camcorderBtn  = document.getElementById('camcorderBtn');
+const folderBtn     = document.getElementById('folderBtn');
+const cameraInput   = document.getElementById('cameraInput');
+const camcorderInput= document.getElementById('camcorderInput');
+const folderInput   = document.getElementById('folderInput');
+const uploadBtn     = document.getElementById('uploadBtn');
+const clearBtn      = document.getElementById('clearBtn');
+const previewBox    = document.getElementById('previewBox');
+const previewWrap   = document.getElementById('previewWrap');
+const previewBadge  = document.getElementById('previewBadge');
+const details       = document.getElementById('details');
+const statusDiv     = document.getElementById('status');
+const progressBar   = document.getElementById('progressBar');
+const progressFill  = document.getElementById('progressFill');
+const linkBox       = document.getElementById('linkBox');
+const linksContent  = document.getElementById('linksContent');
+const warnBox       = document.getElementById('warnBox');
+const recordingBadge= document.getElementById('recordingBadge');
+
+/* modal */
+const camModal    = document.getElementById('camModal');
+const liveCam     = document.getElementById('liveCam');
+const shutterBtn  = document.getElementById('shutterBtn');
+const flipBtn     = document.getElementById('flipBtn');
+const modalClose  = document.getElementById('modalClose');
+const modalTitle  = document.getElementById('modalTitle');
+const modalHint   = document.getElementById('modalHint');
+const recTimer    = document.getElementById('recTimer');
+
+/* state */
+let selectedFile = null;
+let videoDuration = 0;
+
+/* ================================================================
+   OPTION A — Native inputs (Camera / Camcorder / Gallery)
+   These open the OS camera or file picker directly.
+   ================================================================ */
+
+/* 📷 Camera — photo only */
+cameraBtn.addEventListener('click', () => {
+  recordingBadge.querySelector('span:last-child').textContent =
+    'Camera is opening — take your photo';
+  recordingBadge.classList.add('active');
+  setTimeout(() => cameraInput.click(), 120);
+});
+
+/* 🎥 Camcorder — video only */
+camcorderBtn.addEventListener('click', () => {
+  recordingBadge.querySelector('span:last-child').textContent =
+    'Camcorder is opening — record your video (max 3 min)';
+  recordingBadge.classList.add('active');
+  setTimeout(() => camcorderInput.click(), 120);
+});
+
+/* 📁 Folder — image OR video */
+folderBtn.addEventListener('click', () => {
+  recordingBadge.classList.remove('active');
+  folderInput.click();
+});
+
+cameraInput.addEventListener('change', e => {
+  recordingBadge.classList.remove('active');
+  if (e.target.files.length) handleFile(e.target.files[0]);
+});
+camcorderInput.addEventListener('change', e => {
+  recordingBadge.classList.remove('active');
+  if (e.target.files.length) handleFile(e.target.files[0]);
+});
+folderInput.addEventListener('change', e => {
+  if (e.target.files.length) handleFile(e.target.files[0]);
+});
+
+/* ================================================================
+   FILE VALIDATION + PREVIEW
+   ================================================================ */
+function handleFile(file) {
+  const imageExts = ['jpg','jpeg','png','gif','webp','heic','heif'];
+  const videoExts = ['mp4','webm','mov','avi','mkv','3gp'];
+  const nameExt = (file.name.split('.').pop() || '').toLowerCase();
+
+  let mime = file.type;
+  if (!mime || mime === 'application/octet-stream') {
+    if (imageExts.includes(nameExt)) mime = 'image/' + (nameExt === 'jpg' ? 'jpeg' : nameExt);
+    else if (videoExts.includes(nameExt)) mime = 'video/' + nameExt;
+    try { Object.defineProperty(file, 'type', { value: mime }); } catch (_) {}
+  }
+
+  const isImage = mime.startsWith('image/') || imageExts.includes(nameExt);
+  const isVideo = mime.startsWith('video/') || videoExts.includes(nameExt);
+
+  if (!isImage && !isVideo) {
+    showStatus('error', '❌ Unsupported file type.');
+    return;
+  }
+
+  selectedFile = file;
+  videoDuration = 0;
+
+  // Reset UI
+  linkBox.classList.remove('active');
+  statusDiv.classList.remove('active');
+  warnBox.classList.remove('active');
+
+  showPreview(file, isImage ? 'image' : 'video');
+  uploadBtn.disabled = false;
+  uploadBtn.innerHTML = `
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+      <polyline points="17 8 12 3 7 8"/>
+      <line x1="12" y1="3" x2="12" y2="15"/>
+    </svg> Upload to Google Drive`;
+
+  // Dim source cards while a file is staged
+  [cameraBtn, camcorderBtn, folderBtn].forEach(b => b.disabled = true);
+}
+
+function showPreview(file, kind) {
+  previewBox.classList.add('active');
+  previewWrap.innerHTML = '';
+  previewBadge.textContent = kind === 'image' ? 'Image' : 'Video';
+
+  const reader = new FileReader();
+  reader.onload = e => {
+    if (kind === 'image') {
+      const img = document.createElement('img');
+      img.src = e.target.result;
+      img.className = 'preview-media';
+      img.alt = 'Preview';
+      previewWrap.appendChild(img);
+      renderDetails(file, null);
+    } else {
+      const video = document.createElement('video');
+      video.src = e.target.result;
+      video.className = 'preview-media';
+      video.controls = true;
+      video.playsInline = true;
+      video.onloadedmetadata = () => {
+        videoDuration = video.duration;
+        const m = Math.floor(videoDuration / 60);
+        const s = Math.floor(videoDuration % 60).toString().padStart(2, '0');
+        renderDetails(file, `${m}:${s}`);
+        if (videoDuration > MAX_VIDEO_SECONDS) {
+          warnBox.classList.add('active');
+          uploadBtn.disabled = true;
+        }
+      };
+      previewWrap.appendChild(video);
+    }
+  };
+  reader.readAsDataURL(file);
+}
+
+function renderDetails(file, duration) {
+  const mb = (file.size / (1024 * 1024)).toFixed(2);
+  let html = `
+    <div class="detail-row"><span>File name</span><span>${escapeHtml(file.name)}</span></div>
+    <div class="detail-row"><span>Size</span><span>${mb} MB</span></div>`;
+  if (duration) html += `<div class="detail-row"><span>Duration</span><span>${duration}</span></div>`;
+  if (file.type) html += `<div class="detail-row"><span>Type</span><span>${escapeHtml(file.type)}</span></div>`;
+  details.innerHTML = html;
+}
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+/* ================================================================
+   UPLOAD
+   ================================================================ */
+uploadBtn.addEventListener('click', () => {
+  if (!selectedFile) return;
+  if (selectedFile.type.startsWith('video/') && videoDuration > MAX_VIDEO_SECONDS) {
+    showStatus('error', '❌ Video exceeds the 3-minute limit.');
+    return;
+  }
+  uploadFile();
+});
+
+function uploadFile() {
+  uploadBtn.disabled = true;
+  uploadBtn.innerHTML = `⏳ Uploading...`;
+  progressBar.classList.add('active');
+  progressFill.style.width = '0%';
+  showStatus('loading', '📤 Uploading to Google Drive...');
+
+  const reader = new FileReader();
+  reader.onload = async ev => {
+    const base64Data = ev.target.result.split(',')[1];
+
+    let p = 0;
+    const timer = setInterval(() => {
+      p = Math.min(90, p + Math.random() * 12);
+      progressFill.style.width = p + '%';
+    }, 250);
+
+    try {
+      const payload = {
+        action: 'upload',
+        base64Data,
+        fileName: selectedFile.name,
+        mimeType: selectedFile.type || 'application/octet-stream'
+      };
+
+      const res = await fetch(APPS_SCRIPT_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify(payload)
+      });
+      const data = await res.json();
+      clearInterval(timer);
+      progressFill.style.width = '100%';
+
+      if (data.success) {
+        showStatus('success', '✅ ' + data.message);
+        displayLinks(data);
+        uploadBtn.innerHTML = `✅ Uploaded`;
+        setTimeout(() => {
+          progressBar.classList.remove('active');
+          progressFill.style.width = '0%';
+          uploadBtn.disabled = false;
+          uploadBtn.innerHTML = `
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+              <polyline points="17 8 12 3 7 8"/>
+              <line x1="12" y1="3" x2="12" y2="15"/>
+            </svg> Upload to Google Drive`;
+        }, 2200);
+      } else {
+        throw new Error(data.message || 'Upload failed');
+      }
+    } catch (err) {
+      clearInterval(timer);
+      progressBar.classList.remove('active');
+      showStatus('error', '❌ ' + err.message);
+      uploadBtn.disabled = false;
+      uploadBtn.innerHTML = `🚀 Upload to Google Drive`;
+    }
+  };
+  reader.readAsDataURL(selectedFile);
+}
+
+/* ================================================================
+   LINKS
+   ================================================================ */
+function displayLinks(r) {
+  linkBox.classList.add('active');
+  linksContent.innerHTML =
+    linkRow('View',     r.viewUrl) +
+    linkRow('Download', r.downloadUrl) +
+    linkRow('Direct',   r.directLink);
+}
+function linkRow(label, url) {
+  return `
+    <div class="link-row">
+      <span class="lbl">${label}</span>
+      <span class="url" title="${url}">${url}</span>
+      <button class="copy" data-url="${url}">Copy</button>
+    </div>`;
+}
+linksContent.addEventListener('click', e => {
+  if (e.target.classList.contains('copy')) {
+    copyToClipboard(e.target.dataset.url, e.target);
+  }
+});
+function copyToClipboard(text, btnEl) {
+  const ok = () => {
+    if (btnEl) {
+      const orig = btnEl.textContent;
+      btnEl.classList.add('done');
+      btnEl.textContent = 'Copied!';
+      setTimeout(() => { btnEl.classList.remove('done'); btnEl.textContent = orig; }, 1600);
+    }
+    showStatus('success', '✅ Link copied to clipboard!');
+    setTimeout(() => statusDiv.classList.remove('active'), 1600);
+  };
+  if (navigator.clipboard && window.isSecureContext) {
+    navigator.clipboard.writeText(text).then(ok).catch(fallbackCopy);
+  } else fallbackCopy();
+
+  function fallbackCopy() {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    try { document.execCommand('copy'); ok(); }
+    catch (_) { showStatus('error', '❌ Copy failed — please copy manually.'); }
+    document.body.removeChild(ta);
+  }
+}
+
+/* ================================================================
+   UTILITIES
+   ================================================================ */
+function showStatus(type, msg) {
+  statusDiv.className = 'status active ' + type;
+  statusDiv.textContent = msg;
+}
+
+clearBtn.addEventListener('click', resetUI);
+
+function resetUI() {
+  selectedFile = null;
+  videoDuration = 0;
+  cameraInput.value = camcorderInput.value = folderInput.value = '';
+
+  previewBox.classList.remove('active');
+  previewWrap.innerHTML = '';
+  details.innerHTML = '';
+  warnBox.classList.remove('active');
+  linkBox.classList.remove('active');
+  statusDiv.classList.remove('active');
+  progressBar.classList.remove('active');
+  progressFill.style.width = '0%';
+  recordingBadge.classList.remove('active');
+
+  uploadBtn.disabled = true;
+  uploadBtn.innerHTML = `
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+      <polyline points="17 8 12 3 7 8"/>
+      <line x1="12" y1="3" x2="12" y2="15"/>
+    </svg> Upload to Google Drive`;
+
+  [cameraBtn, camcorderBtn, folderBtn].forEach(b => b.disabled = false);
+}
+</script>
+</body>
+</html>
