@@ -7,7 +7,6 @@
   <title>Expenditure 2026</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
-    /* ----- PROFESSIONAL PALETTE (Red accents for Expenditure) ----- */
     :root {
       --bg-deep: #0B1120;
       --bg-surface: #131C2E;
@@ -38,9 +37,7 @@
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', 'Roboto', system-ui, sans-serif;
     }
 
-    html, body {
-      height: 100%;
-    }
+    html, body { height: 100%; }
 
     body {
       background: var(--bg-deep);
@@ -59,7 +56,6 @@
       color: inherit;
     }
 
-    /* ----- APP SHELL ----- */
     .app {
       display: flex;
       flex-direction: column;
@@ -73,7 +69,6 @@
       padding-top: var(--safe-top);
     }
 
-    /* ----- MAIN ----- */
     .main {
       flex: 1;
       overflow-y: auto;
@@ -81,7 +76,7 @@
       -webkit-overflow-scrolling: touch;
       background: var(--bg-deep);
       position: relative;
-      padding-bottom: 100px;
+      padding-bottom: 180px;
     }
 
     .main::before {
@@ -98,26 +93,70 @@
       margin-bottom: -32px;
     }
 
-    /* ----- DATE GROUP ----- */
+    /* ----- SYNC STATUS BAR ----- */
+    .sync-bar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 18px;
+      background: var(--bg-deep);
+      border-bottom: 1px solid var(--border-subtle);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.4px;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      min-height: 40px;
+    }
+
+    .sync-bar .sync-status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: color 0.2s;
+    }
+
+    .sync-bar .sync-status i {
+      font-size: 10px;
+      color: var(--success);
+      transition: color 0.2s;
+    }
+
+    .sync-bar .sync-status.stale i { color: #FBBF24; }
+    .sync-bar .sync-status.old i { color: var(--danger); }
+    .sync-bar .sync-status.syncing i { color: var(--primary-light); animation: spin 0.9s linear infinite; }
+
+    .sync-bar .sync-status .txt { color: inherit; }
+
+    .sync-bar .balance-mini {
+      color: var(--accent);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: -0.2px;
+      text-transform: none;
+    }
+
     .date-group {
       background: var(--bg-surface);
       padding: 14px 18px 10px;
-      font-size: 15px;
       font-weight: 700;
       color: var(--primary-light);
       border-bottom: 1px solid var(--border-subtle);
       position: sticky;
-      top: 0;
+      top: 40px;
       z-index: 10;
       backdrop-filter: blur(4px);
       -webkit-backdrop-filter: blur(4px);
-      letter-spacing: 0.2px;
       text-transform: uppercase;
       font-size: 12px;
       letter-spacing: 0.8px;
     }
 
-    /* ----- ENTRY ROW ----- */
     .entry-row {
       background: var(--bg-card);
       padding: 14px 16px;
@@ -131,14 +170,9 @@
       transition: transform 0.1s ease, box-shadow 0.1s ease;
     }
 
-    .entry-row:active {
-      transform: scale(0.99);
-    }
+    .entry-row:active { transform: scale(0.99); }
 
-    .entry-info {
-      flex: 1;
-      min-width: 0;
-    }
+    .entry-info { flex: 1; min-width: 0; }
 
     .entry-info .name {
       font-size: 15px;
@@ -159,10 +193,7 @@
       gap: 6px;
     }
 
-    .entry-info .cat i {
-      font-size: 10px;
-      color: var(--primary);
-    }
+    .entry-info .cat i { font-size: 10px; color: var(--primary); }
 
     .entry-amount {
       font-size: 16px;
@@ -194,29 +225,12 @@
       border: 1px solid var(--border-subtle);
     }
 
-    .entry-edit {
-      color: var(--primary-light);
-      background: var(--bg-surface);
-    }
+    .entry-edit { color: var(--primary-light); background: var(--bg-surface); }
+    .entry-edit:hover { background: var(--primary); color: #fff; border-color: var(--primary); }
+    .entry-del { color: var(--danger); background: var(--bg-surface); }
+    .entry-del:hover { background: var(--danger); color: #fff; border-color: var(--danger); }
 
-    .entry-edit:hover {
-      background: var(--primary);
-      color: #fff;
-      border-color: var(--primary);
-    }
-
-    .entry-del {
-      color: var(--danger);
-      background: var(--bg-surface);
-    }
-
-    .entry-del:hover {
-      background: var(--danger);
-      color: #fff;
-      border-color: var(--danger);
-    }
-
-    /* ----- FAB ----- */
+    /* ----- FLOATING BUTTONS ----- */
     .fab {
       position: fixed;
       bottom: calc(24px + var(--safe-bottom));
@@ -241,7 +255,63 @@
       box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
     }
 
-    /* ----- SHEET / MODAL ----- */
+    .fab-sync {
+      position: fixed;
+      bottom: calc(96px + var(--safe-bottom));
+      right: calc(20px + (100vw - min(520px, 100vw))/2);
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: var(--bg-card);
+      color: var(--primary-light);
+      font-size: 17px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.5);
+      z-index: 100;
+      border: 1px solid var(--border-subtle);
+      transition: transform 0.15s ease, background 0.2s, color 0.2s, border-color 0.2s;
+    }
+
+    .fab-sync:active { transform: scale(0.92); }
+
+    .fab-sync.spinning i { animation: spin 0.8s linear infinite; }
+
+    .fab-sync.ok {
+      color: var(--success);
+      border-color: var(--success);
+      background: rgba(52, 211, 153, 0.12);
+    }
+
+    .fab-sync.err {
+      color: var(--danger);
+      border-color: var(--danger);
+      background: rgba(248, 113, 113, 0.12);
+    }
+
+    .fab-sync:disabled { opacity: 0.7; pointer-events: none; }
+
+    .fab-sync .badge {
+      position: absolute;
+      top: -4px;
+      right: -4px;
+      min-width: 18px;
+      height: 18px;
+      padding: 0 5px;
+      border-radius: 9px;
+      background: var(--danger);
+      color: #fff;
+      font-size: 10px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid var(--bg-deep);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+    }
+
+    /* ----- SHEET ----- */
     .sheet-scrim {
       position: fixed;
       inset: 0;
@@ -254,10 +324,7 @@
       z-index: 200;
     }
 
-    .sheet-scrim.on {
-      opacity: 1;
-      pointer-events: auto;
-    }
+    .sheet-scrim.on { opacity: 1; pointer-events: auto; }
 
     .sheet {
       position: fixed;
@@ -280,9 +347,7 @@
       border-top: 1px solid var(--border-subtle);
     }
 
-    .sheet.on {
-      transform: translateY(0);
-    }
+    .sheet.on { transform: translateY(0); }
 
     .sheet-grip {
       width: 40px;
@@ -311,10 +376,7 @@
       gap: 8px;
     }
 
-    .sheet-head h2 i {
-      color: var(--primary);
-      font-size: 16px;
-    }
+    .sheet-head h2 i { color: var(--primary); font-size: 16px; }
 
     .sheet-close {
       width: 36px;
@@ -330,10 +392,7 @@
       transition: background 0.15s;
     }
 
-    .sheet-close:hover {
-      background: var(--border-subtle);
-      color: #fff;
-    }
+    .sheet-close:hover { background: var(--border-subtle); color: #fff; }
 
     .sheet-body {
       flex: 1;
@@ -342,10 +401,7 @@
       padding: 0 20px 20px;
     }
 
-    /* ----- FORM FIELDS ----- */
-    .field {
-      margin-bottom: 16px;
-    }
+    .field { margin-bottom: 16px; }
 
     .field label {
       display: block;
@@ -395,11 +451,8 @@
       color-scheme: dark;
     }
 
-    .field .in input::placeholder {
-      color: #475569;
-    }
+    .field .in input::placeholder { color: #475569; }
 
-    /* ----- BALANCE DISPLAY ----- */
     .balance-display {
       background: var(--bg-card);
       border: 1px solid var(--border-subtle);
@@ -423,9 +476,7 @@
       gap: 6px;
     }
 
-    .balance-display .lbl i {
-      color: var(--primary);
-    }
+    .balance-display .lbl i { color: var(--primary); }
 
     .balance-display .val {
       font-size: 20px;
@@ -434,7 +485,6 @@
       letter-spacing: -0.3px;
     }
 
-    /* ----- BUTTONS ----- */
     .btn {
       width: 100%;
       padding: 16px;
@@ -454,20 +504,10 @@
       border: 1px solid rgba(255, 255, 255, 0.1);
     }
 
-    .btn:hover {
-      background: #DC2626;
-    }
+    .btn:hover { background: #DC2626; }
+    .btn:active { transform: scale(0.98); }
+    .btn:disabled { opacity: 0.5; pointer-events: none; }
 
-    .btn:active {
-      transform: scale(0.98);
-    }
-
-    .btn:disabled {
-      opacity: 0.5;
-      pointer-events: none;
-    }
-
-    /* ----- MESSAGES / TOAST ----- */
     .msg {
       font-size: 13px;
       font-weight: 500;
@@ -486,6 +526,8 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
+    @keyframes spin { to { transform: rotate(360deg); } }
+
     .msg.ok {
       background: rgba(52, 211, 153, 0.1);
       color: var(--success);
@@ -498,9 +540,7 @@
       border: 1px solid rgba(248, 113, 113, 0.25);
     }
 
-    .msg.hide {
-      display: none;
-    }
+    .msg.hide { display: none; }
 
     .spin {
       display: inline-block;
@@ -512,13 +552,9 @@
       animation: spin 0.65s linear infinite;
     }
 
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-
     .toast {
       position: fixed;
-      bottom: calc(90px + var(--safe-bottom));
+      bottom: calc(160px + var(--safe-bottom));
       left: 50%;
       transform: translateX(-50%) translateY(80px);
       background: var(--bg-card);
@@ -539,24 +575,10 @@
       border: 1px solid var(--border-subtle);
     }
 
-    .toast.on {
-      opacity: 1;
-      transform: translateX(-50%) translateY(0);
-    }
+    .toast.on { opacity: 1; transform: translateX(-50%) translateY(0); }
+    .toast.err { background: #7F1D1D; border-color: #B91C1C; color: #FCA5A5; }
+    .toast.ok  { background: #064E3B; border-color: #047857; color: #6EE7B7; }
 
-    .toast.err {
-      background: #7F1D1D;
-      border-color: #B91C1C;
-      color: #FCA5A5;
-    }
-
-    .toast.ok {
-      background: #064E3B;
-      border-color: #047857;
-      color: #6EE7B7;
-    }
-
-    /* ----- EMPTY / LOADING ----- */
     .empty {
       text-align: center;
       padding: 60px 20px;
@@ -573,10 +595,7 @@
       color: var(--primary);
     }
 
-    .loading {
-      text-align: center;
-      padding: 60px 20px;
-    }
+    .loading { text-align: center; padding: 60px 20px; }
 
     .loading .spin-lg {
       display: inline-block;
@@ -595,7 +614,6 @@
       font-weight: 500;
     }
 
-    /* ----- CONFIRM MODAL ----- */
     .confirm-scrim {
       position: fixed;
       inset: 0;
@@ -608,10 +626,7 @@
       z-index: 400;
     }
 
-    .confirm-scrim.on {
-      opacity: 1;
-      pointer-events: auto;
-    }
+    .confirm-scrim.on { opacity: 1; pointer-events: auto; }
 
     .confirm-box {
       position: fixed;
@@ -651,15 +666,8 @@
       border: 1px solid var(--border-subtle);
     }
 
-    .confirm-icon.warn {
-      color: #FBBF24;
-      border-color: #FBBF24;
-    }
-
-    .confirm-icon.danger {
-      color: var(--danger);
-      border-color: var(--danger);
-    }
+    .confirm-icon.warn { color: #FBBF24; border-color: #FBBF24; }
+    .confirm-icon.danger { color: var(--danger); border-color: var(--danger); }
 
     .confirm-title {
       font-size: 17px;
@@ -677,15 +685,9 @@
       font-weight: 400;
     }
 
-    .confirm-msg b {
-      color: var(--text-primary);
-      font-weight: 600;
-    }
+    .confirm-msg b { color: var(--text-primary); font-weight: 600; }
 
-    .confirm-actions {
-      display: flex;
-      gap: 10px;
-    }
+    .confirm-actions { display: flex; gap: 10px; }
 
     .confirm-btn {
       flex: 1;
@@ -701,63 +703,32 @@
       border: 1px solid var(--border-subtle);
     }
 
-    .confirm-btn.cancel {
-      background: var(--bg-input);
-      color: var(--text-secondary);
-    }
+    .confirm-btn.cancel { background: var(--bg-input); color: var(--text-secondary); }
+    .confirm-btn.cancel:hover { background: var(--border-subtle); color: var(--text-primary); }
+    .confirm-btn.ok { background: var(--primary); color: #fff; border-color: var(--primary); }
+    .confirm-btn.ok:hover { background: #DC2626; }
+    .confirm-btn.danger { background: var(--danger); color: #fff; border-color: var(--danger); }
+    .confirm-btn.danger:hover { background: #EF4444; }
+    .confirm-btn:active { transform: scale(0.97); }
 
-    .confirm-btn.cancel:hover {
-      background: var(--border-subtle);
-      color: var(--text-primary);
-    }
-
-    .confirm-btn.ok {
-      background: var(--primary);
-      color: #fff;
-      border-color: var(--primary);
-    }
-
-    .confirm-btn.ok:hover {
-      background: #DC2626;
-    }
-
-    .confirm-btn.danger {
-      background: var(--danger);
-      color: #fff;
-      border-color: var(--danger);
-    }
-
-    .confirm-btn.danger:hover {
-      background: #EF4444;
-    }
-
-    .confirm-btn:active {
-      transform: scale(0.97);
-    }
-
-    /* scrollbar */
-    ::-webkit-scrollbar {
-      width: 4px;
-    }
-
-    ::-webkit-scrollbar-track {
-      background: transparent;
-    }
-
-    ::-webkit-scrollbar-thumb {
-      background: var(--border-subtle);
-      border-radius: 4px;
-    }
-
-    ::-webkit-scrollbar-thumb:hover {
-      background: var(--primary);
-    }
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--border-subtle); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--primary); }
   </style>
 </head>
 <body>
 
 <div class="app">
   <main class="main" id="main">
+    <div class="sync-bar">
+      <div class="sync-status" id="syncStatus">
+        <i class="fas fa-circle"></i>
+        <span class="txt" id="syncText">Connecting…</span>
+      </div>
+      <div class="balance-mini" id="balanceMini">₹0</div>
+    </div>
+
     <div class="loading" id="loadingState">
       <span class="spin-lg"></span>
       <p>Loading entries…</p>
@@ -765,10 +736,14 @@
     <div id="entriesList"></div>
   </main>
 
+  <button class="fab-sync" id="btnSync" aria-label="Sync now">
+    <i class="fas fa-rotate"></i>
+    <span class="badge" id="syncBadge" style="display:none;">0</span>
+  </button>
+
   <button class="fab" id="btnAdd" aria-label="Add entry"><i class="fas fa-plus"></i></button>
 </div>
 
-<!-- BOTTOM SHEET -->
 <div class="sheet-scrim" id="formScrim"></div>
 <section class="sheet" id="formSheet">
   <div class="sheet-grip"></div>
@@ -825,7 +800,6 @@
   </div>
 </section>
 
-<!-- CONFIRM MODAL -->
 <div class="confirm-scrim" id="confirmScrim"></div>
 <div class="confirm-box" id="confirmBox">
   <div class="confirm-icon" id="confirmIcon"><i class="fas fa-question"></i></div>
@@ -843,7 +817,9 @@
   /* ============================================================
      CONFIG
      ============================================================ */
-  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbygbWFa8i0obTFcz7TCxh8FrAFzmPwTum3twk79KfGEiEUGkMEgykZ-zF_4exEYNP3d6w/exec';
+  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyFGGwcrN9Z92S1tmR9MF2uTxWVI04mKbCq0Bz1Ln8Lpj4ZP78r6oiElr89eU0DNusGhg/exec';
+  const CACHE_KEY  = 'expenditure2026_v1';
+  const QUEUE_KEY  = 'expenditure2026_queue_v1';
 
   /* ============================================================
      STATE
@@ -851,32 +827,250 @@
   let ENTRIES = [];
   let LIVE_BALANCE = 0;
   let EDITING_SLNO = null;
+  let SYNCING = false;
+  let LAST_SYNCED_AT = 0;
+  let statusTimer = null;
 
   const $ = id => document.getElementById(id);
   const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m]));
 
+  /* ============================================================
+     HELPERS
+     ============================================================ */
   function todayStr() {
     const d = new Date();
-    const y = d.getFullYear();
-    const m = String(d.getMonth() + 1).padStart(2, '0');
-    const day = String(d.getDate()).padStart(2, '0');
-    return `${y}-${m}-${day}`;
+    return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
   }
 
   function fmtDateDisplay(iso) {
     if (!iso) return '';
     const d = new Date(iso + 'T00:00:00');
     if (isNaN(d)) return iso;
-    return `${d.getMonth() + 1}/${d.getDate()}/${d.getFullYear()}`;
+    return `${d.getMonth()+1}/${d.getDate()}/${d.getFullYear()}`;
   }
 
   function fmtMoney(n) {
-    const num = Number(n) || 0;
-    return num.toLocaleString('en-IN');
+    return (Number(n) || 0).toLocaleString('en-IN');
+  }
+
+  function timeAgo(ts) {
+    if (!ts) return 'never';
+    const s = Math.floor((Date.now() - ts) / 1000);
+    if (s < 5)        return 'just now';
+    if (s < 60)       return s + ' sec ago';
+    const m = Math.floor(s / 60);
+    if (m < 60)       return m + ' min ago';
+    const h = Math.floor(m / 60);
+    if (h < 24)       return h + ' hr ago';
+    const d = Math.floor(h / 24);
+    return d + ' day' + (d > 1 ? 's' : '') + ' ago';
   }
 
   /* ============================================================
-     CONFIRM MODAL
+     SYNC STATUS BAR
+     ============================================================ */
+  function updateSyncStatus(state) {
+    const wrap = $('syncStatus');
+    const txt  = $('syncText');
+    const icon = wrap.querySelector('i');
+
+    wrap.classList.remove('syncing', 'stale', 'old');
+
+    if (state === 'syncing') {
+      wrap.classList.add('syncing');
+      txt.textContent = 'Syncing…';
+      icon.className = 'fas fa-rotate';
+      return;
+    }
+
+    if (state === 'error') {
+      wrap.classList.add('old');
+      txt.textContent = 'Sync failed — tap ↻';
+      icon.className = 'fas fa-circle-exclamation';
+      return;
+    }
+
+    icon.className = 'fas fa-circle';
+    if (!LAST_SYNCED_AT) {
+      txt.textContent = 'Not synced yet';
+      return;
+    }
+    const ageMs = Date.now() - LAST_SYNCED_AT;
+    const mins  = ageMs / 60000;
+    if (mins > 30)      wrap.classList.add('old');
+    else if (mins > 5)  wrap.classList.add('stale');
+    txt.textContent = 'Synced ' + timeAgo(LAST_SYNCED_AT);
+  }
+
+  function startStatusTicker() {
+    if (statusTimer) clearInterval(statusTimer);
+    statusTimer = setInterval(() => {
+      if (!SYNCING) updateSyncStatus('idle');
+    }, 15000);
+  }
+
+  /* ============================================================
+     SYNC FAB + BADGE
+     ============================================================ */
+  function setSyncBtn(state) {
+    const btn = $('btnSync');
+    if (!btn) return;
+    btn.classList.remove('spinning', 'ok', 'err');
+    if (state === 'spinning') {
+      btn.classList.add('spinning');
+      btn.disabled = true;
+    } else if (state === 'ok') {
+      btn.classList.add('ok');
+      btn.disabled = false;
+      setTimeout(() => btn.classList.remove('ok'), 1500);
+    } else if (state === 'err') {
+      btn.classList.add('err');
+      btn.disabled = false;
+      setTimeout(() => btn.classList.remove('err'), 2200);
+    } else {
+      btn.disabled = false;
+    }
+  }
+
+  function updateQueueBadge() {
+    const n = loadQueue().length;
+    const badge = $('syncBadge');
+    if (!badge) return;
+    if (n > 0) {
+      badge.textContent = n;
+      badge.style.display = 'flex';
+    } else {
+      badge.style.display = 'none';
+    }
+  }
+
+  /* ============================================================
+     LOCAL CACHE
+     ============================================================ */
+  function loadCache() {
+    try {
+      const raw = localStorage.getItem(CACHE_KEY);
+      if (!raw) return null;
+      const obj = JSON.parse(raw);
+      if (!obj || !Array.isArray(obj.entries)) return null;
+      LAST_SYNCED_AT = obj.savedAt || 0;
+      return obj;
+    } catch (e) { return null; }
+  }
+
+  function saveCache() {
+    try {
+      localStorage.setItem(CACHE_KEY, JSON.stringify({
+        entries: ENTRIES,
+        liveBalance: LIVE_BALANCE,
+        savedAt: LAST_SYNCED_AT || Date.now()
+      }));
+    } catch (e) { /* quota */ }
+  }
+
+  /* ============================================================
+     OFFLINE QUEUE
+     ============================================================ */
+  function loadQueue() {
+    try { return JSON.parse(localStorage.getItem(QUEUE_KEY) || '[]'); }
+    catch (e) { return []; }
+  }
+  function saveQueue(q) {
+    try { localStorage.setItem(QUEUE_KEY, JSON.stringify(q)); } catch (e) {}
+    updateQueueBadge();
+  }
+  function enqueue(action, params) {
+    const q = loadQueue();
+    q.push({ id: Date.now() + '_' + Math.random().toString(36).slice(2,7), action, params, ts: Date.now() });
+    saveQueue(q);
+  }
+  function dequeue(id) {
+    saveQueue(loadQueue().filter(x => x.id !== id));
+  }
+
+  /* ============================================================
+     JSONP
+     ============================================================ */
+  let jsonpCounter = 0;
+  function apiCall(action, params = {}, timeout = 20000) {
+    return new Promise(resolve => {
+      const cb = '__cb_' + (++jsonpCounter) + '_' + Date.now();
+      const sc = document.createElement('script');
+      const done = ok => {
+        delete window[cb];
+        if (sc.parentNode) sc.parentNode.removeChild(sc);
+        resolve(ok);
+      };
+      const t = setTimeout(() => done({ success: false, message: 'Timed out' }), timeout);
+      window[cb] = d => { clearTimeout(t); done(d); };
+      const q = new URLSearchParams({ action, callback: cb, ...params }).toString();
+      sc.src = `${SCRIPT_URL}?${q}`;
+      sc.onerror = () => { clearTimeout(t); done({ success: false, message: 'Network error' }); };
+      document.body.appendChild(sc);
+    });
+  }
+
+  /* ============================================================
+     SYNC ENGINE
+     ============================================================ */
+  async function syncNow({ silent = false } = {}) {
+    if (SYNCING) return false;
+    SYNCING = true;
+
+    setSyncBtn('spinning');
+    updateSyncStatus('syncing');
+
+    let ok = false;
+    try {
+      // 1) Flush queued writes first
+      const queue = loadQueue();
+      for (const item of queue) {
+        const r = await apiCall(item.action, item.params);
+        if (r && r.success) {
+          dequeue(item.id);
+        } else if (r && r.message && /not found/i.test(r.message)) {
+          dequeue(item.id);
+        } else {
+          break;
+        }
+      }
+
+      // 2) Pull full dataset
+      const r = await apiCall('syncAll');
+      if (!r || !r.success || !r.data) {
+        setSyncBtn('err');
+        updateSyncStatus('error');
+        if (!silent) toast('Sync failed', 'err');
+        return false;
+      }
+
+      ENTRIES = r.data.entries || [];
+      LIVE_BALANCE = r.data.liveBalance || 0;
+      LAST_SYNCED_AT = Date.now();
+      saveCache();
+      renderEntries();
+      updateBalanceDisplay();
+
+      ok = true;
+      setSyncBtn('ok');
+      updateSyncStatus('idle');
+      if (!silent) toast('Synced', 'ok');
+      return true;
+    } finally {
+      SYNCING = false;
+      if (!ok) setSyncBtn('err');
+      updateQueueBadge();
+    }
+  }
+
+  function updateBalanceDisplay() {
+    const v = '₹' + fmtMoney(LIVE_BALANCE);
+    $('balanceMini').textContent = v;
+    $('liveBalance').textContent = v;
+  }
+
+  /* ============================================================
+     CONFIRM
      ============================================================ */
   function askConfirm(opts) {
     return new Promise(resolve => {
@@ -902,7 +1096,6 @@
       };
       const onOk = () => { cleanup(); resolve(true); };
       const onCancel = () => { cleanup(); resolve(false); };
-
       $('confirmOk').addEventListener('click', onOk);
       $('confirmCancel').addEventListener('click', onCancel);
       $('confirmScrim').addEventListener('click', onCancel);
@@ -910,50 +1103,7 @@
   }
 
   /* ============================================================
-     JSONP CALL
-     ============================================================ */
-  let jsonpCounter = 0;
-  function apiCall(action, params = {}, timeout = 20000) {
-    return new Promise(resolve => {
-      const cb = '__cb_' + (++jsonpCounter) + '_' + Date.now();
-      const sc = document.createElement('script');
-      const done = ok => {
-        delete window[cb];
-        if (sc.parentNode) sc.parentNode.removeChild(sc);
-        resolve(ok);
-      };
-      const t = setTimeout(() => done({ success: false, message: 'Timed out' }), timeout);
-      window[cb] = d => { clearTimeout(t); done(d); };
-      const q = new URLSearchParams({ action, callback: cb, ...params }).toString();
-      sc.src = `${SCRIPT_URL}?${q}`;
-      sc.onerror = () => { clearTimeout(t); done({ success: false, message: 'Network error' }); };
-      document.body.appendChild(sc);
-    });
-  }
-
-  /* ============================================================
-     LOAD ENTRIES
-     ============================================================ */
-  async function loadEntries() {
-    $('loadingState').style.display = 'block';
-    $('entriesList').innerHTML = '';
-
-    const r = await apiCall('getEntries');
-
-    if (!r || !r.success || !r.data) {
-      $('loadingState').innerHTML = '<div class="empty"><i class="fas fa-triangle-exclamation"></i>Failed to load data.<br><small>Check your Web App URL &amp; deployment.</small></div>';
-      return;
-    }
-
-    ENTRIES = r.data.entries || [];
-    LIVE_BALANCE = r.data.liveBalance || 0;
-    $('liveBalance').textContent = '₹' + fmtMoney(LIVE_BALANCE);
-    renderEntries();
-    $('loadingState').style.display = 'none';
-  }
-
-  /* ============================================================
-     RENDER LIST
+     RENDER
      ============================================================ */
   function renderEntries() {
     const list = $('entriesList');
@@ -961,20 +1111,16 @@
       list.innerHTML = '<div class="empty"><i class="fas fa-inbox"></i>No entries yet.<br>Tap + to add one.</div>';
       return;
     }
-
     const sorted = [...ENTRIES].sort((a, b) => {
       const na = Number(a.slNo), nb = Number(b.slNo);
       if (!isNaN(na) && !isNaN(nb)) return nb - na;
       return String(b.slNo).localeCompare(String(a.slNo));
     });
-
     const groups = {};
     sorted.forEach(e => {
       const d = e.date || 'Unknown';
-      if (!groups[d]) groups[d] = [];
-      groups[d].push(e);
+      (groups[d] = groups[d] || []).push(e);
     });
-
     const dates = Object.keys(groups).sort((a, b) => b.localeCompare(a));
 
     let html = '';
@@ -985,34 +1131,26 @@
           <div class="entry-row" data-slno="${esc(e.slNo)}">
             <div class="entry-info">
               <div class="name">${esc(e.name)}</div>
-              <div class="cat"><i class="fas fa-tag"></i> ${esc(e.purpose)}${e.purpose ? '' : ''}</div>
+              <div class="cat"><i class="fas fa-tag"></i> ${esc(e.purpose)}</div>
             </div>
             <div class="entry-amount">₹${fmtMoney(e.amount)}</div>
             <div class="entry-actions">
-              <button class="entry-edit" data-edit="${esc(e.slNo)}" aria-label="Edit">
-                <i class="fas fa-pen"></i>
-              </button>
-              <button class="entry-del" data-del="${esc(e.slNo)}" aria-label="Delete">
-                <i class="fas fa-trash"></i>
-              </button>
+              <button class="entry-edit" data-edit="${esc(e.slNo)}" aria-label="Edit"><i class="fas fa-pen"></i></button>
+              <button class="entry-del" data-del="${esc(e.slNo)}" aria-label="Delete"><i class="fas fa-trash"></i></button>
             </div>
-          </div>
-        `;
+          </div>`;
       });
     });
-
     list.innerHTML = html;
 
-    list.querySelectorAll('[data-edit]').forEach(b => {
-      b.addEventListener('click', ev => { ev.stopPropagation(); requestEdit(b.dataset.edit); });
-    });
-    list.querySelectorAll('[data-del]').forEach(b => {
-      b.addEventListener('click', ev => { ev.stopPropagation(); requestDelete(b.dataset.del); });
-    });
+    list.querySelectorAll('[data-edit]').forEach(b =>
+      b.addEventListener('click', ev => { ev.stopPropagation(); requestEdit(b.dataset.edit); }));
+    list.querySelectorAll('[data-del]').forEach(b =>
+      b.addEventListener('click', ev => { ev.stopPropagation(); requestDelete(b.dataset.del); }));
   }
 
   /* ============================================================
-     EDIT FLOW
+     EDIT / DELETE
      ============================================================ */
   async function requestEdit(slNo) {
     const e = ENTRIES.find(x => x.slNo === slNo);
@@ -1020,39 +1158,37 @@
     const ok = await askConfirm({
       title: 'Edit this record?',
       message: `Do you want to edit <b>${esc(e.name)}</b>'s payment of <b>₹${fmtMoney(e.amount)}</b>?`,
-      okText: 'Edit',
-      danger: false,
-      icon: 'fa-pen-to-square'
+      okText: 'Edit', danger: false, icon: 'fa-pen-to-square'
     });
     if (ok) openForm(slNo);
   }
 
-  /* ============================================================
-     DELETE FLOW
-     ============================================================ */
   async function requestDelete(slNo) {
     const e = ENTRIES.find(x => x.slNo === slNo);
     if (!e) return;
     const ok = await askConfirm({
       title: 'Delete this record?',
       message: `Are you sure you want to permanently delete <b>${esc(e.name)}</b>'s payment of <b>₹${fmtMoney(e.amount)}</b>?<br><br>This action <b>cannot be undone</b>.`,
-      okText: 'Delete',
-      danger: true,
-      icon: 'fa-triangle-exclamation'
+      okText: 'Delete', danger: true, icon: 'fa-triangle-exclamation'
     });
     if (!ok) return;
 
+    ENTRIES = ENTRIES.filter(x => x.slNo !== slNo);
+    saveCache();
+    renderEntries();
+    toast('Entry deleted', 'ok');
+
     const r = await apiCall('deleteEntry', { slNo });
     if (r && r.success) {
-      toast('Entry deleted', 'ok');
-      await loadEntries();
+      syncNow({ silent: true });
     } else {
-      toast((r && r.message) || 'Delete failed', 'err');
+      enqueue('deleteEntry', { slNo });
+      toast('Offline — will sync later', 'err');
     }
   }
 
   /* ============================================================
-     OPEN / CLOSE FORM
+     FORM
      ============================================================ */
   function openForm(editSlNo = null) {
     EDITING_SLNO = editSlNo;
@@ -1079,7 +1215,7 @@
       $('fAmount').value = '';
     }
 
-    $('liveBalance').textContent = '₹' + fmtMoney(LIVE_BALANCE);
+    updateBalanceDisplay();
     $('formScrim').classList.add('on');
     $('formSheet').classList.add('on');
   }
@@ -1092,6 +1228,7 @@
   $('btnAdd').addEventListener('click', () => openForm(null));
   $('formClose').addEventListener('click', closeForm);
   $('formScrim').addEventListener('click', closeForm);
+  $('btnSync').addEventListener('click', () => syncNow({ silent: false }));
 
   /* ============================================================
      SUBMIT
@@ -1112,30 +1249,61 @@
       return;
     }
 
+    if (EDITING_SLNO) {
+      const idx = ENTRIES.findIndex(x => x.slNo === EDITING_SLNO);
+      if (idx >= 0) {
+        ENTRIES[idx] = { ...ENTRIES[idx], date, name, purpose, amount: Number(amount) };
+        saveCache();
+        renderEntries();
+      }
+      msg.className = 'msg ok';
+      msg.textContent = '✅ Updated';
+      setTimeout(closeForm, 500);
+
+      const r = await apiCall('updateEntry', { slNo: EDITING_SLNO, date, name, purpose, amount });
+      if (!r || !r.success) {
+        enqueue('updateEntry', { slNo: EDITING_SLNO, date, name, purpose, amount });
+        toast('Offline — will sync later', 'err');
+      } else {
+        syncNow({ silent: true });
+      }
+      EDITING_SLNO = null;
+      return;
+    }
+
+    const tempSlNo = 'tmp_' + Date.now();
+    ENTRIES.push({ slNo: tempSlNo, date, name, purpose, amount: Number(amount) });
+    saveCache();
+    renderEntries();
+
     const original = btn.innerHTML;
     btn.disabled = true;
     btn.innerHTML = '<span class="spin"></span> Saving…';
 
-    const payload = { date, name, purpose, amount };
-    if (EDITING_SLNO) payload.slNo = EDITING_SLNO;
-
-    const action = EDITING_SLNO ? 'updateEntry' : 'addEntry';
-    const r = await apiCall(action, payload);
+    const r = await apiCall('addEntry', { date, name, purpose, amount });
 
     btn.disabled = false;
     btn.innerHTML = original;
 
     if (r && r.success) {
+      const realSlNo = r.data && r.data.slNo ? String(r.data.slNo) : tempSlNo;
+      const idx = ENTRIES.findIndex(x => x.slNo === tempSlNo);
+      if (idx >= 0) ENTRIES[idx].slNo = realSlNo;
+      if (r.data && typeof r.data.liveBalance === 'number') LIVE_BALANCE = r.data.liveBalance;
+      saveCache();
+      renderEntries();
+      updateBalanceDisplay();
       msg.className = 'msg ok';
-      msg.textContent = '✅ ' + (r.message || 'Saved successfully!');
-      toast(EDITING_SLNO ? 'Entry updated' : 'Entry added', 'ok');
-      setTimeout(async () => {
-        closeForm();
-        await loadEntries();
-      }, 700);
+      msg.textContent = '✅ Saved';
+      toast('Entry added', 'ok');
+      setTimeout(closeForm, 500);
+      syncNow({ silent: true });
     } else {
-      msg.className = 'msg er';
-      msg.textContent = '❌ ' + ((r && r.message) || 'Save failed.');
+      enqueue('addEntry', { date, name, purpose, amount });
+      msg.className = 'msg ok';
+      msg.textContent = '⚠️ Saved locally — will sync when online';
+      toast('Saved locally', 'ok');
+      setTimeout(closeForm, 700);
     }
   });
 
@@ -1154,9 +1322,66 @@
   }
 
   /* ============================================================
-     INIT
+     BOOT
      ============================================================ */
-  loadEntries();
+  function boot() {
+    updateQueueBadge();
+
+    const cached = loadCache();
+    if (cached) {
+      ENTRIES = cached.entries;
+      LIVE_BALANCE = cached.liveBalance || 0;
+      updateBalanceDisplay();
+      renderEntries();
+      $('loadingState').style.display = 'none';
+      updateSyncStatus('idle');
+      syncNow({ silent: true });
+    } else {
+      updateSyncStatus('syncing');
+      syncNow({ silent: false }).then(ok => {
+        $('loadingState').style.display = 'none';
+        if (!ok) {
+          $('entriesList').innerHTML = '<div class="empty"><i class="fas fa-triangle-exclamation"></i>Failed to load.<br><small>Check connection &amp; Web App URL.</small></div>';
+        }
+      });
+    }
+
+    startStatusTicker();
+
+    window.addEventListener('online', () => {
+      toast('Back online — syncing…', 'ok');
+      syncNow({ silent: true });
+    });
+
+    window.addEventListener('offline', () => {
+      toast('Offline mode', 'err');
+      updateSyncStatus('error');
+    });
+
+    setInterval(() => {
+      if (document.visibilityState === 'visible') syncNow({ silent: true });
+    }, 60000);
+
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible') syncNow({ silent: true });
+    });
+
+    // Pull-to-refresh
+    let touchStartY = 0;
+    const main = $('main');
+    main.addEventListener('touchstart', e => {
+      if (main.scrollTop <= 0) touchStartY = e.touches[0].clientY;
+      else touchStartY = 0;
+    }, { passive: true });
+    main.addEventListener('touchend', e => {
+      if (!touchStartY) return;
+      const dy = e.changedTouches[0].clientY - touchStartY;
+      if (dy > 80) syncNow({ silent: false });
+      touchStartY = 0;
+    });
+  }
+
+  boot();
 </script>
 </body>
 </html>
