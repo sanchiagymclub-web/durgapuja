@@ -51,11 +51,11 @@ button{font:inherit;cursor:pointer;border:none;background:none;color:inherit;}
 }
 
 /* ============================================================
-   TOP APP BAR — now includes greeting block + live counter
+   TOP APP BAR
    ============================================================ */
 .appbar{
   display:flex;flex-direction:column;
-  padding:calc(10px + var(--safe-top)) 14px 12px;
+  padding:calc(10px + var(--safe-top)) 14px 10px;
   color:#fff;flex-shrink:0;
   background:linear-gradient(135deg,var(--role-public-start),var(--role-public-end));
   transition:background .3s ease;
@@ -68,7 +68,6 @@ button{font:inherit;cursor:pointer;border:none;background:none;color:inherit;}
 .appbar.role-cashier {background:linear-gradient(135deg,var(--role-cashier-start),var(--role-cashier-end));}
 .appbar.role-admin   {background:linear-gradient(135deg,var(--role-admin-start),var(--role-admin-end));}
 
-/* top row: menu, title, live, avatar */
 .appbar-top{
   display:flex;align-items:center;gap:10px;
   width:100%;
@@ -115,7 +114,7 @@ button{font:inherit;cursor:pointer;border:none;background:none;color:inherit;}
   100%{box-shadow:0 0 0 0 rgba(34,197,94,0);}
 }
 
-/* --- greeting row inside appbar (replaces old .greet) --- */
+/* --- greeting row inside appbar --- */
 .greet-inline{
   display:flex;align-items:center;justify-content:space-between;
   gap:12px;margin-top:12px;
@@ -142,6 +141,47 @@ button{font:inherit;cursor:pointer;border:none;background:none;color:inherit;}
 .greet-right .chip.denied {background:rgba(239,68,68,.35);border-color:rgba(239,68,68,.6);}
 
 /* ============================================================
+   SCROLLING TEXT — golden marquee under greeting
+   ============================================================ */
+.scroll-strip{
+  margin-top:8px;
+  padding:7px 0;
+  border-top:1px solid rgba(255,255,255,.12);
+  overflow:hidden;
+  position:relative;
+  background:rgba(0,0,0,.18);
+  display:none;
+  border-radius:6px;
+}
+.scroll-strip.on{display:block;}
+.scroll-track{
+  display:inline-block;
+  white-space:nowrap;
+  font-size:13px;
+  font-weight:800;
+  letter-spacing:.3px;
+  color:#FFD966;
+  text-shadow:0 0 8px rgba(255,217,102,.55), 0 1px 2px rgba(0,0,0,.6);
+  padding-left:100%;
+  animation:scrollLeft 70s linear infinite;
+  will-change:transform;
+}
+.scroll-track .sep{
+  color:#E6B17E;
+  margin:0 18px;
+  opacity:.85;
+}
+@keyframes scrollLeft{
+  0%   { transform:translateX(0); }
+  100% { transform:translateX(-100%); }
+}
+.scroll-strip:hover .scroll-track{animation-play-state:paused;}
+
+@media (prefers-reduced-motion: reduce){
+  .scroll-track{animation:none;}
+}
+
+/* ============================================================
    MAIN SCROLL AREA (hub) — WITH DURGA WALLPAPER
    ============================================================ */
 .main{
@@ -152,7 +192,6 @@ button{font:inherit;cursor:pointer;border:none;background:none;color:inherit;}
   position:relative;
 }
 
-/* 🎨 Durga wallpaper layer */
 .main::before{
   content:'';
   position:absolute;
@@ -176,14 +215,12 @@ button{font:inherit;cursor:pointer;border:none;background:none;color:inherit;}
           mask-image:linear-gradient(180deg,#000 0%,#000 65%,transparent 100%);
 }
 
-/* Ensure hub content sits above wallpaper */
 .sec-title,
 .grid{
   position:relative;
   z-index:1;
 }
 
-/* Section title */
 .sec-title{
   font-size:11px;font-weight:800;color:var(--text-soft);
   text-transform:uppercase;letter-spacing:.8px;
@@ -195,7 +232,6 @@ button{font:inherit;cursor:pointer;border:none;background:none;color:inherit;}
   padding:2px 8px;border-radius:20px;
 }
 
-/* App grid */
 .grid{
   display:grid;grid-template-columns:repeat(3,1fr);
   gap:6px 4px;padding:0 10px 20px;
@@ -226,7 +262,6 @@ button{font:inherit;cursor:pointer;border:none;background:none;color:inherit;}
   white-space:nowrap;
 }
 
-/* Color themes */
 .bg-blue  {background:linear-gradient(135deg,#3b82f6,#1d4ed8);}
 .bg-purple{background:linear-gradient(135deg,#8b5cf6,#6d28d9);}
 .bg-green {background:linear-gradient(135deg,#10b981,#047857);}
@@ -267,7 +302,7 @@ button{font:inherit;cursor:pointer;border:none;background:none;color:inherit;}
 .bn-item:active{background:#f5f3ff;}
 
 /* ============================================================
-   DRAWER (slide from left)
+   DRAWER
    ============================================================ */
 .scrim{
   position:fixed;inset:0;background:rgba(15,23,42,.55);
@@ -345,7 +380,7 @@ button{font:inherit;cursor:pointer;border:none;background:none;color:inherit;}
 .btn-signout:active{transform:scale(.98);}
 
 /* ============================================================
-   BOTTOM SHEETS (auth / dialogs)
+   BOTTOM SHEETS
    ============================================================ */
 .sheet-scrim{
   position:fixed;inset:0;background:rgba(15,23,42,.6);
@@ -397,7 +432,6 @@ button{font:inherit;cursor:pointer;border:none;background:none;color:inherit;}
   padding:0 20px 20px;
 }
 
-/* Segmented control */
 .seg{
   display:flex;background:#f1f5f9;
   padding:4px;border-radius:40px;margin-bottom:18px;
@@ -412,7 +446,6 @@ button{font:inherit;cursor:pointer;border:none;background:none;color:inherit;}
   box-shadow:0 2px 6px rgba(15,23,42,.1);
 }
 
-/* Input */
 .field{margin-bottom:14px;}
 .field label{
   display:block;font-size:11px;font-weight:800;
@@ -492,7 +525,7 @@ button{font:inherit;cursor:pointer;border:none;background:none;color:inherit;}
 @keyframes spin{to{transform:rotate(360deg);}}
 
 /* ============================================================
-   ADMIN — full-screen view
+   ADMIN
    ============================================================ */
 .admin-view{
   position:fixed;inset:0;z-index:120;
@@ -638,7 +671,6 @@ button{font:inherit;cursor:pointer;border:none;background:none;color:inherit;}
 }
 .empty i{font-size:34px;display:block;margin-bottom:10px;opacity:.55;}
 
-/* Toast */
 .toast{
   position:fixed;bottom:calc(20px + var(--safe-bottom));
   left:50%;transform:translateX(-50%) translateY(80px);
@@ -656,7 +688,6 @@ button{font:inherit;cursor:pointer;border:none;background:none;color:inherit;}
 .toast.err{background:linear-gradient(135deg,#b91c1c,#7f1d1d);}
 .toast.ok {background:linear-gradient(135deg,#047857,#065f46);}
 
-/* Iframe view */
 .frame-wrap{
   position:fixed;inset:0;z-index:110;
   background:#fff;display:none;flex-direction:column;
@@ -680,7 +711,7 @@ button{font:inherit;cursor:pointer;border:none;background:none;color:inherit;}
 
 <div class="app">
 
-  <!-- TOP APP BAR — with greeting + live user counter -->
+  <!-- TOP APP BAR -->
   <header class="appbar role-public" id="appbar">
     <div class="appbar-top">
       <button class="ab-icon" id="btnMenu" aria-label="Menu">
@@ -697,7 +728,6 @@ button{font:inherit;cursor:pointer;border:none;background:none;color:inherit;}
       <div class="ab-avatar" id="abAvatar">?</div>
     </div>
 
-    <!-- Greeting block (moved from main) -->
     <div class="greet-inline" id="greetInline">
       <div class="greet-left">
         <div class="gname" id="greetName">Hello, Guest!</div>
@@ -707,20 +737,21 @@ button{font:inherit;cursor:pointer;border:none;background:none;color:inherit;}
         <span class="chip">PUBLIC</span>
       </div>
     </div>
+
+    <!-- SCROLLING TEXT — golden marquee -->
+    <div class="scroll-strip" id="scrollStrip">
+      <div class="scroll-track" id="scrollTrack"></div>
+    </div>
   </header>
 
-  <!-- MAIN SCROLL (HUB) — no greeting card -->
   <main class="main" id="main">
-
     <div class="sec-title">
       <span>Your Apps</span>
       <span class="count" id="appCount">0</span>
     </div>
-
     <div class="grid" id="appGrid"></div>
   </main>
 
-  <!-- BOTTOM NAV -->
   <nav class="bottomnav" id="bottomNav"></nav>
 </div>
 
@@ -758,7 +789,6 @@ button{font:inherit;cursor:pointer;border:none;background:none;color:inherit;}
       <button data-pane="signup">Sign Up</button>
     </div>
 
-    <!-- LOGIN -->
     <div id="paneLogin">
       <form id="formLogin">
         <div class="field">
@@ -776,7 +806,7 @@ button{font:inherit;cursor:pointer;border:none;background:none;color:inherit;}
           </div>
         </div>
         <label class="cbx">
-          <input type="checkbox" id="loginRemember"> Remember me on this device
+          <input type="checkbox" id="loginRemember" checked> Keep me signed in on this device
         </label>
         <button type="submit" class="btn" id="btnLogin">
           <i class="fas fa-arrow-right-to-bracket"></i> Sign In
@@ -785,7 +815,6 @@ button{font:inherit;cursor:pointer;border:none;background:none;color:inherit;}
       </form>
     </div>
 
-    <!-- SIGNUP -->
     <div id="paneSignup" style="display:none;">
       <form id="formSignup">
         <div class="field">
@@ -884,71 +913,67 @@ button{font:inherit;cursor:pointer;border:none;background:none;color:inherit;}
 /* ============================================================
    CONFIG
    ============================================================ */
-const API_URL = 'https://script.google.com/macros/s/AKfycbxSPFbPRCQe3icJexfVcSodd2T7IlGUfF2FN_jV0Z4Ni9eN3lieKZjyVSc29hift4YR/exec';
+const API_URL = 'https://script.google.com/macros/s/AKfycbyAXU_4zhRSDuVClDyAbaldeH8JM1mse8gb8R9k788Rak1DwsCTnRKWUeu53uINyWIU/exec';
 
 /* ============================================================
    MENU ITEMS
    ============================================================ */
 const MENU_ITEMS = [
-  { id:'events', label:'Upcoming Events',    icon:'fa-gauge-high', color:'bg-blue',
+  { id:'events', label:'Upcoming Events', icon:'fa-gauge-high', color:'bg-blue',
     url:'events.htm', levels:['PUBLIC','MEMBER','CASHIER','ADMIN'],
     bottom:true, bottomIcon:'fa-house' },
-    
-  { id: 'upi',label: 'Donate',  icon: 'fa-indian-rupee-sign',
-  color: 'bg-orange',url: 'donate.htm', levels: ['PUBLIC', 'MEMBER', 'CASHIER', 'ADMIN']},
-  
-  {id: 'profile',label: 'Live TV',icon: 'fa-tv',
-  color: 'bg-purple',url: 'tv.htm',levels: ['PUBLIC', 'MEMBER', 'CASHIER', 'ADMIN'],
-  bottom: true, 
-  bottomIcon: 'fa-tv'
-},
 
-  { id:'alerts',    label:'Alerts',       icon:'fa-bell',        color:'bg-pink',
+  { id:'upi', label:'Donate', icon:'fa-indian-rupee-sign', color:'bg-orange',
+    url:'donate.htm', levels:['PUBLIC','MEMBER','CASHIER','ADMIN']},
+
+  { id:'profile', label:'Live TV', icon:'fa-tv', color:'bg-purple',
+    url:'tv.htm', levels:['PUBLIC','MEMBER','CASHIER','ADMIN'],
+    bottom:true, bottomIcon:'fa-tv'},
+
+  { id:'alerts', label:'Alerts', icon:'fa-bell', color:'bg-pink',
     url:'', levels:['PUBLIC','MEMBER','CASHIER','ADMIN'],
-    bottom:true, bottomIcon:'fa-bell' },
-  { 
-  id: 'chatboat',label: 'ChatBoat',icon: 'fa-brands fa-whatsapp',
-  color: 'bg-green',url: 'chat.htm',levels: ['MEMBER', 'CASHIER', 'ADMIN'],
-  bottom: true,
-  bottomIcon: 'fa-brands fa-whatsapp'},
+    bottom:true, bottomIcon:'fa-bell'},
 
-  {id: 'slide',label: 'Slideshow',icon: 'fa-images',
-  color: 'bg-green',url: 'slide.htm',levels: ['PUBLIC','MEMBER','CASHIER','ADMIN'] },
-  
+  { id:'chatboat', label:'ChatBoat', icon:'fa-brands fa-whatsapp', color:'bg-green',
+    url:'chat.htm', levels:['MEMBER','CASHIER','ADMIN'],
+    bottom:true, bottomIcon:'fa-brands fa-whatsapp'},
+
+  { id:'slide', label:'Slideshow', icon:'fa-images', color:'bg-green',
+    url:'slide.htm', levels:['PUBLIC','MEMBER','CASHIER','ADMIN']},
+
   { id:'collectionmember', label:'Collection', icon:'fa-money-bill-wave', color:'bg-orange',
-  url:'collectionmember.htm', levels:['MEMBER','ADMIN'] },
-  
+    url:'collectionmember.htm', levels:['MEMBER','ADMIN']},
+
   { id:'paymentmember', label:'Payment', icon:'fa-money-bill-transfer', color:'bg-indigo',
-  url:'paymentmember.htm', levels:['MEMBER','ADMIN'] },
+    url:'paymentmember.htm', levels:['MEMBER','ADMIN']},
 
- {id: 'upload-media',label: 'Upload Media',icon: 'fa-cloud-arrow-up',color: 'bg-pink',
-  url: 'upload.htm',levels: ['MEMBER', 'CASHIER', 'ADMIN']},
-  
-  { id:'splbalance',       label:'Add Balance',          icon:'fa-cash-register', color:'bg-cyan',
-    url:'splbalance.htm', levels:['CASHIER','ADMIN'] },
+  { id:'upload-media', label:'Upload Media', icon:'fa-cloud-arrow-up', color:'bg-pink',
+    url:'upload.htm', levels:['MEMBER','CASHIER','ADMIN']},
 
-  { id:'payment',   label:'Payment2026',      icon:'fa-hand-holding-dollar', color:'bg-indigo',
-    url:'payment2026.htm', levels:['CASHIER','ADMIN'] },
+  { id:'splbalance', label:'Add Balance', icon:'fa-cash-register', color:'bg-cyan',
+    url:'splbalance.htm', levels:['CASHIER','ADMIN']},
 
-  { id:'collection',     label:'Collection2026',  icon:'fa-calendar-check', color:'bg-orange',
-    url:'collection2026.htm', levels:['CASHIER','ADMIN'] },
+  { id:'payment', label:'Payment2026', icon:'fa-hand-holding-dollar', color:'bg-indigo',
+    url:'payment2026.htm', levels:['CASHIER','ADMIN']},
 
-  { id:'manage',    label:'Manage',       icon:'fa-users-cog',   color:'bg-red',
+  { id:'collection', label:'Collection2026', icon:'fa-calendar-check', color:'bg-orange',
+    url:'collection2026.htm', levels:['CASHIER','ADMIN']},
+
+  { id:'manage', label:'Manage', icon:'fa-users-cog', color:'bg-red',
     url:'#admin', levels:['ADMIN'],
-    bottom:true, bottomIcon:'fa-users-gear' },
+    bottom:true, bottomIcon:'fa-users-gear'},
 
-  { id:'reports',   label:'Reports',      icon:'fa-chart-line',  color:'bg-slate',
-    url:'', levels:['ADMIN'] },
+  { id:'reports', label:'Reports', icon:'fa-chart-line', color:'bg-slate',
+    url:'', levels:['ADMIN']},
 
-  { id:'settings',  label:'Settings',     icon:'fa-gear',        color:'bg-slate',
-    url:'', levels:['ADMIN'] }
+  { id:'settings', label:'Settings', icon:'fa-gear', color:'bg-slate',
+    url:'', levels:['ADMIN']}
 ];
 
 /* ============================================================
    STATE
    ============================================================ */
-const SESSION_MINUTES = 30;
-let heartbeatTimer=null, activeCountTimer=null, permWatcherTimer=null;
+let heartbeatTimer=null, activeCountTimer=null, permWatcherTimer=null, scrollTimer=null;
 let sessionId = null;
 let CURRENT_USER = null;
 let ADMIN_USERS = [];
@@ -963,32 +988,31 @@ const norm = r => (r||'PUBLIC').trim().toUpperCase();
 const roleClass = r => 'role-' + norm(r).toLowerCase();
 
 /* ============================================================
-   SESSION
+   SESSION — PERSISTENT (cleared only on manual logout / revoke)
    ============================================================ */
 function getSession(){
   try{
     const raw = localStorage.getItem('uc_sess') || sessionStorage.getItem('uc_sess');
     if(!raw) return null;
-    const s = JSON.parse(raw);
-    if(s.expiry && Date.now() > s.expiry){ clearSession(); return null; }
-    return s;
+    return JSON.parse(raw);
   }catch(e){ return null; }
 }
 function setSession(data, remember){
-  const p = { ...data, expiry: Date.now() + SESSION_MINUTES*60*1000 };
-  (remember ? localStorage : sessionStorage).setItem('uc_sess', JSON.stringify(p));
+  const payload = { ...data };
+  if(remember === false){
+    sessionStorage.setItem('uc_sess', JSON.stringify(payload));
+    localStorage.removeItem('uc_sess');
+  } else {
+    localStorage.setItem('uc_sess', JSON.stringify(payload));
+    sessionStorage.removeItem('uc_sess');
+  }
 }
 function clearSession(){
   localStorage.removeItem('uc_sess');
   sessionStorage.removeItem('uc_sess');
   if(permWatcherTimer){ clearInterval(permWatcherTimer); permWatcherTimer = null; }
 }
-function touchSession(){
-  const s = getSession(); if(!s) return;
-  s.expiry = Date.now() + SESSION_MINUTES*60*1000;
-  if(localStorage.getItem('uc_sess')) localStorage.setItem('uc_sess', JSON.stringify(s));
-  else sessionStorage.setItem('uc_sess', JSON.stringify(s));
-}
+function touchSession(){ /* no-op */ }
 
 /* ============================================================
    JSONP
@@ -1037,7 +1061,6 @@ function refreshChrome(){
   $('abSub').textContent   = 'স্থাপিত - ২০০৮';
   $('abAvatar').textContent = initial;
 
-  // Greeting elements inside appbar
   $('greetName').textContent = s ? `Hello, ${s.name.split(' ')[0]}!` : 'Hello, Guest!';
   $('greetSub').textContent  = s
     ? `You are signed in as ${level}`
@@ -1301,7 +1324,6 @@ $('btnSignOut').addEventListener('click', () => {
   CURRENT_USER = null;
   stopTrackers();
   refreshChrome();
-  showFrame('Home', 'home1.htm');
   toast('Signed out', 'ok');
 });
 
@@ -1320,7 +1342,7 @@ $('frameBack').addEventListener('click', () => {
 });
 
 /* ============================================================
-   ADMIN — full-screen mobile view
+   ADMIN
    ============================================================ */
 function openAdmin(){
   const s = getSession();
@@ -1334,7 +1356,7 @@ function closeAdmin(){
 }
 $('adminBack').addEventListener('click', closeAdmin);
 $('adminRefresh').addEventListener('click', () => loadAdminUsers());
-$('adminSearch').addEventListener('input', () => renderAdminUsers());
+$('adminSearch').addEventListener('input', () => renderAdminContent());
 
 document.querySelectorAll('.atab').forEach(t => {
   t.addEventListener('click', () => switchAdminTab(t.dataset.tab));
@@ -1633,6 +1655,47 @@ function stopTrackers(){
 }
 
 /* ============================================================
+   SCROLLING TEXT
+   ============================================================ */
+async function loadScrollingText(){
+  const r = await callApi('getScrollingText');
+  if(!r.success || !r.data || !Array.isArray(r.data.texts)) return;
+  renderScrollingText(r.data.texts);
+}
+
+function renderScrollingText(texts){
+  const strip = $('scrollStrip');
+  const track = $('scrollTrack');
+
+  if(!texts || !texts.length){
+    strip.classList.remove('on');
+    track.innerHTML = '';
+    return;
+  }
+
+  const html = texts
+    .map(t => `<span>${esc(t)}</span>`)
+    .join('<span class="sep">◆</span>');
+
+  // Duplicate for seamless loop
+  track.innerHTML = html + '<span class="sep">◆</span>' + html + '<span class="sep">◆</span>';
+
+  // Restart animation cleanly
+  track.style.animation = 'none';
+  void track.offsetWidth;
+  track.style.animation = '';
+
+  strip.classList.add('on');
+}
+
+/* Pause marquee when tab hidden */
+document.addEventListener('visibilitychange', () => {
+  const track = $('scrollTrack');
+  if(!track) return;
+  track.style.animationPlayState = document.hidden ? 'paused' : 'running';
+});
+
+/* ============================================================
    PERMISSION WATCHER
    ============================================================ */
 async function syncSession(){
@@ -1658,8 +1721,7 @@ async function syncSession(){
   if(norm(s.role) !== newLevel){
     s.role = newLevel;
     s.name = r.data.name || s.name;
-    (localStorage.getItem('uc_sess') ? localStorage : sessionStorage)
-      .setItem('uc_sess', JSON.stringify(s));
+    localStorage.setItem('uc_sess', JSON.stringify(s));
     CURRENT_USER = getSession();
     refreshChrome();
     toast(`🔁 Level updated to ${newLevel}`, 'ok');
@@ -1682,9 +1744,17 @@ function init(){
   startHeartbeat();
   startActiveCount();
 
+  // Load scrolling text & refresh every 60s
+  loadScrollingText();
+  if(scrollTimer) clearInterval(scrollTimer);
+  scrollTimer = setInterval(loadScrollingText, 60000);
+
   if(CURRENT_USER) startPermWatcher();
 
-  window.addEventListener('beforeunload', stopTrackers);
+  window.addEventListener('beforeunload', () => {
+    stopTrackers();
+    if(scrollTimer) clearInterval(scrollTimer);
+  });
 }
 
 init();
