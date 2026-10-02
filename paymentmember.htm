@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#0B1120">
+  <title>Expenditure 2026 · View Only</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --bg-deep: #0B1120;
+      --bg-surface: #131C2E;
+      --bg-card: #1A253A;
+      --bg-input: #0F172A;
+      --primary: #EF4444;
+      --primary-light: #F87171;
+      --primary-glow: rgba(239, 68, 68, 0.25);
+      --accent: #FBBF24;
+      --success: #34D399;
+      --danger: #F87171;
+      --text-primary: #F1F5F9;
+      --text-secondary: #94A3B8;
+      --border-subtle: #2D3A52;
+      --shadow-card: 0 8px 20px rgba(0, 0, 0, 0.5);
+      --radius-lg: 16px;
+      --radius-md: 12px;
+      --radius-sm: 10px;
+      --safe-top: env(safe-area-inset-top, 0px);
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', 'Roboto', system-ui, sans-serif;
+    }
+
+    html, body { height: 100%; }
+
+    body {
+      background: var(--bg-deep);
+      color: var(--text-primary);
+      overflow: hidden;
+      font-size: 14px;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+    }
+
+    button {
+      font: inherit;
+      cursor: pointer;
+      border: none;
+      background: none;
+      color: inherit;
+    }
+
+    .app {
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      height: 100dvh;
+      overflow: hidden;
+      position: relative;
+      max-width: 520px;
+      margin: 0 auto;
+      background: var(--bg-deep);
+      padding-top: var(--safe-top);
+    }
+
+    .main {
+      flex: 1;
+      overflow-y: auto;
+      overflow-x: hidden;
+      -webkit-overflow-scrolling: touch;
+      background: var(--bg-deep);
+      position: relative;
+      padding-bottom: 40px;
+    }
+
+    .main::before {
+      content: '';
+      position: sticky;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 32px;
+      background: linear-gradient(to bottom, var(--bg-deep) 10%, transparent);
+      pointer-events: none;
+      z-index: 5;
+      display: block;
+      margin-bottom: -32px;
+    }
+
+    /* ----- SYNC STATUS BAR ----- */
+    .sync-bar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 18px;
+      background: var(--bg-deep);
+      border-bottom: 1px solid var(--border-subtle);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.4px;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      min-height: 40px;
+    }
+
+    .sync-bar .sync-status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: color 0.2s;
+    }
+
+    .sync-bar .sync-status i {
+      font-size: 10px;
+      color: var(--success);
+      transition: color 0.2s;
+    }
+
+    .sync-bar .sync-status.stale i { color: #FBBF24; }
+    .sync-bar .sync-status.old i { color: var(--danger); }
+    .sync-bar .sync-status.syncing i { color: var(--primary-light); animation: spin 0.9s linear infinite; }
+
+    .sync-bar .sync-status .txt { color: inherit; }
+
+    .sync-bar .balance-mini {
+      color: var(--accent);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: -0.2px;
+      text-transform: none;
+    }
+
+    .date-group {
+      background: var(--bg-surface);
+      padding: 14px 18px 10px;
+      font-weight: 700;
+      color: var(--primary-light);
+      border-bottom: 1px solid var(--border-subtle);
+      position: sticky;
+      top: 40px;
+      z-index: 10;
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      text-transform: uppercase;
+      font-size: 12px;
+      letter-spacing: 0.8px;
+    }
+
+    .entry-row {
+      background: var(--bg-card);
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 6px 12px;
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-card);
+      border: 1px solid var(--border-subtle);
+    }
+
+    .entry-info { flex: 1; min-width: 0; }
+
+    .entry-info .name {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text-primary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .entry-info .cat {
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-top: 3px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .entry-info .cat i { font-size: 10px; color: var(--primary); }
+
+    .entry-amount {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--accent);
+      text-align: right;
+      flex-shrink: 0;
+      letter-spacing: -0.2px;
+    }
+
+    /* ----- FLOATING SYNC BUTTON (view-only) ----- */
+    .fab-sync {
+      position: fixed;
+      bottom: calc(24px + var(--safe-bottom));
+      right: calc(20px + (100vw - min(520px, 100vw))/2);
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: var(--bg-card);
+      color: var(--primary-light);
+      font-size: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+      z-index: 100;
+      border: 1px solid var(--border-subtle);
+      transition: transform 0.15s ease, background 0.2s, color 0.2s, border-color 0.2s;
+    }
+
+    .fab-sync:active { transform: scale(0.92); }
+
+    .fab-sync.spinning i { animation: spin 0.8s linear infinite; }
+
+    .fab-sync.ok {
+      color: var(--success);
+      border-color: var(--success);
+      background: rgba(52, 211, 153, 0.12);
+    }
+
+    .fab-sync.err {
+      color: var(--danger);
+      border-color: var(--danger);
+      background: rgba(248, 113, 113, 0.12);
+    }
+
+    .fab-sync:disabled { opacity: 0.7; pointer-events: none; }
+
+    .fab-sync .badge {
+      position: absolute;
+      top: -4px;
+      right: -4px;
+      min-width: 18px;
+      height: 18px;
+      padding: 0 5px;
+      border-radius: 9px;
+      background: var(--danger);
+      color: #fff;
+      font-size: 10px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid var(--bg-deep);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+    }
+
+    .toast {
+      position: fixed;
+      bottom: calc(100px + var(--safe-bottom));
+      left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: var(--bg-card);
+      color: var(--text-primary);
+      padding: 14px 22px;
+      border-radius: 40px;
+      font-size: 13px;
+      font-weight: 600;
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.6);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s, transform 0.25s;
+      z-index: 300;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      max-width: calc(100vw - 40px);
+      border: 1px solid var(--border-subtle);
+    }
+
+    .toast.on { opacity: 1; transform: translateX(-50%) translateY(0); }
+    .toast.err { background: #7F1D1D; border-color: #B91C1C; color: #FCA5A5; }
+    .toast.ok  { background: #064E3B; border-color: #047857; color: #6EE7B7; }
+
+    .empty {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--text-secondary);
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .empty i {
+      font-size: 40px;
+      display: block;
+      margin-bottom: 16px;
+      opacity: 0.4;
+      color: var(--primary);
+    }
+
+    .loading { text-align: center; padding: 60px 20px; }
+
+    .loading .spin-lg {
+      display: inline-block;
+      width: 36px;
+      height: 36px;
+      border: 3px solid var(--border-subtle);
+      border-radius: 50%;
+      border-top-color: var(--primary);
+      animation: spin 0.65s linear infinite;
+    }
+
+    .loading p {
+      margin-top: 14px;
+      color: var(--text-secondary);
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--border-subtle); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--primary); }
+  </style>
+</head>
+<body>
+
+<div class="app">
+  <main class="main" id="main">
+    <div class="sync-bar">
+      <div class="sync-status" id="syncStatus">
+        <i class="fas fa-circle"></i>
+        <span class="txt" id="syncText">Connecting…</span>
+      </div>
+      <div class="balance-mini" id="balanceMini">₹0</div>
+    </div>
+
+    <div class="loading" id="loadingState">
+      <span class="spin-lg"></span>
+      <p>Loading entries…</p>
+    </div>
+    <div id="entriesList"></div>
+  </main>
+
+  <button class="fab-sync" id="btnSync" aria-label="Sync now">
+    <i class="fas fa-rotate"></i>
+    <span class="badge" id="syncBadge" style="display:none;">0</span>
+  </button>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  /* ============================================================
+     CONFIG
+     ============================================================ */
+  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyFGGwcrN9Z92S1tmR9MF2uTxWVI04mKbCq0Bz1Ln8Lpj4ZP78r6oiElr89eU0DNusGhg/exec';
+  const CACHE_KEY  = 'expenditure2026_v1_viewonly';
+  const QUEUE_KEY  = 'expenditure2026_queue_v1_viewonly';
+
+  /* ============================================================
+     STATE
+     ============================================================ */
+  let ENTRIES = [];
+  let LIVE_BALANCE = 0;
+  let SYNCING = false;
+  let LAST_SYNCED_AT = 0;
+  let statusTimer = null;
+
+  const $ = id => document.getElementById(id);
+  const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m]));
+
+  /* ============================================================
+     HELPERS
+     ============================================================ */
+  function fmtDateDisplay(iso) {
+    if (!iso) return '';
+    const d = new Date(iso + 'T00:00:00');
+    if (isNaN(d)) return iso;
+    return `${d.getMonth()+1}/${d.getDate()}/${d.getFullYear()}`;
+  }
+
+  function fmtMoney(n) {
+    return (Number(n) || 0).toLocaleString('en-IN');
+  }
+
+  function timeAgo(ts) {
+    if (!ts) return 'never';
+    const s = Math.floor((Date.now() - ts) / 1000);
+    if (s < 5)        return 'just now';
+    if (s < 60)       return s + ' sec ago';
+    const m = Math.floor(s / 60);
+    if (m < 60)       return m + ' min ago';
+    const h = Math.floor(m / 60);
+    if (h < 24)       return h + ' hr ago';
+    const d = Math.floor(h / 24);
+    return d + ' day' + (d > 1 ? 's' : '') + ' ago';
+  }
+
+  /* ============================================================
+     SYNC STATUS BAR
+     ============================================================ */
+  function updateSyncStatus(state) {
+    const wrap = $('syncStatus');
+    const txt  = $('syncText');
+    const icon = wrap.querySelector('i');
+
+    wrap.classList.remove('syncing', 'stale', 'old');
+
+    if (state === 'syncing') {
+      wrap.classList.add('syncing');
+      txt.textContent = 'Syncing…';
+      icon.className = 'fas fa-rotate';
+      return;
+    }
+
+    if (state === 'error') {
+      wrap.classList.add('old');
+      txt.textContent = 'Sync failed — tap ↻';
+      icon.className = 'fas fa-circle-exclamation';
+      return;
+    }
+
+    icon.className = 'fas fa-circle';
+    if (!LAST_SYNCED_AT) {
+      txt.textContent = 'Not synced yet';
+      return;
+    }
+    const ageMs = Date.now() - LAST_SYNCED_AT;
+    const mins  = ageMs / 60000;
+    if (mins > 30)      wrap.classList.add('old');
+    else if (mins > 5)  wrap.classList.add('stale');
+    txt.textContent = 'Synced ' + timeAgo(LAST_SYNCED_AT);
+  }
+
+  function startStatusTicker() {
+    if (statusTimer) clearInterval(statusTimer);
+    statusTimer = setInterval(() => {
+      if (!SYNCING) updateSyncStatus('idle');
+    }, 15000);
+  }
+
+  /* ============================================================
+     SYNC FAB + BADGE
+     ============================================================ */
+  function setSyncBtn(state) {
+    const btn = $('btnSync');
+    if (!btn) return;
+    btn.classList.remove('spinning', 'ok', 'err');
+    if (state === 'spinning') {
+      btn.classList.add('spinning');
+      btn.disabled = true;
+    } else if (state === 'ok') {
+      btn.classList.add('ok');
+      btn.disabled = false;
+      setTimeout(() => btn.classList.remove('ok'), 1500);
+    } else if (state === 'err') {
+      btn.classList.add('err');
+      btn.disabled = false;
+      setTimeout(() => btn.classList.remove('err'), 2200);
+    } else {
+      btn.disabled = false;
+    }
+  }
+
+  function updateQueueBadge() {
+    const n = loadQueue().length;
+    const badge = $('syncBadge');
+    if (!badge) return;
+    if (n > 0) {
+      badge.textContent = n;
+      badge.style.display = 'flex';
+    } else {
+      badge.style.display = 'none';
+    }
+  }
+
+  /* ============================================================
+     LOCAL CACHE
+     ============================================================ */
+  function loadCache() {
+    try {
+      const raw = localStorage.getItem(CACHE_KEY);
+      if (!raw) return null;
+      const obj = JSON.parse(raw);
+      if (!obj || !Array.isArray(obj.entries)) return null;
+      LAST_SYNCED_AT = obj.savedAt || 0;
+      return obj;
+    } catch (e) { return null; }
+  }
+
+  function saveCache() {
+    try {
+      localStorage.setItem(CACHE_KEY, JSON.stringify({
+        entries: ENTRIES,
+        liveBalance: LIVE_BALANCE,
+        savedAt: LAST_SYNCED_AT || Date.now()
+      }));
+    } catch (e) { /* quota */ }
+  }
+
+  /* ============================================================
+     OFFLINE QUEUE (kept for compatibility, but view-only won't write)
+     ============================================================ */
+  function loadQueue() {
+    try { return JSON.parse(localStorage.getItem(QUEUE_KEY) || '[]'); }
+    catch (e) { return []; }
+  }
+  function saveQueue(q) {
+    try { localStorage.setItem(QUEUE_KEY, JSON.stringify(q)); } catch (e) {}
+    updateQueueBadge();
+  }
+  function dequeue(id) {
+    saveQueue(loadQueue().filter(x => x.id !== id));
+  }
+
+  /* ============================================================
+     JSONP
+     ============================================================ */
+  let jsonpCounter = 0;
+  function apiCall(action, params = {}, timeout = 20000) {
+    return new Promise(resolve => {
+      const cb = '__cb_' + (++jsonpCounter) + '_' + Date.now();
+      const sc = document.createElement('script');
+      const done = ok => {
+        delete window[cb];
+        if (sc.parentNode) sc.parentNode.removeChild(sc);
+        resolve(ok);
+      };
+      const t = setTimeout(() => done({ success: false, message: 'Timed out' }), timeout);
+      window[cb] = d => { clearTimeout(t); done(d); };
+      const q = new URLSearchParams({ action, callback: cb, ...params }).toString();
+      sc.src = `${SCRIPT_URL}?${q}`;
+      sc.onerror = () => { clearTimeout(t); done({ success: false, message: 'Network error' }); };
+      document.body.appendChild(sc);
+    });
+  }
+
+  /* ============================================================
+     SYNC ENGINE (only pulls, never pushes)
+     ============================================================ */
+  async function syncNow({ silent = false } = {}) {
+    if (SYNCING) return false;
+    SYNCING = true;
+
+    setSyncBtn('spinning');
+    updateSyncStatus('syncing');
+
+    let ok = false;
+    try {
+      // Only pull full dataset — no queue flushing
+      const r = await apiCall('syncAll');
+      if (!r || !r.success || !r.data) {
+        setSyncBtn('err');
+        updateSyncStatus('error');
+        if (!silent) toast('Sync failed', 'err');
+        return false;
+      }
+
+      ENTRIES = r.data.entries || [];
+      LIVE_BALANCE = r.data.liveBalance || 0;
+      LAST_SYNCED_AT = Date.now();
+      saveCache();
+      renderEntries();
+      updateBalanceDisplay();
+
+      ok = true;
+      setSyncBtn('ok');
+      updateSyncStatus('idle');
+      if (!silent) toast('Synced', 'ok');
+      return true;
+    } finally {
+      SYNCING = false;
+      if (!ok) setSyncBtn('err');
+      updateQueueBadge();
+    }
+  }
+
+  function updateBalanceDisplay() {
+    const v = '₹' + fmtMoney(LIVE_BALANCE);
+    $('balanceMini').textContent = v;
+  }
+
+  /* ============================================================
+     RENDER (view only — no edit/delete buttons)
+     ============================================================ */
+  function renderEntries() {
+    const list = $('entriesList');
+    if (!ENTRIES.length) {
+      list.innerHTML = '<div class="empty"><i class="fas fa-inbox"></i>No entries yet.</div>';
+      return;
+    }
+    const sorted = [...ENTRIES].sort((a, b) => {
+      const na = Number(a.slNo), nb = Number(b.slNo);
+      if (!isNaN(na) && !isNaN(nb)) return nb - na;
+      return String(b.slNo).localeCompare(String(a.slNo));
+    });
+    const groups = {};
+    sorted.forEach(e => {
+      const d = e.date || 'Unknown';
+      (groups[d] = groups[d] || []).push(e);
+    });
+    const dates = Object.keys(groups).sort((a, b) => b.localeCompare(a));
+
+    let html = '';
+    dates.forEach(d => {
+      html += `<div class="date-group">${esc(fmtDateDisplay(d) || d)}</div>`;
+      groups[d].forEach(e => {
+        html += `
+          <div class="entry-row" data-slno="${esc(e.slNo)}">
+            <div class="entry-info">
+              <div class="name">${esc(e.name)}</div>
+              <div class="cat"><i class="fas fa-tag"></i> ${esc(e.purpose)}</div>
+            </div>
+            <div class="entry-amount">₹${fmtMoney(e.amount)}</div>
+          </div>`;
+      });
+    });
+    list.innerHTML = html;
+  }
+
+  /* ============================================================
+     TOAST
+     ============================================================ */
+  let toastTimer = null;
+  function toast(m, kind = '') {
+    const t = $('toast');
+    const ico = kind === 'ok' ? 'fa-circle-check' : kind === 'err' ? 'fa-circle-exclamation' : 'fa-circle-info';
+    t.className = 'toast ' + kind;
+    t.innerHTML = `<i class="fas ${ico}"></i> <span>${esc(m)}</span>`;
+    t.classList.add('on');
+    if (toastTimer) clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove('on'), 2600);
+  }
+
+  /* ============================================================
+     BOOT
+     ============================================================ */
+  function boot() {
+    updateQueueBadge();
+
+    const cached = loadCache();
+    if (cached) {
+      ENTRIES = cached.entries;
+      LIVE_BALANCE = cached.liveBalance || 0;
+      updateBalanceDisplay();
+      renderEntries();
+      $('loadingState').style.display = 'none';
+      updateSyncStatus('idle');
+      syncNow({ silent: true });
+    } else {
+      updateSyncStatus('syncing');
+      syncNow({ silent: false }).then(ok => {
+        $('loadingState').style.display = 'none';
+        if (!ok) {
+          $('entriesList').innerHTML = '<div class="empty"><i class="fas fa-triangle-exclamation"></i>Failed to load.<br><small>Check connection &amp; Web App URL.</small></div>';
+        }
+      });
+    }
+
+    startStatusTicker();
+
+    window.addEventListener('online', () => {
+      toast('Back online — syncing…', 'ok');
+      syncNow({ silent: true });
+    });
+
+    window.addEventListener('offline', () => {
+      toast('Offline mode', 'err');
+      updateSyncStatus('error');
+    });
+
+    setInterval(() => {
+      if (document.visibilityState === 'visible') syncNow({ silent: true });
+    }, 60000);
+
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible') syncNow({ silent: true });
+    });
+
+    // Pull-to-refresh (sync only)
+    let touchStartY = 0;
+    const main = $('main');
+    main.addEventListener('touchstart', e => {
+      if (main.scrollTop <= 0) touchStartY = e.touches[0].clientY;
+      else touchStartY = 0;
+    }, { passive: true });
+    main.addEventListener('touchend', e => {
+      if (!touchStartY) return;
+      const dy = e.changedTouches[0].clientY - touchStartY;
+      if (dy > 80) syncNow({ silent: false });
+      touchStartY = 0;
+    });
+  }
+
+  // Manual sync button
+  $('btnSync').addEventListener('click', () => syncNow({ silent: false }));
+
+  boot();
+</script>
+</body>
+</html>
