@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#0B2B40">
+<title>Reports</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+:root{
+  --primary-dark:#0B2B40;
+  --primary-accent:#1E5A6B;
+  --highlight-gold:#E6B17E;
+  --highlight-bright:#FFD966;
+  --bg:#EEF2F7;
+  --text:#0F172A;
+  --text-soft:#64748B;
+  --line:#E2E8F0;
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;
+  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Poppins','Roboto',system-ui,sans-serif;}
+html,body{height:100%;}
+body{
+  background:var(--bg);color:var(--text);
+  font-size:14px;-webkit-font-smoothing:antialiased;
+  overflow:hidden;
+}
+
+/* ============================================================
+   SHELL
+   ============================================================ */
+.app{
+  display:flex;flex-direction:column;
+  height:100vh;height:100dvh;
+  max-width:520px;margin:0 auto;background:#fff;
+  overflow:hidden;
+  box-shadow:0 0 40px rgba(0,0,0,.08);
+}
+
+/* ============================================================
+   HEADER
+   ============================================================ */
+.head{
+  display:flex;align-items:center;gap:12px;
+  padding:calc(14px + var(--safe-top)) 16px 14px;
+  background:linear-gradient(135deg,#0B2B40,#1E5A6B);
+  color:#fff;flex-shrink:0;
+  border-bottom:2px solid rgba(230,177,126,.55);
+  box-shadow:0 4px 12px -4px rgba(0,0,0,.3);
+  position:relative;z-index:10;
+}
+.head .ic{
+  width:42px;height:42px;border-radius:50%;
+  background:rgba(255,255,255,.15);
+  display:flex;align-items:center;justify-content:center;
+  font-size:17px;color:var(--highlight-bright);flex-shrink:0;
+}
+.head .ttl{flex:1;min-width:0;}
+.head .ttl h1{
+  font-size:16px;font-weight:800;letter-spacing:-.2px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.head .ttl p{
+  font-size:11px;font-weight:500;color:#cbd5e1;margin-top:2px;
+}
+
+/* ============================================================
+   BODY
+   ============================================================ */
+.body{
+  flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;
+  padding:18px 16px calc(20px + var(--safe-bottom));
+}
+
+.sec-title{
+  font-size:11px;font-weight:800;color:var(--text-soft);
+  text-transform:uppercase;letter-spacing:.8px;
+  margin:4px 4px 14px;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.sec-title .count{
+  font-size:10px;color:#6d28d9;background:#f5f3ff;
+  padding:3px 9px;border-radius:20px;letter-spacing:.4px;
+}
+
+/* ============================================================
+   GRID OF ICON TILES
+   ============================================================ */
+.grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:12px;
+}
+
+.tile{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:12px;
+  padding:22px 12px;
+  border-radius:20px;
+  background:#fff;
+  border:1.5px solid var(--line);
+  box-shadow:0 4px 14px -8px rgba(15,23,42,.25);
+  text-align:center;
+  transition:transform .12s ease, box-shadow .15s ease, border-color .15s ease;
+  position:relative;
+  overflow:hidden;
+}
+.tile::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(180deg,rgba(255,255,255,.6),rgba(255,255,255,0) 45%);
+  pointer-events:none;
+}
+.tile:active{
+  transform:scale(.95);
+  box-shadow:0 2px 8px -4px rgba(15,23,42,.3);
+  border-color:#cbd5e1;
+}
+
+.tile .icon{
+  width:64px;height:64px;border-radius:18px;
+  display:flex;align-items:center;justify-content:center;
+  color:#fff;font-size:26px;
+  box-shadow:0 10px 20px -8px rgba(0,0,0,.4);
+  position:relative;z-index:1;
+}
+.tile .icon::after{
+  content:'';position:absolute;inset:0;border-radius:18px;
+  background:linear-gradient(180deg,rgba(255,255,255,.3),rgba(255,255,255,0) 60%);
+}
+
+.tile .label{
+  font-size:12.5px;font-weight:800;color:var(--text);
+  line-height:1.3;letter-spacing:-.1px;
+  position:relative;z-index:1;
+}
+.tile .sub{
+  font-size:10.5px;font-weight:600;color:var(--text-soft);
+  margin-top:-6px;
+  position:relative;z-index:1;
+}
+
+/* Tile colors */
+.tile.collection  .icon{background:linear-gradient(135deg,#3b82f6,#1d4ed8);}
+.tile.expenditure .icon{background:linear-gradient(135deg,#f59e0b,#d97706);}
+.tile.dues        .icon{background:linear-gradient(135deg,#ef4444,#b91c1c);}
+.tile.budget      .icon{background:linear-gradient(135deg,#8b5cf6,#6d28d9);}
+
+/* Optional accent ring on tile */
+.tile.collection  {border-color:#dbeafe;}
+.tile.expenditure {border-color:#fef3c7;}
+.tile.dues        {border-color:#fee2e2;}
+.tile.budget      {border-color:#ede9fe;}
+
+/* ============================================================
+   FOOTER NOTE
+   ============================================================ */
+.footnote{
+  margin-top:22px;text-align:center;
+  font-size:11px;color:#94a3b8;font-weight:600;
+  display:flex;align-items:center;justify-content:center;gap:6px;
+}
+.footnote i{color:var(--highlight-gold);}
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- HEADER -->
+  <header class="head">
+    <div class="ic"><i class="fas fa-chart-line"></i></div>
+    <div class="ttl">
+      <h1>Reports</h1>
+      <p>Choose a report to view</p>
+    </div>
+  </header>
+
+  <!-- BODY -->
+  <main class="body">
+
+    <div class="sec-title">
+      <span>Available Reports</span>
+      <span class="count">4</span>
+    </div>
+
+    <div class="grid">
+
+      <!-- 1. Head-wise Collection -->
+      <button class="tile collection" data-report="collection">
+        <span class="icon"><i class="fas fa-layer-group"></i></span>
+        <span class="label">Head-wise<br>Collection</span>
+        <span class="sub">Income heads</span>
+      </button>
+
+      <!-- 2. Head-wise Expenditure -->
+      <button class="tile expenditure" data-report="expenditure">
+        <span class="icon"><i class="fas fa-money-bill-trend-up"></i></span>
+        <span class="label">Head-wise<br>Expenditure</span>
+        <span class="sub">Expense heads</span>
+      </button>
+
+      <!-- 3. Members Collection vs Due -->
+      <button class="tile dues" data-report="dues">
+        <span class="icon"><i class="fas fa-scale-balanced"></i></span>
+        <span class="label">Members<br>Collection vs Due</span>
+        <span class="sub">Outstanding dues</span>
+      </button>
+
+      <!-- 4. Summary Budget Report -->
+      <button class="tile budget" data-report="budget">
+        <span class="icon"><i class="fas fa-chart-pie"></i></span>
+        <span class="label">Summary<br>Budget Report</span>
+        <span class="sub">Budget vs actual</span>
+      </button>
+
+    </div>
+
+    <div class="footnote">
+      <i class="fas fa-circle-info"></i>
+      <span>Tap a report to open</span>
+    </div>
+
+  </main>
+
+</div>
+
+<script>
+/* ============================================================
+   REPORT ROUTES
+   ------------------------------------------------------------
+   👉  Later, replace each '' with the filename of the
+       HTML page you build for that report.
+       Example:  collection: 'report-collection.html'
+   ============================================================ */
+const ROUTES = {
+  collection  : '',   // → Head-wise Collection page
+  expenditure : '',   // → Head-wise Expenditure page
+  dues        : '',   // → Members Collection vs Due page
+  budget      : ''    // → Summary Budget Report page
+};
+
+/* ============================================================
+   TILE CLICK HANDLER
+   ============================================================ */
+document.querySelectorAll('.tile').forEach(tile => {
+  tile.addEventListener('click', () => {
+    const key = tile.dataset.report;
+    const url = ROUTES[key];
+
+    if(!url){
+      // Placeholder — remove this alert once URLs are set
+      console.log('Report not linked yet:', key);
+      alert('Report page not linked yet.\n\nKey: ' + key);
+      return;
+    }
+
+    // Open inside the parent app's iframe wrapper if available,
+    // otherwise navigate directly.
+    if(window.parent && typeof window.parent.showFrame === 'function'){
+      window.parent.showFrame(tile.querySelector('.label').innerText.replace(/\n/g,' '), url);
+    } else if(window.parent && window.parent !== window){
+      window.parent.postMessage({ type:'open-frame', url, key }, '*');
+    } else {
+      window.location.href = url;
+    }
+  });
+});
+</script>
+</body>
+</html>
