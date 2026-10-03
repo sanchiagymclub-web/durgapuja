@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<meta name="theme-color" content="#0B2B40">
+<meta name="theme-color" content="#EEF2F7">
 <title>Reports</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
@@ -37,33 +37,6 @@ body{
   max-width:520px;margin:0 auto;background:#fff;
   overflow:hidden;
   box-shadow:0 0 40px rgba(0,0,0,.08);
-}
-
-/* ============================================================
-   HEADER
-   ============================================================ */
-.head{
-  display:flex;align-items:center;gap:12px;
-  padding:calc(14px + var(--safe-top)) 16px 14px;
-  background:linear-gradient(135deg,#0B2B40,#1E5A6B);
-  color:#fff;flex-shrink:0;
-  border-bottom:2px solid rgba(230,177,126,.55);
-  box-shadow:0 4px 12px -4px rgba(0,0,0,.3);
-  position:relative;z-index:10;
-}
-.head .ic{
-  width:42px;height:42px;border-radius:50%;
-  background:rgba(255,255,255,.15);
-  display:flex;align-items:center;justify-content:center;
-  font-size:17px;color:var(--highlight-bright);flex-shrink:0;
-}
-.head .ttl{flex:1;min-width:0;}
-.head .ttl h1{
-  font-size:16px;font-weight:800;letter-spacing:-.2px;
-  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
-}
-.head .ttl p{
-  font-size:11px;font-weight:500;color:#cbd5e1;margin-top:2px;
 }
 
 /* ============================================================
@@ -147,7 +120,6 @@ body{
 .tile.dues        .icon{background:linear-gradient(135deg,#ef4444,#b91c1c);}
 .tile.budget      .icon{background:linear-gradient(135deg,#8b5cf6,#6d28d9);}
 
-/* Optional accent ring on tile */
 .tile.collection  {border-color:#dbeafe;}
 .tile.expenditure {border-color:#fef3c7;}
 .tile.dues        {border-color:#fee2e2;}
@@ -167,15 +139,6 @@ body{
 <body>
 
 <div class="app">
-
-  <!-- HEADER -->
-  <header class="head">
-    <div class="ic"><i class="fas fa-chart-line"></i></div>
-    <div class="ttl">
-      <h1>Reports</h1>
-      <p>Choose a report to view</p>
-    </div>
-  </header>
 
   <!-- BODY -->
   <main class="body">
@@ -250,14 +213,11 @@ document.querySelectorAll('.tile').forEach(tile => {
     const url = ROUTES[key];
 
     if(!url){
-      // Placeholder — remove this alert once URLs are set
       console.log('Report not linked yet:', key);
       alert('Report page not linked yet.\n\nKey: ' + key);
       return;
     }
 
-    // Open inside the parent app's iframe wrapper if available,
-    // otherwise navigate directly.
     if(window.parent && typeof window.parent.showFrame === 'function'){
       window.parent.showFrame(tile.querySelector('.label').innerText.replace(/\n/g,' '), url);
     } else if(window.parent && window.parent !== window){
