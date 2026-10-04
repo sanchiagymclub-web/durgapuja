@@ -9,6 +9,7 @@
 <title>Gym Club</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link rel="preload" as="image" href="durga-bg.png">
+<link rel="preload" as="image" href="header.gif">
 <style>
 :root{
   --primary-dark:#0B2B40;
@@ -82,14 +83,13 @@ button{font:inherit;cursor:pointer;border:none;background:none;color:inherit;}
 }
 .ab-icon:active{transform:scale(.9);background:rgba(255,255,255,.28);}
 
-/* --- UPDATED: title container shrinks to make room for GIF --- */
 .ab-title{flex:1;min-width:0;}
 .ab-title h1{font-size:15px;font-weight:800;letter-spacing:-.2px;
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#fff;}
 .ab-title .sub{font-size:11px;font-weight:500;color:#cbd5e1;
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:1px;}
 
-/* --- NEW: circular GIF frame between title and live count --- */
+/* --- circular GIF frame between title and live count --- */
 .header-gif{
   width:38px;
   height:38px;
@@ -749,9 +749,9 @@ button{font:inherit;cursor:pointer;border:none;background:none;color:inherit;}
         <div class="sub" id="abSub">স্থাপিত - ২০০৮</div>
       </div>
 
-      <!-- NEW: Circular GIF frame between title and live count -->
+      <!-- ✅ LOCAL GIF — just drop "header.gif" in the same folder as this HTML -->
       <div class="header-gif" title="Live update">
-        <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNHB6eW9uZzFqZ3F0eW9uZzFqZ3F0eW9uZzFqZ3F0eW9uZzFqJmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1n/3o7TKSjRrfIPjeiVyM/giphy.gif" alt="Live">
+        <img src="header.gif" alt="Live">
       </div>
 
       <div class="ab-live" id="abLive" title="Users online">
@@ -1710,10 +1710,8 @@ function renderScrollingText(texts){
     .map(t => `<span>${esc(t)}</span>`)
     .join('<span class="sep">◆</span>');
 
-  // Duplicate for seamless loop
   track.innerHTML = html + '<span class="sep">◆</span>' + html + '<span class="sep">◆</span>';
 
-  // Restart animation cleanly
   track.style.animation = 'none';
   void track.offsetWidth;
   track.style.animation = '';
@@ -1721,7 +1719,6 @@ function renderScrollingText(texts){
   strip.classList.add('on');
 }
 
-/* Pause marquee when tab hidden */
 document.addEventListener('visibilitychange', () => {
   const track = $('scrollTrack');
   if(!track) return;
@@ -1777,7 +1774,6 @@ function init(){
   startHeartbeat();
   startActiveCount();
 
-  // Load scrolling text & refresh every 60s
   loadScrollingText();
   if(scrollTimer) clearInterval(scrollTimer);
   scrollTimer = setInterval(loadScrollingText, 60000);
