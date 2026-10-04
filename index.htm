@@ -69,7 +69,7 @@ button{font:inherit;cursor:pointer;border:none;background:none;color:inherit;}
 .appbar.role-admin   {background:linear-gradient(135deg,var(--role-admin-start),var(--role-admin-end));}
 
 .appbar-top{
-  display:flex;align-items:center;gap:10px;
+  display:flex;align-items:center;gap:8px;
   width:100%;
 }
 
@@ -82,11 +82,38 @@ button{font:inherit;cursor:pointer;border:none;background:none;color:inherit;}
 }
 .ab-icon:active{transform:scale(.9);background:rgba(255,255,255,.28);}
 
+/* --- UPDATED: title container shrinks to make room for GIF --- */
 .ab-title{flex:1;min-width:0;}
 .ab-title h1{font-size:15px;font-weight:800;letter-spacing:-.2px;
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#fff;}
 .ab-title .sub{font-size:11px;font-weight:500;color:#cbd5e1;
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:1px;}
+
+/* --- NEW: circular GIF frame between title and live count --- */
+.header-gif{
+  width:38px;
+  height:38px;
+  border-radius:50%;
+  overflow:hidden;
+  flex-shrink:0;
+  border:2px solid rgba(230,177,126,0.8);
+  box-shadow:0 0 12px rgba(230,177,126,0.4);
+  background:#0B2B40;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  transition:transform .15s, box-shadow .15s;
+}
+.header-gif:active{
+  transform:scale(0.92);
+  box-shadow:0 0 6px rgba(230,177,126,0.6);
+}
+.header-gif img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  display:block;
+}
 
 .ab-avatar{
   width:38px;height:38px;border-radius:50%;
@@ -721,6 +748,12 @@ button{font:inherit;cursor:pointer;border:none;background:none;color:inherit;}
         <h1 id="abTitle">জিম ক্লাব, সাঞ্চিয়া, মালদা</h1>
         <div class="sub" id="abSub">স্থাপিত - ২০০৮</div>
       </div>
+
+      <!-- NEW: Circular GIF frame between title and live count -->
+      <div class="header-gif" title="Live update">
+        <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNHB6eW9uZzFqZ3F0eW9uZzFqZ3F0eW9uZzFqZ3F0eW9uZzFqJmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1n/3o7TKSjRrfIPjeiVyM/giphy.gif" alt="Live">
+      </div>
+
       <div class="ab-live" id="abLive" title="Users online">
         <span class="dot"></span>
         <span class="num" id="abLiveCount">0</span>
