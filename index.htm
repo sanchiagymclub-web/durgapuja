@@ -1,738 +1,890 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<meta name="theme-color" content="#0B2B40">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>Gym Club</title>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<link rel="preload" as="image" href="durga-bg.png">
-<link rel="preload" as="image" href="header.gif">
-<style>
-:root{
-  --primary-dark:#0B2B40;
-  --primary-accent:#1E5A6B;
-  --highlight-gold:#E6B17E;
-  --highlight-bright:#FFD966;
-  --bg:#EEF2F7;
-  --card:#FFFFFF;
-  --text:#0F172A;
-  --text-soft:#64748B;
-  --line:#E2E8F0;
-  --shadow-sm:0 1px 2px rgba(15,23,42,.06), 0 2px 6px rgba(15,23,42,.06);
-  --shadow-md:0 8px 24px -8px rgba(15,23,42,.18);
-  --shadow-lg:0 20px 40px -12px rgba(15,23,42,.28);
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#0B2B40">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>Gym Club · rounded</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="preload" as="image" href="durga-bg.png">
+  <link rel="preload" as="image" href="header.gif">
+  <style>
+    /* ----- GLOBAL ROUNDED EDGE THEME ----- */
+    :root {
+      --primary-dark: #0B2B40;
+      --primary-accent: #1E5A6B;
+      --highlight-gold: #E6B17E;
+      --highlight-bright: #FFD966;
+      --bg: #EEF2F7;
+      --card: #FFFFFF;
+      --text: #0F172A;
+      --text-soft: #64748B;
+      --line: #E2E8F0;
+      --shadow-sm: 0 1px 2px rgba(15,23,42,.06), 0 2px 6px rgba(15,23,42,.06);
+      --shadow-md: 0 8px 24px -8px rgba(15,23,42,.18);
+      --shadow-lg: 0 20px 40px -12px rgba(15,23,42,.28);
 
-  --role-public-start:#1B4A5E; --role-public-end:#0F3A4A;
-  --role-member-start:#0F3E52; --role-member-end:#0A2E3E;
-  --role-cashier-start:#0A3345; --role-cashier-end:#062533;
-  --role-admin-start:#052838; --role-admin-end:#031A26;
+      --role-public-start: #1B4A5E; --role-public-end: #0F3A4A;
+      --role-member-start: #0F3E52; --role-member-end: #0A2E3E;
+      --role-cashier-start: #0A3345; --role-cashier-end: #062533;
+      --role-admin-start: #052838; --role-admin-end: #031A26;
 
-  --safe-top: env(safe-area-inset-top, 0px);
-  --safe-bottom: env(safe-area-inset-bottom, 0px);
-}
-*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Poppins','Roboto',system-ui,sans-serif;}
-html,body{height:100%;}
-body{
-  background:var(--bg);color:var(--text);overflow:hidden;
-  font-size:14px;-webkit-font-smoothing:antialiased;
-}
-button{font:inherit;cursor:pointer;border:none;background:none;color:inherit;}
+      --safe-top: env(safe-area-inset-top, 0px);
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
 
-/* ============================================================
-   APP SHELL
-   ============================================================ */
-.app{
-  display:flex;flex-direction:column;height:100vh;height:100dvh;
-  overflow:hidden;position:relative;
-  max-width:520px;margin:0 auto;background:#fff;
-  box-shadow:0 0 40px rgba(0,0,0,.08);
-}
+      /* rounded theme radius */
+      --radius-app: 28px;
+      --radius-card: 24px;
+      --radius-tile: 20px;
+      --radius-btn: 40px;
+      --radius-input: 18px;
+      --radius-sheet: 32px;
+      --radius-chip: 40px;
+      --radius-icon: 16px;
+    }
 
-/* ============================================================
-   TOP APP BAR
-   ============================================================ */
-.appbar{
-  display:flex;flex-direction:column;
-  padding:calc(10px + var(--safe-top)) 14px 10px;
-  color:#fff;flex-shrink:0;
-  background:linear-gradient(135deg,var(--role-public-start),var(--role-public-end));
-  transition:background .3s ease;
-  box-shadow:0 4px 12px -4px rgba(0,0,0,.3);
-  position:relative;z-index:50;
-  border-bottom:2px solid rgba(230,177,126,0.55);
-}
-.appbar.role-public  {background:linear-gradient(135deg,var(--role-public-start),var(--role-public-end));}
-.appbar.role-member  {background:linear-gradient(135deg,var(--role-member-start),var(--role-member-end));}
-.appbar.role-cashier {background:linear-gradient(135deg,var(--role-cashier-start),var(--role-cashier-end));}
-.appbar.role-admin   {background:linear-gradient(135deg,var(--role-admin-start),var(--role-admin-end));}
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Poppins', 'Roboto', system-ui, sans-serif;
+    }
+    html, body { height: 100%; }
+    body {
+      background: #d9e2ec;
+      color: var(--text);
+      overflow: hidden;
+      font-size: 14px;
+      -webkit-font-smoothing: antialiased;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 12px;
+    }
+    button { font: inherit; cursor: pointer; border: none; background: none; color: inherit; }
 
-.appbar-top{
-  display:flex;align-items:center;gap:8px;
-  width:100%;
-}
+    /* ----- APP SHELL : ROUNDED EDGES EVERYWHERE ----- */
+    .app {
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      height: 100dvh;
+      overflow: hidden;
+      position: relative;
+      width: 100%;
+      max-width: 520px;
+      margin: 0 auto;
+      background: #fff;
+      border-radius: var(--radius-app);
+      box-shadow: 0 25px 50px -12px rgba(0,0,0,0.35), 0 0 0 1px rgba(255,255,255,0.6) inset;
+      /* keep the rounding visible */
+      isolation: isolate;
+    }
 
-.ab-icon{
-  width:42px;height:42px;border-radius:50%;
-  display:flex;align-items:center;justify-content:center;
-  background:rgba(255,255,255,.14);color:#fff;
-  font-size:16px;flex-shrink:0;
-  transition:transform .12s,background .12s;
-}
-.ab-icon:active{transform:scale(.9);background:rgba(255,255,255,.28);}
+    /* top app bar — rounded top corners */
+    .appbar {
+      display: flex;
+      flex-direction: column;
+      padding: calc(10px + var(--safe-top)) 14px 10px;
+      color: #fff;
+      flex-shrink: 0;
+      background: linear-gradient(135deg, var(--role-public-start), var(--role-public-end));
+      transition: background .3s ease;
+      box-shadow: 0 4px 12px -4px rgba(0,0,0,.3);
+      position: relative;
+      z-index: 50;
+      border-bottom: 2px solid rgba(230,177,126,0.55);
+      border-radius: var(--radius-app) var(--radius-app) 0 0;
+      /* clip inside app rounding */
+      overflow: hidden;
+    }
+    .appbar.role-public  { background: linear-gradient(135deg, var(--role-public-start), var(--role-public-end)); }
+    .appbar.role-member  { background: linear-gradient(135deg, var(--role-member-start), var(--role-member-end)); }
+    .appbar.role-cashier { background: linear-gradient(135deg, var(--role-cashier-start), var(--role-cashier-end)); }
+    .appbar.role-admin   { background: linear-gradient(135deg, var(--role-admin-start), var(--role-admin-end)); }
 
-.ab-title{flex:1;min-width:0;}
-.ab-title h1{font-size:15px;font-weight:800;letter-spacing:-.2px;
-  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#fff;}
-.ab-title .sub{font-size:11px;font-weight:500;color:#cbd5e1;
-  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:1px;}
+    .appbar-top {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      width: 100%;
+    }
 
-/* --- circular GIF frame between title and live count --- */
-.header-gif{
-  width:38px;
-  height:38px;
-  border-radius:50%;
-  overflow:hidden;
-  flex-shrink:0;
-  border:2px solid rgba(230,177,126,0.8);
-  box-shadow:0 0 12px rgba(230,177,126,0.4);
-  background:#0B2B40;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  transition:transform .15s, box-shadow .15s;
-}
-.header-gif:active{
-  transform:scale(0.92);
-  box-shadow:0 0 6px rgba(230,177,126,0.6);
-}
-.header-gif img{
-  width:100%;
-  height:100%;
-  object-fit:cover;
-  display:block;
-}
+    .ab-icon {
+      width: 42px; height: 42px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(255,255,255,.14);
+      color: #fff; font-size: 16px; flex-shrink: 0;
+      transition: transform .12s, background .12s;
+      border-radius: 50%;
+    }
+    .ab-icon:active { transform: scale(.9); background: rgba(255,255,255,.28); }
 
-.ab-avatar{
-  width:38px;height:38px;border-radius:50%;
-  background:linear-gradient(135deg,var(--highlight-gold),#c48b52);
-  color:#0B2B40;font-weight:800;font-size:14px;
-  display:flex;align-items:center;justify-content:center;
-  border:2px solid rgba(255,255,255,.5);
-  flex-shrink:0;
-}
-.ab-live{
-  display:inline-flex;align-items:center;gap:5px;
-  padding:5px 10px;border-radius:20px;
-  background:rgba(0,0,0,.3);font-size:11px;font-weight:700;
-  color:#fff;flex-shrink:0;
-}
-.ab-live .dot{
-  width:6px;height:6px;border-radius:50%;background:#22c55e;
-  box-shadow:0 0 0 0 rgba(34,197,94,.7);
-  animation:pulse 1.6s infinite;
-}
-.ab-live .num{color:#FFD966;}
-@keyframes pulse{
-  0%{box-shadow:0 0 0 0 rgba(34,197,94,.7);}
-  70%{box-shadow:0 0 0 8px rgba(34,197,94,0);}
-  100%{box-shadow:0 0 0 0 rgba(34,197,94,0);}
-}
+    .ab-title { flex: 1; min-width: 0; }
+    .ab-title h1 {
+      font-size: 15px; font-weight: 800; letter-spacing: -.2px;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      color: #fff;
+    }
+    .ab-title .sub {
+      font-size: 11px; font-weight: 500; color: #cbd5e1;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      margin-top: 1px;
+    }
 
-/* --- greeting row inside appbar --- */
-.greet-inline{
-  display:flex;align-items:center;justify-content:space-between;
-  gap:12px;margin-top:12px;
-  padding:6px 0 4px;
-  border-top:1px solid rgba(255,255,255,.12);
-  flex-wrap:wrap;
-}
-.greet-left{display:flex;flex-direction:column;gap:2px;}
-.greet-left .gname{
-  font-size:15px;font-weight:800;color:#fff;letter-spacing:-.2px;
-}
-.greet-left .gsub{
-  font-size:11px;font-weight:500;color:#cbd5e1;
-}
-.greet-right{display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
-.greet-right .chip{
-  font-size:10px;font-weight:800;letter-spacing:.4px;
-  padding:4px 10px;border-radius:20px;
-  background:rgba(255,255,255,.18);
-  border:1px solid rgba(255,255,255,.25);
-  text-transform:uppercase;color:#fff;
-}
-.greet-right .chip.allowed{background:rgba(16,185,129,.35);border-color:rgba(16,185,129,.6);}
-.greet-right .chip.denied {background:rgba(239,68,68,.35);border-color:rgba(239,68,68,.6);}
+    .header-gif {
+      width: 38px; height: 38px;
+      border-radius: 50%;
+      overflow: hidden;
+      flex-shrink: 0;
+      border: 2px solid rgba(230,177,126,0.8);
+      box-shadow: 0 0 12px rgba(230,177,126,0.4);
+      background: #0B2B40;
+      display: flex; align-items: center; justify-content: center;
+      transition: transform .15s, box-shadow .15s;
+    }
+    .header-gif:active { transform: scale(0.92); box-shadow: 0 0 6px rgba(230,177,126,0.6); }
+    .header-gif img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
-/* ============================================================
-   SCROLLING TEXT — golden marquee under greeting
-   ============================================================ */
-.scroll-strip{
-  margin-top:8px;
-  padding:7px 0;
-  border-top:1px solid rgba(255,255,255,.12);
-  overflow:hidden;
-  position:relative;
-  background:rgba(0,0,0,.18);
-  display:none;
-  border-radius:6px;
-}
-.scroll-strip.on{display:block;}
-.scroll-track{
-  display:inline-block;
-  white-space:nowrap;
-  font-size:13px;
-  font-weight:800;
-  letter-spacing:.3px;
-  color:#FFD966;
-  text-shadow:0 0 8px rgba(255,217,102,.55), 0 1px 2px rgba(0,0,0,.6);
-  padding-left:100%;
-  animation:scrollLeft 70s linear infinite;
-  will-change:transform;
-}
-.scroll-track .sep{
-  color:#E6B17E;
-  margin:0 18px;
-  opacity:.85;
-}
-@keyframes scrollLeft{
-  0%   { transform:translateX(0); }
-  100% { transform:translateX(-100%); }
-}
-.scroll-strip:hover .scroll-track{animation-play-state:paused;}
+    .ab-avatar {
+      width: 38px; height: 38px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--highlight-gold), #c48b52);
+      color: #0B2B40; font-weight: 800; font-size: 14px;
+      display: flex; align-items: center; justify-content: center;
+      border: 2px solid rgba(255,255,255,.5);
+      flex-shrink: 0;
+    }
 
-@media (prefers-reduced-motion: reduce){
-  .scroll-track{animation:none;}
-}
+    .ab-live {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 5px 10px;
+      border-radius: var(--radius-chip);
+      background: rgba(0,0,0,.3);
+      font-size: 11px; font-weight: 700; color: #fff; flex-shrink: 0;
+    }
+    .ab-live .dot {
+      width: 6px; height: 6px; border-radius: 50%; background: #22c55e;
+      box-shadow: 0 0 0 0 rgba(34,197,94,.7);
+      animation: pulse 1.6s infinite;
+    }
+    .ab-live .num { color: #FFD966; }
 
-/* ============================================================
-   MAIN SCROLL AREA (hub) — WITH DURGAA WALLPAPER
-   ============================================================ */
-.main{
-  flex:1;overflow-y:auto;overflow-x:hidden;
-  -webkit-overflow-scrolling:touch;
-  background:#EEF2F7;
-  padding-bottom:16px;
-  position:relative;
-}
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(34,197,94,.7); }
+      70% { box-shadow: 0 0 0 8px rgba(34,197,94,0); }
+      100% { box-shadow: 0 0 0 0 rgba(34,197,94,0); }
+    }
 
-.main::before{
-  content:'';
-  position:absolute;
-  top:0;left:0;right:0;
-  height:360px;
-  background-image:
-    linear-gradient(
-      180deg,
-      rgba(11,43,64,0.70) 0%,
-      rgba(11,43,64,0.45) 40%,
-      rgba(11,43,64,0.15) 70%,
-      rgba(238,242,247,0) 100%
-    ),
-    url('durga-bg.png');
-  background-size:cover;
-  background-position:center top;
-  background-repeat:no-repeat;
-  pointer-events:none;
-  z-index:0;
-  -webkit-mask-image:linear-gradient(180deg,#000 0%,#000 65%,transparent 100%);
-          mask-image:linear-gradient(180deg,#000 0%,#000 65%,transparent 100%);
-}
+    .greet-inline {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 12px; margin-top: 12px;
+      padding: 6px 0 4px;
+      border-top: 1px solid rgba(255,255,255,.12);
+      flex-wrap: wrap;
+    }
+    .greet-left { display: flex; flex-direction: column; gap: 2px; }
+    .greet-left .gname { font-size: 15px; font-weight: 800; color: #fff; letter-spacing: -.2px; }
+    .greet-left .gsub { font-size: 11px; font-weight: 500; color: #cbd5e1; }
+    .greet-right { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+    .greet-right .chip {
+      font-size: 10px; font-weight: 800; letter-spacing: .4px;
+      padding: 4px 10px;
+      border-radius: var(--radius-chip);
+      background: rgba(255,255,255,.18);
+      border: 1px solid rgba(255,255,255,.25);
+      text-transform: uppercase; color: #fff;
+    }
+    .greet-right .chip.allowed { background: rgba(16,185,129,.35); border-color: rgba(16,185,129,.6); }
+    .greet-right .chip.denied  { background: rgba(239,68,68,.35); border-color: rgba(239,68,68,.6); }
 
-.sec-title,
-.grid{
-  position:relative;
-  z-index:1;
-}
+    /* scrolling text marquee */
+    .scroll-strip {
+      margin-top: 8px;
+      padding: 7px 0;
+      border-top: 1px solid rgba(255,255,255,.12);
+      overflow: hidden;
+      position: relative;
+      background: rgba(0,0,0,.18);
+      display: none;
+      border-radius: 12px;
+    }
+    .scroll-strip.on { display: block; }
+    .scroll-track {
+      display: inline-block;
+      white-space: nowrap;
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: .3px;
+      color: #FFD966;
+      text-shadow: 0 0 8px rgba(255,217,102,.55), 0 1px 2px rgba(0,0,0,.6);
+      padding-left: 100%;
+      animation: scrollLeft 70s linear infinite;
+      will-change: transform;
+    }
+    .scroll-track .sep { color: #E6B17E; margin: 0 18px; opacity: .85; }
+    @keyframes scrollLeft {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-100%); }
+    }
+    .scroll-strip:hover .scroll-track { animation-play-state: paused; }
 
-.sec-title{
-  font-size:11px;font-weight:800;color:var(--text-soft);
-  text-transform:uppercase;letter-spacing:.8px;
-  margin:14px 20px 10px;
-  display:flex;align-items:center;justify-content:space-between;
-}
-.sec-title .count{
-  font-size:10px;color:#8b5cf6;background:#f5f3ff;
-  padding:2px 8px;border-radius:20px;
-}
+    @media (prefers-reduced-motion: reduce) {
+      .scroll-track { animation: none; }
+    }
 
-.grid{
-  display:grid;grid-template-columns:repeat(3,1fr);
-  gap:6px 4px;padding:0 10px 20px;
-}
-@media (min-width:400px){ .grid{grid-template-columns:repeat(4,1fr);} }
+    /* ----- MAIN SCROLL AREA (hub) ----- */
+    .main {
+      flex: 1;
+      overflow-y: auto;
+      overflow-x: hidden;
+      -webkit-overflow-scrolling: touch;
+      background: #EEF2F7;
+      padding-bottom: 16px;
+      position: relative;
+      /* rounded bottom corners of app */
+      border-radius: 0 0 var(--radius-app) var(--radius-app);
+    }
 
-.tile{
-  display:flex;flex-direction:column;align-items:center;
-  padding:10px 4px;border-radius:16px;
-  transition:background .12s,transform .1s;
-}
-.tile:active{background:rgba(139,92,246,.1);transform:scale(.94);}
-.tile .ic{
-  width:54px;height:54px;border-radius:16px;
-  display:flex;align-items:center;justify-content:center;
-  color:#fff;font-size:22px;
-  box-shadow:0 8px 18px -8px rgba(0,0,0,.35);
-  margin-bottom:7px;position:relative;
-}
-.tile .ic::after{
-  content:'';position:absolute;inset:0;border-radius:16px;
-  background:linear-gradient(180deg,rgba(255,255,255,.28),rgba(255,255,255,0) 60%);
-}
-.tile .lb{
-  font-size:10.5px;font-weight:700;color:var(--text);
-  text-align:center;line-height:1.25;
-  max-width:100%;overflow:hidden;text-overflow:ellipsis;
-  white-space:nowrap;
-}
+    .main::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 360px;
+      background-image:
+        linear-gradient(180deg,
+          rgba(11,43,64,0.70) 0%,
+          rgba(11,43,64,0.45) 40%,
+          rgba(11,43,64,0.15) 70%,
+          rgba(238,242,247,0) 100%
+        ),
+        url('durga-bg.png');
+      background-size: cover;
+      background-position: center top;
+      background-repeat: no-repeat;
+      pointer-events: none;
+      z-index: 0;
+      -webkit-mask-image: linear-gradient(180deg, #000 0%, #000 65%, transparent 100%);
+      mask-image: linear-gradient(180deg, #000 0%, #000 65%, transparent 100%);
+    }
 
-.bg-blue  {background:linear-gradient(135deg,#3b82f6,#1d4ed8);}
-.bg-purple{background:linear-gradient(135deg,#8b5cf6,#6d28d9);}
-.bg-green {background:linear-gradient(135deg,#10b981,#047857);}
-.bg-orange{background:linear-gradient(135deg,#f59e0b,#d97706);}
-.bg-pink  {background:linear-gradient(135deg,#ec4899,#be185d);}
-.bg-cyan  {background:linear-gradient(135deg,#06b6d4,#0e7490);}
-.bg-slate {background:linear-gradient(135deg,#94a3b8,#475569);}
-.bg-red   {background:linear-gradient(135deg,#ef4444,#b91c1c);}
-.bg-indigo{background:linear-gradient(135deg,#6366f1,#4338ca);}
-.bg-teal  {background:linear-gradient(135deg,#14b8a6,#0f766e);}
+    .sec-title, .grid { position: relative; z-index: 1; }
 
-/* ============================================================
-   BOTTOM NAVIGATION
-   ============================================================ */
-.bottomnav{
-  flex-shrink:0;
-  display:flex;align-items:stretch;
-  background:#fff;
-  border-top:1px solid var(--line);
-  padding:6px 4px calc(6px + var(--safe-bottom));
-  box-shadow:0 -4px 16px -4px rgba(0,0,0,.06);
-  z-index:40;
-}
-.bn-item{
-  flex:1;display:flex;flex-direction:column;
-  align-items:center;justify-content:center;
-  gap:3px;padding:8px 2px;border-radius:12px;
-  color:#94a3b8;font-size:9.5px;font-weight:700;
-  transition:color .15s,background .15s;position:relative;
-}
-.bn-item i{font-size:18px;}
-.bn-item.active{color:#6d28d9;}
-.bn-item.active::before{
-  content:'';position:absolute;top:0;left:30%;right:30%;
-  height:3px;border-radius:0 0 6px 6px;
-  background:linear-gradient(135deg,#667eea,#764ba2);
-}
-.bn-item:active{background:#f5f3ff;}
+    .sec-title {
+      font-size: 11px; font-weight: 800; color: var(--text-soft);
+      text-transform: uppercase; letter-spacing: .8px;
+      margin: 14px 20px 10px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .sec-title .count {
+      font-size: 10px; color: #8b5cf6; background: #f5f3ff;
+      padding: 2px 8px;
+      border-radius: var(--radius-chip);
+    }
 
-/* ============================================================
-   DRAWER
-   ============================================================ */
-.scrim{
-  position:fixed;inset:0;background:rgba(15,23,42,.55);
-  backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);
-  opacity:0;pointer-events:none;transition:opacity .22s ease;
-  z-index:60;
-}
-.scrim.on{opacity:1;pointer-events:auto;}
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px 4px;
+      padding: 0 10px 20px;
+    }
+    @media (min-width: 400px) {
+      .grid { grid-template-columns: repeat(4, 1fr); }
+    }
 
-.drawer{
-  position:fixed;top:0;left:0;bottom:0;
-  width:82%;max-width:320px;background:#fff;
-  transform:translateX(-105%);
-  transition:transform .3s cubic-bezier(.4,0,.2,1);
-  z-index:70;display:flex;flex-direction:column;
-  box-shadow:12px 0 32px -8px rgba(0,0,0,.3);
-}
-.drawer.on{transform:translateX(0);}
+    .tile {
+      display: flex; flex-direction: column; align-items: center;
+      padding: 10px 4px;
+      border-radius: var(--radius-tile);
+      transition: background .12s, transform .1s;
+    }
+    .tile:active { background: rgba(139,92,246,.1); transform: scale(.94); }
+    .tile .ic {
+      width: 54px; height: 54px;
+      border-radius: var(--radius-icon);
+      display: flex; align-items: center; justify-content: center;
+      color: #fff; font-size: 22px;
+      box-shadow: 0 8px 18px -8px rgba(0,0,0,.35);
+      margin-bottom: 7px;
+      position: relative;
+      overflow: hidden;
+    }
+    .tile .ic::after {
+      content: '';
+      position: absolute; inset: 0;
+      border-radius: var(--radius-icon);
+      background: linear-gradient(180deg, rgba(255,255,255,.28), rgba(255,255,255,0) 60%);
+    }
+    .tile .lb {
+      font-size: 10.5px; font-weight: 700; color: var(--text);
+      text-align: center; line-height: 1.25;
+      max-width: 100%; overflow: hidden; text-overflow: ellipsis;
+      white-space: nowrap;
+    }
 
-.dr-head{
-  padding:calc(24px + var(--safe-top)) 20px 22px;
-  background:linear-gradient(135deg,#667eea,#764ba2,#f093fb);
-  color:#fff;position:relative;flex-shrink:0;overflow:hidden;
-}
-.dr-head::after{
-  content:'';position:absolute;right:-40px;top:-40px;
-  width:160px;height:160px;border-radius:50%;
-  background:rgba(255,255,255,.14);
-}
-.dr-avatar{
-  width:56px;height:56px;border-radius:50%;
-  background:rgba(255,255,255,.28);
-  display:flex;align-items:center;justify-content:center;
-  font-size:22px;font-weight:800;color:#fff;
-  border:2px solid rgba(255,255,255,.55);
-  margin-bottom:10px;position:relative;z-index:1;
-}
-.dr-name{font-size:16px;font-weight:800;position:relative;z-index:1;}
-.dr-mobile{font-size:12px;opacity:.9;margin-top:2px;font-weight:500;position:relative;z-index:1;}
-.dr-chips{display:flex;gap:6px;margin-top:12px;position:relative;z-index:1;}
+    .bg-blue  { background: linear-gradient(135deg,#3b82f6,#1d4ed8); }
+    .bg-purple{ background: linear-gradient(135deg,#8b5cf6,#6d28d9); }
+    .bg-green { background: linear-gradient(135deg,#10b981,#047857); }
+    .bg-orange{ background: linear-gradient(135deg,#f59e0b,#d97706); }
+    .bg-pink  { background: linear-gradient(135deg,#ec4899,#be185d); }
+    .bg-cyan  { background: linear-gradient(135deg,#06b6d4,#0e7490); }
+    .bg-slate { background: linear-gradient(135deg,#94a3b8,#475569); }
+    .bg-red   { background: linear-gradient(135deg,#ef4444,#b91c1c); }
+    .bg-indigo{ background: linear-gradient(135deg,#6366f1,#4338ca); }
+    .bg-teal  { background: linear-gradient(135deg,#14b8a6,#0f766e); }
 
-.dr-menu{flex:1;overflow-y:auto;padding:10px 8px;-webkit-overflow-scrolling:touch;}
-.dr-label{
-  font-size:10px;font-weight:800;color:#94a3b8;
-  text-transform:uppercase;letter-spacing:.6px;
-  padding:12px 14px 6px;
-}
-.mi{
-  display:flex;align-items:center;gap:14px;
-  padding:12px 14px;border-radius:12px;
-  color:var(--text);font-weight:700;font-size:14px;
-  width:100%;text-align:left;transition:background .12s;
-}
-.mi:active{background:#f5f3ff;}
-.mi .mi-ic{
-  width:36px;height:36px;border-radius:10px;
-  display:flex;align-items:center;justify-content:center;
-  color:#fff;font-size:15px;flex-shrink:0;
-}
-.mi .mi-lb{flex:1;}
-.mi .mi-ar{color:#cbd5e1;font-size:12px;}
+    /* ----- BOTTOM NAVIGATION ----- */
+    .bottomnav {
+      flex-shrink: 0;
+      display: flex; align-items: stretch;
+      background: #fff;
+      border-top: 1px solid var(--line);
+      padding: 6px 4px calc(6px + var(--safe-bottom));
+      box-shadow: 0 -4px 16px -4px rgba(0,0,0,.06);
+      z-index: 40;
+      border-radius: 0 0 var(--radius-app) var(--radius-app);
+    }
+    .bn-item {
+      flex: 1; display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 3px; padding: 8px 2px;
+      border-radius: 14px;
+      color: #94a3b8; font-size: 9.5px; font-weight: 700;
+      transition: color .15s, background .15s;
+      position: relative;
+    }
+    .bn-item i { font-size: 18px; }
+    .bn-item.active { color: #6d28d9; }
+    .bn-item.active::before {
+      content: '';
+      position: absolute; top: 0; left: 30%; right: 30%;
+      height: 3px;
+      border-radius: 0 0 6px 6px;
+      background: linear-gradient(135deg,#667eea,#764ba2);
+    }
+    .bn-item:active { background: #f5f3ff; }
 
-.dr-foot{
-  flex-shrink:0;padding:12px 14px calc(16px + var(--safe-bottom));
-  border-top:1px solid var(--line);background:#fafaff;
-}
-.btn-signout{
-  width:100%;padding:13px;
-  background:linear-gradient(135deg,#fee2e2,#fef2f2);
-  border:1.5px solid #fca5a5;border-radius:14px;
-  color:#991b1b;font-weight:800;font-size:14px;
-  display:flex;align-items:center;justify-content:center;gap:10px;
-  transition:transform .1s;
-}
-.btn-signout:active{transform:scale(.98);}
+    /* ----- DRAWER ----- */
+    .scrim {
+      position: fixed; inset: 0;
+      background: rgba(15,23,42,.55);
+      backdrop-filter: blur(3px);
+      -webkit-backdrop-filter: blur(3px);
+      opacity: 0; pointer-events: none;
+      transition: opacity .22s ease;
+      z-index: 60;
+    }
+    .scrim.on { opacity: 1; pointer-events: auto; }
 
-/* ============================================================
-   BOTTOM SHEETS
-   ============================================================ */
-.sheet-scrim{
-  position:fixed;inset:0;background:rgba(15,23,42,.6);
-  backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);
-  opacity:0;pointer-events:none;transition:opacity .25s ease;
-  z-index:80;
-}
-.sheet-scrim.on{opacity:1;pointer-events:auto;}
+    .drawer {
+      position: fixed;
+      top: 0; left: 0; bottom: 0;
+      width: 82%; max-width: 320px;
+      background: #fff;
+      transform: translateX(-105%);
+      transition: transform .3s cubic-bezier(.4,0,.2,1);
+      z-index: 70;
+      display: flex; flex-direction: column;
+      box-shadow: 12px 0 32px -8px rgba(0,0,0,.3);
+      border-radius: 0 var(--radius-sheet) var(--radius-sheet) 0;
+      overflow: hidden;
+    }
+    .drawer.on { transform: translateX(0); }
 
-.sheet{
-  position:fixed;left:0;right:0;bottom:0;
-  max-width:520px;margin:0 auto;
-  background:#fff;border-radius:24px 24px 0 0;
-  transform:translateY(105%);
-  transition:transform .32s cubic-bezier(.4,0,.2,1);
-  z-index:90;display:flex;flex-direction:column;
-  max-height:92vh;max-height:92dvh;
-  box-shadow:0 -12px 40px -8px rgba(0,0,0,.3);
-  padding-bottom:var(--safe-bottom);
-}
-.sheet.on{transform:translateY(0);}
+    .dr-head {
+      padding: calc(24px + var(--safe-top)) 20px 22px;
+      background: linear-gradient(135deg,#667eea,#764ba2,#f093fb);
+      color: #fff; position: relative; flex-shrink: 0; overflow: hidden;
+      border-radius: 0 var(--radius-sheet) 0 0;
+    }
+    .dr-head::after {
+      content: '';
+      position: absolute; right: -40px; top: -40px;
+      width: 160px; height: 160px; border-radius: 50%;
+      background: rgba(255,255,255,.14);
+    }
+    .dr-avatar {
+      width: 56px; height: 56px; border-radius: 50%;
+      background: rgba(255,255,255,.28);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px; font-weight: 800; color: #fff;
+      border: 2px solid rgba(255,255,255,.55);
+      margin-bottom: 10px; position: relative; z-index: 1;
+    }
+    .dr-name { font-size: 16px; font-weight: 800; position: relative; z-index: 1; }
+    .dr-mobile { font-size: 12px; opacity: .9; margin-top: 2px; font-weight: 500; position: relative; z-index: 1; }
+    .dr-chips { display: flex; gap: 6px; margin-top: 12px; position: relative; z-index: 1; }
 
-.sheet-grip{
-  width:44px;height:5px;border-radius:3px;
-  background:#e2e8f0;margin:10px auto 4px;flex-shrink:0;
-}
-.sheet-head{
-  padding:6px 20px 14px;
-  display:flex;align-items:center;justify-content:space-between;
-  flex-shrink:0;
-}
-.sheet-head h2{
-  font-size:17px;font-weight:800;letter-spacing:-.3px;
-  color:var(--text);
-}
-.sheet-head h2 i{
-  color:#8b5cf6;margin-right:6px;
-}
-.sheet-close{
-  width:36px;height:36px;border-radius:50%;
-  background:#f1f5f9;color:#475569;font-size:14px;
-  display:flex;align-items:center;justify-content:center;
-  transition:background .12s;
-}
-.sheet-close:active{background:#e2e8f0;}
+    .dr-menu {
+      flex: 1; overflow-y: auto; padding: 10px 8px;
+      -webkit-overflow-scrolling: touch;
+    }
+    .dr-label {
+      font-size: 10px; font-weight: 800; color: #94a3b8;
+      text-transform: uppercase; letter-spacing: .6px;
+      padding: 12px 14px 6px;
+    }
+    .mi {
+      display: flex; align-items: center; gap: 14px;
+      padding: 12px 14px;
+      border-radius: 18px;
+      color: var(--text); font-weight: 700; font-size: 14px;
+      width: 100%; text-align: left;
+      transition: background .12s;
+    }
+    .mi:active { background: #f5f3ff; }
+    .mi .mi-ic {
+      width: 36px; height: 36px; border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      color: #fff; font-size: 15px; flex-shrink: 0;
+    }
+    .mi .mi-lb { flex: 1; }
+    .mi .mi-ar { color: #cbd5e1; font-size: 12px; }
 
-.sheet-body{
-  flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;
-  padding:0 20px 20px;
-}
+    .dr-foot {
+      flex-shrink: 0; padding: 12px 14px calc(16px + var(--safe-bottom));
+      border-top: 1px solid var(--line); background: #fafaff;
+      border-radius: 0 0 var(--radius-sheet) 0;
+    }
+    .btn-signout {
+      width: 100%; padding: 13px;
+      background: linear-gradient(135deg,#fee2e2,#fef2f2);
+      border: 1.5px solid #fca5a5;
+      border-radius: var(--radius-btn);
+      color: #991b1b; font-weight: 800; font-size: 14px;
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+      transition: transform .1s;
+    }
+    .btn-signout:active { transform: scale(.98); }
 
-.seg{
-  display:flex;background:#f1f5f9;
-  padding:4px;border-radius:40px;margin-bottom:18px;
-}
-.seg button{
-  flex:1;padding:10px;border-radius:40px;
-  font-weight:700;font-size:13px;color:#64748b;
-  transition:all .18s;
-}
-.seg button.on{
-  background:#fff;color:#0B2B40;
-  box-shadow:0 2px 6px rgba(15,23,42,.1);
-}
+    /* ----- BOTTOM SHEETS ----- */
+    .sheet-scrim {
+      position: fixed; inset: 0;
+      background: rgba(15,23,42,.6);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      opacity: 0; pointer-events: none;
+      transition: opacity .25s ease;
+      z-index: 80;
+    }
+    .sheet-scrim.on { opacity: 1; pointer-events: auto; }
 
-.field{margin-bottom:14px;}
-.field label{
-  display:block;font-size:11px;font-weight:800;
-  color:#4c1d95;text-transform:uppercase;
-  letter-spacing:.4px;margin-bottom:6px;
-}
-.field .in{
-  display:flex;align-items:center;gap:10px;
-  background:#fafaff;border:1.5px solid #e9d5ff;
-  border-radius:14px;padding:0 14px;
-  transition:border-color .15s,box-shadow .15s;
-}
-.field .in:focus-within{
-  border-color:#8b5cf6;background:#fff;
-  box-shadow:0 0 0 4px rgba(139,92,246,.13);
-}
-.field .in i{color:#a78bfa;font-size:15px;flex-shrink:0;}
-.field .in input,
-.field .in select{
-  flex:1;padding:14px 0;border:none;background:transparent;
-  font-size:15px;font-weight:600;color:var(--text);outline:none;
-  min-width:0;
-}
-.field .in select{
-  appearance:none;-webkit-appearance:none;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23a78bfa' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
-  background-repeat:no-repeat;background-position:right 4px center;
-  background-size:14px;padding-right:24px;
-}
+    .sheet {
+      position: fixed;
+      left: 0; right: 0; bottom: 0;
+      max-width: 520px; margin: 0 auto;
+      background: #fff;
+      border-radius: var(--radius-sheet) var(--radius-sheet) 0 0;
+      transform: translateY(105%);
+      transition: transform .32s cubic-bezier(.4,0,.2,1);
+      z-index: 90;
+      display: flex; flex-direction: column;
+      max-height: 92vh;
+      max-height: 92dvh;
+      box-shadow: 0 -12px 40px -8px rgba(0,0,0,.3);
+      padding-bottom: var(--safe-bottom);
+    }
+    .sheet.on { transform: translateY(0); }
 
-.cbx{
-  display:flex;align-items:center;gap:10px;
-  font-size:13px;color:#475569;font-weight:600;
-  margin:4px 0 16px;cursor:pointer;
-}
-.cbx input{width:18px;height:18px;accent-color:#8b5cf6;}
+    .sheet-grip {
+      width: 44px; height: 5px;
+      border-radius: 3px;
+      background: #e2e8f0;
+      margin: 10px auto 4px; flex-shrink: 0;
+    }
+    .sheet-head {
+      padding: 6px 20px 14px;
+      display: flex; align-items: center; justify-content: space-between;
+      flex-shrink: 0;
+    }
+    .sheet-head h2 {
+      font-size: 17px; font-weight: 800; letter-spacing: -.3px;
+      color: var(--text);
+    }
+    .sheet-head h2 i { color: #8b5cf6; margin-right: 6px; }
+    .sheet-close {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: #f1f5f9; color: #475569; font-size: 14px;
+      display: flex; align-items: center; justify-content: center;
+      transition: background .12s;
+    }
+    .sheet-close:active { background: #e2e8f0; }
 
-.btn{
-  width:100%;padding:15px;
-  background:linear-gradient(135deg,#667eea,#764ba2);
-  border-radius:40px;color:#fff;
-  font-weight:800;font-size:15px;letter-spacing:.2px;
-  display:flex;align-items:center;justify-content:center;gap:10px;
-  box-shadow:0 12px 24px -8px rgba(102,126,234,.55);
-  transition:transform .1s;
-}
-.btn:active{transform:scale(.98);}
-.btn:disabled{opacity:.55;pointer-events:none;}
+    .sheet-body {
+      flex: 1; overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      padding: 0 20px 20px;
+    }
 
-.msg{
-  font-size:13px;font-weight:600;padding:12px 14px;
-  border-radius:14px;margin-top:14px;
-  display:flex;align-items:flex-start;gap:8px;
-  animation:fadeUp .22s ease;line-height:1.4;
-}
-@keyframes fadeUp{
-  from{opacity:0;transform:translateY(6px);}
-  to{opacity:1;transform:translateY(0);}
-}
-.msg.ok{background:#ecfdf5;color:#065f46;border:1px solid #a7f3d0;}
-.msg.er{background:#fef2f2;color:#991b1b;border:1px solid #fca5a5;}
-.msg.in{background:#eff6ff;color:#1e40af;border:1px solid #93c5fd;}
-.msg.hide{display:none;}
+    .seg {
+      display: flex; background: #f1f5f9;
+      padding: 4px;
+      border-radius: var(--radius-btn);
+      margin-bottom: 18px;
+    }
+    .seg button {
+      flex: 1; padding: 10px;
+      border-radius: var(--radius-btn);
+      font-weight: 700; font-size: 13px; color: #64748b;
+      transition: all .18s;
+    }
+    .seg button.on {
+      background: #fff; color: #0B2B40;
+      box-shadow: 0 2px 6px rgba(15,23,42,.1);
+    }
 
-.hint{
-  font-size:11px;color:#7c3aed;background:#f5f3ff;
-  padding:10px 12px;border-radius:12px;
-  border-left:3px solid #8b5cf6;
-  line-height:1.5;margin-top:10px;font-weight:500;
-}
+    .field { margin-bottom: 14px; }
+    .field label {
+      display: block; font-size: 11px; font-weight: 800;
+      color: #4c1d95; text-transform: uppercase;
+      letter-spacing: .4px; margin-bottom: 6px;
+    }
+    .field .in {
+      display: flex; align-items: center; gap: 10px;
+      background: #fafaff;
+      border: 1.5px solid #e9d5ff;
+      border-radius: var(--radius-input);
+      padding: 0 14px;
+      transition: border-color .15s, box-shadow .15s;
+    }
+    .field .in:focus-within {
+      border-color: #8b5cf6; background: #fff;
+      box-shadow: 0 0 0 4px rgba(139,92,246,.13);
+    }
+    .field .in i { color: #a78bfa; font-size: 15px; flex-shrink: 0; }
+    .field .in input,
+    .field .in select {
+      flex: 1; padding: 14px 0; border: none; background: transparent;
+      font-size: 15px; font-weight: 600; color: var(--text); outline: none;
+      min-width: 0;
+    }
+    .field .in select {
+      appearance: none; -webkit-appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23a78bfa' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+      background-repeat: no-repeat; background-position: right 4px center;
+      background-size: 14px; padding-right: 24px;
+    }
 
-.spin{
-  display:inline-block;width:16px;height:16px;
-  border:2px solid rgba(255,255,255,.35);border-radius:50%;
-  border-top-color:#fff;animation:spin .65s linear infinite;
-}
-@keyframes spin{to{transform:rotate(360deg);}}
+    .cbx {
+      display: flex; align-items: center; gap: 10px;
+      font-size: 13px; color: #475569; font-weight: 600;
+      margin: 4px 0 16px; cursor: pointer;
+    }
+    .cbx input { width: 18px; height: 18px; accent-color: #8b5cf6; }
 
-/* ============================================================
-   ADMIN
-   ============================================================ */
-.admin-view{
-  position:fixed;inset:0;z-index:120;
-  background:#EEF2F7;
-  display:none;flex-direction:column;
-  max-width:520px;margin:0 auto;
-}
-.admin-view.on{display:flex;}
+    .btn {
+      width: 100%; padding: 15px;
+      background: linear-gradient(135deg,#667eea,#764ba2);
+      border-radius: var(--radius-btn);
+      color: #fff; font-weight: 800; font-size: 15px; letter-spacing: .2px;
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+      box-shadow: 0 12px 24px -8px rgba(102,126,234,.55);
+      transition: transform .1s;
+    }
+    .btn:active { transform: scale(.98); }
+    .btn:disabled { opacity: .55; pointer-events: none; }
 
-.admin-bar{
-  display:flex;align-items:center;gap:10px;
-  padding:calc(12px + var(--safe-top)) 12px 12px;
-  background:linear-gradient(135deg,#0B2B40,#1E5A6B);
-  color:#fff;
-  box-shadow:0 4px 12px -4px rgba(0,0,0,.3);
-  flex-shrink:0;
-  border-bottom:2px solid rgba(230,177,126,0.55);
-}
-.admin-bar .ab-icon{width:40px;height:40px;}
-.admin-bar .ttl{flex:1;min-width:0;}
-.admin-bar .ttl h2{font-size:15px;font-weight:800;letter-spacing:-.2px;}
-.admin-bar .ttl p{font-size:11px;opacity:.85;margin-top:1px;font-weight:500;}
+    .msg {
+      font-size: 13px; font-weight: 600; padding: 12px 14px;
+      border-radius: 20px; margin-top: 14px;
+      display: flex; align-items: flex-start; gap: 8px;
+      animation: fadeUp .22s ease; line-height: 1.4;
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .msg.ok { background: #ecfdf5; color: #065f46; border: 1px solid #a7f3d0; }
+    .msg.er { background: #fef2f2; color: #991b1b; border: 1px solid #fca5a5; }
+    .msg.in { background: #eff6ff; color: #1e40af; border: 1px solid #93c5fd; }
+    .msg.hide { display: none; }
 
-.admin-tabs{
-  display:flex;background:#fff;border-bottom:1px solid var(--line);
-  padding:0 4px;overflow-x:auto;flex-shrink:0;
-  -webkit-overflow-scrolling:touch;
-}
-.admin-tabs::-webkit-scrollbar{display:none;}
-.atab{
-  padding:14px 14px;font-size:12px;font-weight:700;
-  color:#94a3b8;white-space:nowrap;position:relative;
-  display:flex;align-items:center;gap:6px;
-}
-.atab i{font-size:14px;}
-.atab.on{color:#6d28d9;}
-.atab.on::after{
-  content:'';position:absolute;bottom:0;left:10%;right:10%;
-  height:3px;border-radius:3px 3px 0 0;
-  background:linear-gradient(135deg,#667eea,#764ba2);
-}
+    .hint {
+      font-size: 11px; color: #7c3aed; background: #f5f3ff;
+      padding: 10px 12px;
+      border-radius: 18px;
+      border-left: 3px solid #8b5cf6;
+      line-height: 1.5; margin-top: 10px; font-weight: 500;
+    }
 
-.admin-body{
-  flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;
-  padding:14px;padding-bottom:calc(14px + var(--safe-bottom));
-}
+    .spin {
+      display: inline-block; width: 16px; height: 16px;
+      border: 2px solid rgba(255,255,255,.35); border-radius: 50%;
+      border-top-color: #fff; animation: spin .65s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
 
-.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px;}
-.stat{
-  background:#fff;border:1px solid var(--line);
-  border-radius:14px;padding:12px 8px;text-align:center;
-  box-shadow:var(--shadow-sm);
-}
-.stat .num{
-  font-size:20px;font-weight:800;
-  background:linear-gradient(135deg,#667eea,#764ba2);
-  -webkit-background-clip:text;background-clip:text;color:transparent;
-}
-.stat .lbl{font-size:10px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.4px;margin-top:2px;}
+    /* ----- ADMIN ----- */
+    .admin-view {
+      position: fixed; inset: 0; z-index: 120;
+      background: #EEF2F7;
+      display: none; flex-direction: column;
+      max-width: 520px; margin: 0 auto;
+      border-radius: var(--radius-app);
+      overflow: hidden;
+    }
+    .admin-view.on { display: flex; }
 
-.search{
-  display:flex;align-items:center;gap:10px;
-  background:#fff;border:1.5px solid #e9d5ff;
-  border-radius:14px;padding:0 14px;margin-bottom:12px;
-}
-.search i{color:#a78bfa;font-size:14px;}
-.search input{
-  flex:1;padding:13px 0;border:none;background:transparent;
-  font-size:14px;font-weight:600;color:var(--text);outline:none;
-  min-width:0;
-}
+    .admin-bar {
+      display: flex; align-items: center; gap: 10px;
+      padding: calc(12px + var(--safe-top)) 12px 12px;
+      background: linear-gradient(135deg,#0B2B40,#1E5A6B);
+      color: #fff;
+      box-shadow: 0 4px 12px -4px rgba(0,0,0,.3);
+      flex-shrink: 0;
+      border-bottom: 2px solid rgba(230,177,126,0.55);
+      border-radius: var(--radius-app) var(--radius-app) 0 0;
+    }
+    .admin-bar .ab-icon { width: 40px; height: 40px; }
+    .admin-bar .ttl { flex: 1; min-width: 0; }
+    .admin-bar .ttl h2 { font-size: 15px; font-weight: 800; letter-spacing: -.2px; }
+    .admin-bar .ttl p { font-size: 11px; opacity: .85; margin-top: 1px; font-weight: 500; }
 
-.ucard{
-  background:#fff;border:1px solid var(--line);
-  border-left:4px solid #8b5cf6;
-  border-radius:14px;padding:12px;margin-bottom:10px;
-  box-shadow:var(--shadow-sm);
-}
-.ucard.self{
-  border-left-color:#f59e0b;
-  background:linear-gradient(135deg,#fffbeb,#ffffff);
-}
-.ucard-top{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:10px;}
-.ucard-info{flex:1;min-width:0;}
-.ucard-info .nm{
-  font-weight:800;color:var(--text);font-size:14px;
-  display:flex;align-items:center;gap:6px;flex-wrap:wrap;
-  word-break:break-word;
-}
-.ucard-info .mb{
-  font-size:12px;color:#8b5cf6;font-weight:600;margin-top:3px;
-}
-.ucard-pills{display:flex;gap:5px;flex-wrap:wrap;justify-content:flex-end;flex-shrink:0;}
-.pill{
-  display:inline-block;font-size:9.5px;font-weight:800;
-  padding:4px 9px;border-radius:20px;
-  letter-spacing:.4px;text-transform:uppercase;color:#fff;
-  white-space:nowrap;
-}
-.pill.PUBLIC  {background:linear-gradient(135deg,#94a3b8,#475569);}
-.pill.MEMBER  {background:linear-gradient(135deg,#06b6d4,#0e7490);}
-.pill.CASHIER {background:linear-gradient(135deg,#3b82f6,#1d4ed8);}
-.pill.ADMIN   {background:linear-gradient(135deg,#8b5cf6,#6d28d9);}
-.pill.ALLOWED {background:linear-gradient(135deg,#10b981,#047857);}
-.pill.DENIED  {background:linear-gradient(135deg,#ef4444,#b91c1c);}
+    .admin-tabs {
+      display: flex; background: #fff; border-bottom: 1px solid var(--line);
+      padding: 0 4px; overflow-x: auto; flex-shrink: 0;
+      -webkit-overflow-scrolling: touch;
+    }
+    .admin-tabs::-webkit-scrollbar { display: none; }
+    .atab {
+      padding: 14px 14px; font-size: 12px; font-weight: 700;
+      color: #94a3b8; white-space: nowrap; position: relative;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .atab i { font-size: 14px; }
+    .atab.on { color: #6d28d9; }
+    .atab.on::after {
+      content: '';
+      position: absolute; bottom: 0; left: 10%; right: 10%;
+      height: 3px;
+      border-radius: 3px 3px 0 0;
+      background: linear-gradient(135deg,#667eea,#764ba2);
+    }
 
-.ucard-controls{
-  display:grid;grid-template-columns:1fr 1fr auto;gap:6px;align-items:center;
-}
-.ucard-controls select{
-  padding:10px 8px;border-radius:10px;
-  border:1.5px solid #e9d5ff;background:#fafaff;
-  font-size:12px;font-weight:700;color:var(--text);
-  outline:none;-webkit-appearance:none;appearance:none;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23a78bfa' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
-  background-repeat:no-repeat;background-position:right 8px center;
-  background-size:12px;padding-right:26px;
-}
-.ucard-controls select:focus{border-color:#8b5cf6;box-shadow:0 0 0 3px rgba(139,92,246,.13);}
+    .admin-body {
+      flex: 1; overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      padding: 14px;
+      padding-bottom: calc(14px + var(--safe-bottom));
+      border-radius: 0 0 var(--radius-app) var(--radius-app);
+    }
 
-.btn-save{
-  padding:10px 12px;border-radius:10px;
-  background:linear-gradient(135deg,#10b981,#047857);
-  color:#fff;font-weight:800;font-size:11.5px;
-  display:flex;align-items:center;gap:5px;
-  white-space:nowrap;
-  box-shadow:0 4px 10px -3px rgba(16,185,129,.5);
-}
-.btn-save:active{transform:scale(.95);}
-.btn-save:disabled{opacity:.5;}
+    .stats { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; margin-bottom: 14px; }
+    .stat {
+      background: #fff; border: 1px solid var(--line);
+      border-radius: 20px; padding: 12px 8px; text-align: center;
+      box-shadow: var(--shadow-sm);
+    }
+    .stat .num {
+      font-size: 20px; font-weight: 800;
+      background: linear-gradient(135deg,#667eea,#764ba2);
+      -webkit-background-clip: text; background-clip: text;
+      color: transparent;
+    }
+    .stat .lbl {
+      font-size: 10px; font-weight: 700; color: #64748b;
+      text-transform: uppercase; letter-spacing: .4px; margin-top: 2px;
+    }
 
-.btn-del{
-  padding:9px 12px;border-radius:10px;
-  background:linear-gradient(135deg,#ef4444,#b91c1c);
-  color:#fff;font-weight:800;font-size:11.5px;
-  display:flex;align-items:center;gap:5px;
-  white-space:nowrap;
-}
+    .search {
+      display: flex; align-items: center; gap: 10px;
+      background: #fff; border: 1.5px solid #e9d5ff;
+      border-radius: var(--radius-input);
+      padding: 0 14px; margin-bottom: 12px;
+    }
+    .search i { color: #a78bfa; font-size: 14px; }
+    .search input {
+      flex: 1; padding: 13px 0; border: none; background: transparent;
+      font-size: 14px; font-weight: 600; color: var(--text); outline: none;
+      min-width: 0;
+    }
 
-.empty{
-  text-align:center;padding:40px 20px;color:#a78bfa;
-  font-size:13px;font-weight:600;
-}
-.empty i{font-size:34px;display:block;margin-bottom:10px;opacity:.55;}
+    .ucard {
+      background: #fff; border: 1px solid var(--line);
+      border-left: 4px solid #8b5cf6;
+      border-radius: 22px; padding: 12px; margin-bottom: 10px;
+      box-shadow: var(--shadow-sm);
+    }
+    .ucard.self {
+      border-left-color: #f59e0b;
+      background: linear-gradient(135deg,#fffbeb,#ffffff);
+    }
+    .ucard-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; margin-bottom: 10px; }
+    .ucard-info { flex: 1; min-width: 0; }
+    .ucard-info .nm {
+      font-weight: 800; color: var(--text); font-size: 14px;
+      display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
+      word-break: break-word;
+    }
+    .ucard-info .mb { font-size: 12px; color: #8b5cf6; font-weight: 600; margin-top: 3px; }
+    .ucard-pills { display: flex; gap: 5px; flex-wrap: wrap; justify-content: flex-end; flex-shrink: 0; }
 
-.toast{
-  position:fixed;bottom:calc(20px + var(--safe-bottom));
-  left:50%;transform:translateX(-50%) translateY(80px);
-  background:#1e1b4b;color:#fff;
-  padding:12px 20px;border-radius:40px;
-  font-size:13px;font-weight:700;
-  box-shadow:0 12px 28px -8px rgba(0,0,0,.5);
-  opacity:0;pointer-events:none;
-  transition:opacity .25s,transform .25s;
-  z-index:200;display:flex;align-items:center;gap:8px;
-  max-width:calc(100vw - 40px);
-  text-align:left;
-}
-.toast.on{opacity:1;transform:translateX(-50%) translateY(0);}
-.toast.err{background:linear-gradient(135deg,#b91c1c,#7f1d1d);}
-.toast.ok {background:linear-gradient(135deg,#047857,#065f46);}
+    .pill {
+      display: inline-block; font-size: 9.5px; font-weight: 800;
+      padding: 4px 9px; border-radius: 40px;
+      letter-spacing: .4px; text-transform: uppercase; color: #fff;
+      white-space: nowrap;
+    }
+    .pill.PUBLIC  { background: linear-gradient(135deg,#94a3b8,#475569); }
+    .pill.MEMBER  { background: linear-gradient(135deg,#06b6d4,#0e7490); }
+    .pill.CASHIER { background: linear-gradient(135deg,#3b82f6,#1d4ed8); }
+    .pill.ADMIN   { background: linear-gradient(135deg,#8b5cf6,#6d28d9); }
+    .pill.ALLOWED { background: linear-gradient(135deg,#10b981,#047857); }
+    .pill.DENIED  { background: linear-gradient(135deg,#ef4444,#b91c1c); }
 
-.frame-wrap{
-  position:fixed;inset:0;z-index:110;
-  background:#fff;display:none;flex-direction:column;
-  max-width:520px;margin:0 auto;
-}
-.frame-wrap.on{display:flex;}
-.frame-bar{
-  display:flex;align-items:center;gap:10px;
-  padding:calc(12px + var(--safe-top)) 12px 12px;
-  background:linear-gradient(135deg,#667eea,#764ba2);
-  color:#fff;flex-shrink:0;
-  box-shadow:0 4px 12px -4px rgba(0,0,0,.25);
-}
-.frame-bar h2{flex:1;font-size:15px;font-weight:800;letter-spacing:-.2px;
-  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.frame-body{flex:1;background:#fff;overflow:hidden;position:relative;}
-.frame-body iframe{width:100%;height:100%;border:0;display:block;}
-</style>
+    .ucard-controls {
+      display: grid; grid-template-columns: 1fr 1fr auto; gap: 6px; align-items: center;
+    }
+    .ucard-controls select {
+      padding: 10px 8px;
+      border-radius: 14px;
+      border: 1.5px solid #e9d5ff;
+      background: #fafaff;
+      font-size: 12px; font-weight: 700; color: var(--text);
+      outline: none;
+      -webkit-appearance: none; appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23a78bfa' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+      background-repeat: no-repeat; background-position: right 8px center;
+      background-size: 12px; padding-right: 26px;
+    }
+    .ucard-controls select:focus { border-color: #8b5cf6; box-shadow: 0 0 0 3px rgba(139,92,246,.13); }
+
+    .btn-save {
+      padding: 10px 12px;
+      border-radius: 14px;
+      background: linear-gradient(135deg,#10b981,#047857);
+      color: #fff; font-weight: 800; font-size: 11.5px;
+      display: flex; align-items: center; gap: 5px;
+      white-space: nowrap;
+      box-shadow: 0 4px 10px -3px rgba(16,185,129,.5);
+    }
+    .btn-save:active { transform: scale(.95); }
+    .btn-save:disabled { opacity: .5; }
+
+    .btn-del {
+      padding: 9px 12px;
+      border-radius: 14px;
+      background: linear-gradient(135deg,#ef4444,#b91c1c);
+      color: #fff; font-weight: 800; font-size: 11.5px;
+      display: flex; align-items: center; gap: 5px;
+      white-space: nowrap;
+    }
+
+    .empty {
+      text-align: center; padding: 40px 20px; color: #a78bfa;
+      font-size: 13px; font-weight: 600;
+    }
+    .empty i { font-size: 34px; display: block; margin-bottom: 10px; opacity: .55; }
+
+    .toast {
+      position: fixed; bottom: calc(20px + var(--safe-bottom));
+      left: 50%; transform: translateX(-50%) translateY(80px);
+      background: #1e1b4b; color: #fff;
+      padding: 12px 20px;
+      border-radius: 40px;
+      font-size: 13px; font-weight: 700;
+      box-shadow: 0 12px 28px -8px rgba(0,0,0,.5);
+      opacity: 0; pointer-events: none;
+      transition: opacity .25s, transform .25s;
+      z-index: 200;
+      display: flex; align-items: center; gap: 8px;
+      max-width: calc(100vw - 40px);
+      text-align: left;
+    }
+    .toast.on { opacity: 1; transform: translateX(-50%) translateY(0); }
+    .toast.err { background: linear-gradient(135deg,#b91c1c,#7f1d1d); }
+    .toast.ok  { background: linear-gradient(135deg,#047857,#065f46); }
+
+    .frame-wrap {
+      position: fixed; inset: 0; z-index: 110;
+      background: #fff; display: none; flex-direction: column;
+      max-width: 520px; margin: 0 auto;
+      border-radius: var(--radius-app);
+      overflow: hidden;
+    }
+    .frame-wrap.on { display: flex; }
+    .frame-bar {
+      display: flex; align-items: center; gap: 10px;
+      padding: calc(12px + var(--safe-top)) 12px 12px;
+      background: linear-gradient(135deg,#667eea,#764ba2);
+      color: #fff; flex-shrink: 0;
+      box-shadow: 0 4px 12px -4px rgba(0,0,0,.25);
+      border-radius: var(--radius-app) var(--radius-app) 0 0;
+    }
+    .frame-bar h2 {
+      flex: 1; font-size: 15px; font-weight: 800; letter-spacing: -.2px;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .frame-body { flex: 1; background: #fff; overflow: hidden; position: relative; }
+    .frame-body iframe { width: 100%; height: 100%; border: 0; display: block; }
+
+    /* ----- EXTRA ROUNDING FOR SMALL COMPONENTS ----- */
+    .ab-live,
+    .greet-right .chip,
+    .sec-title .count,
+    .btn-signout,
+    .seg,
+    .seg button,
+    .field .in,
+    .btn,
+    .msg,
+    .hint,
+    .search,
+    .stat,
+    .ucard,
+    .pill,
+    .btn-save,
+    .btn-del,
+    .toast,
+    .sheet,
+    .sheet-close {
+      border-radius: var(--radius-btn); /* fallback, overridden where needed */
+    }
+    .field .in,
+    .search,
+    .ucard-controls select {
+      border-radius: var(--radius-input);
+    }
+    .stat,
+    .ucard,
+    .msg,
+    .hint {
+      border-radius: 22px;
+    }
+    .btn-save,
+    .btn-del {
+      border-radius: 14px;
+    }
+    .tile .ic {
+      border-radius: var(--radius-icon);
+    }
+    .mi {
+      border-radius: 18px;
+    }
+    .mi .mi-ic {
+      border-radius: 12px;
+    }
+    .header-gif,
+    .ab-avatar,
+    .ab-icon,
+    .dr-avatar,
+    .sheet-close {
+      border-radius: 50%;
+    }
+    .bottomnav {
+      border-radius: 0 0 var(--radius-app) var(--radius-app);
+    }
+    .admin-bar {
+      border-radius: var(--radius-app) var(--radius-app) 0 0;
+    }
+    .admin-body {
+      border-radius: 0 0 var(--radius-app) var(--radius-app);
+    }
+  </style>
 </head>
 <body>
 
@@ -749,7 +901,7 @@ button{font:inherit;cursor:pointer;border:none;background:none;color:inherit;}
         <div class="sub" id="abSub">স্থাপিত - 2008</div>
       </div>
 
-      <!-- ✅ LOCAL GIF — just drop "header.gif" in the same folder as this HTML -->
+      <!-- LOCAL GIF -->
       <div class="header-gif" title="Live update">
         <img src="header.gif" alt="Live">
       </div>
@@ -771,7 +923,7 @@ button{font:inherit;cursor:pointer;border:none;background:none;color:inherit;}
       </div>
     </div>
 
-    <!-- SCROLLING TEXT — golden marquee -->
+    <!-- SCROLLING TEXT -->
     <div class="scroll-strip" id="scrollStrip">
       <div class="scroll-track" id="scrollTrack"></div>
     </div>
@@ -943,520 +1095,580 @@ button{font:inherit;cursor:pointer;border:none;background:none;color:inherit;}
 <div class="toast" id="toast"></div>
 
 <script>
-/* ============================================================
-   CONFIG
-   ============================================================ */
-const API_URL = 'https://script.google.com/macros/s/AKfycbyAXU_4zhRSDuVClDyAbaldeH8JM1mse8gb8R9k788Rak1DwsCTnRKWUeu53uINyWIU/exec';
+  /* ============================================================
+     CONFIG
+     ============================================================ */
+  const API_URL = 'https://script.google.com/macros/s/AKfycbyAXU_4zhRSDuVClDyAbaldeH8JM1mse8gb8R9k788Rak1DwsCTnRKWUeu53uINyWIU/exec';
 
-/* ============================================================
-   MENU ITEMS
-   ============================================================ */
-const MENU_ITEMS = [
-  { id:'events', label:'Upcoming Events', icon:'fa-gauge-high', color:'bg-blue',
-    url:'events.htm', levels:['PUBLIC','MEMBER','CASHIER','ADMIN'],
-    bottom:true, bottomIcon:'fa-house' },
+  /* ============================================================
+     MENU ITEMS
+     ============================================================ */
+  const MENU_ITEMS = [
+    { id:'events', label:'Upcoming Events', icon:'fa-gauge-high', color:'bg-blue',
+      url:'events.htm', levels:['PUBLIC','MEMBER','CASHIER','ADMIN'],
+      bottom:true, bottomIcon:'fa-house' },
 
-  { id:'upi', label:'Donate', icon:'fa-indian-rupee-sign', color:'bg-orange',
-    url:'donate.htm', levels:['PUBLIC','MEMBER','CASHIER','ADMIN']},
+    { id:'upi', label:'Donate', icon:'fa-indian-rupee-sign', color:'bg-orange',
+      url:'donate.htm', levels:['PUBLIC','MEMBER','CASHIER','ADMIN']},
 
-  { id:'profile', label:'Live TV', icon:'fa-tv', color:'bg-purple',
-    url:'tv.htm', levels:['PUBLIC','MEMBER','CASHIER','ADMIN'],
-    bottom:true, bottomIcon:'fa-tv'},
+    { id:'profile', label:'Live TV', icon:'fa-tv', color:'bg-purple',
+      url:'tv.htm', levels:['PUBLIC','MEMBER','CASHIER','ADMIN'],
+      bottom:true, bottomIcon:'fa-tv'},
 
-  { id:'alerts', label:'Alerts', icon:'fa-bell', color:'bg-pink',
-    url:'', levels:['PUBLIC','MEMBER','CASHIER','ADMIN'],
-    bottom:true, bottomIcon:'fa-bell'},
+    { id:'alerts', label:'Alerts', icon:'fa-bell', color:'bg-pink',
+      url:'', levels:['PUBLIC','MEMBER','CASHIER','ADMIN'],
+      bottom:true, bottomIcon:'fa-bell'},
 
-  { id:'chatboat', label:'ChatBoat', icon:'fa-brands fa-whatsapp', color:'bg-green',
-    url:'chat.htm', levels:['MEMBER','CASHIER','ADMIN'],
-    bottom:true, bottomIcon:'fa-brands fa-whatsapp'},
+    { id:'chatboat', label:'ChatBoat', icon:'fa-brands fa-whatsapp', color:'bg-green',
+      url:'chat.htm', levels:['MEMBER','CASHIER','ADMIN'],
+      bottom:true, bottomIcon:'fa-brands fa-whatsapp'},
 
-  { id:'slide', label:'Slideshow', icon:'fa-images', color:'bg-green',
-    url:'slide.htm', levels:['PUBLIC','MEMBER','CASHIER','ADMIN']},
+    { id:'slide', label:'Slideshow', icon:'fa-images', color:'bg-green',
+      url:'slide.htm', levels:['PUBLIC','MEMBER','CASHIER','ADMIN']},
 
-  { id:'collectionmember', label:'Collection', icon:'fa-money-bill-wave', color:'bg-orange',
-    url:'collectionmember.htm', levels:['MEMBER','ADMIN']},
+    { id:'collectionmember', label:'Collection', icon:'fa-money-bill-wave', color:'bg-orange',
+      url:'collectionmember.htm', levels:['MEMBER','ADMIN']},
 
-  { id:'paymentmember', label:'Payment', icon:'fa-money-bill-transfer', color:'bg-indigo',
-    url:'paymentmember.htm', levels:['MEMBER','ADMIN']},
+    { id:'paymentmember', label:'Payment', icon:'fa-money-bill-transfer', color:'bg-indigo',
+      url:'paymentmember.htm', levels:['MEMBER','ADMIN']},
 
-  { id:'upload-media', label:'Upload Media', icon:'fa-cloud-arrow-up', color:'bg-pink',
-    url:'upload.htm', levels:['MEMBER','CASHIER','ADMIN']},
+    { id:'upload-media', label:'Upload Media', icon:'fa-cloud-arrow-up', color:'bg-pink',
+      url:'upload.htm', levels:['MEMBER','CASHIER','ADMIN']},
 
-  { id:'splbalance', label:'Add Balance', icon:'fa-cash-register', color:'bg-cyan',
-    url:'splbalance.htm', levels:['CASHIER','ADMIN']},
+    { id:'splbalance', label:'Add Balance', icon:'fa-cash-register', color:'bg-cyan',
+      url:'splbalance.htm', levels:['CASHIER','ADMIN']},
 
-  { id:'payment', label:'Payment2026', icon:'fa-hand-holding-dollar', color:'bg-indigo',
-    url:'payment2026.htm', levels:['CASHIER','ADMIN']},
+    { id:'payment', label:'Payment2026', icon:'fa-hand-holding-dollar', color:'bg-indigo',
+      url:'payment2026.htm', levels:['CASHIER','ADMIN']},
 
-  { id:'collection', label:'Collection2026', icon:'fa-calendar-check', color:'bg-orange',
-    url:'collection2026.htm', levels:['CASHIER','ADMIN']},
+    { id:'collection', label:'Collection2026', icon:'fa-calendar-check', color:'bg-orange',
+      url:'collection2026.htm', levels:['CASHIER','ADMIN']},
 
-  { id:'manage', label:'Manage', icon:'fa-users-cog', color:'bg-red',
-    url:'#admin', levels:['ADMIN'],
-    bottom:true, bottomIcon:'fa-users-gear'},
+    { id:'manage', label:'Manage', icon:'fa-users-cog', color:'bg-red',
+      url:'#admin', levels:['ADMIN'],
+      bottom:true, bottomIcon:'fa-users-gear'},
 
-  { id:'reports', label:'Reports', icon:'fa-chart-line', color:'bg-slate',
-    url:'reports.htm', levels:['ADMIN']},
+    { id:'reports', label:'Reports', icon:'fa-chart-line', color:'bg-slate',
+      url:'reports.htm', levels:['ADMIN']},
 
-  { id:'settings', label:'Settings', icon:'fa-gear', color:'bg-slate',
-    url:'', levels:['ADMIN']}
-];
+    { id:'settings', label:'Settings', icon:'fa-gear', color:'bg-slate',
+      url:'', levels:['ADMIN']}
+  ];
 
-/* ============================================================
-   STATE
-   ============================================================ */
-let heartbeatTimer=null, activeCountTimer=null, permWatcherTimer=null, scrollTimer=null;
-let sessionId = null;
-let CURRENT_USER = null;
-let ADMIN_USERS = [];
-let adminTab = 'view';
+  /* ============================================================
+     STATE
+     ============================================================ */
+  let heartbeatTimer=null, activeCountTimer=null, permWatcherTimer=null, scrollTimer=null;
+  let sessionId = null;
+  let CURRENT_USER = null;
+  let ADMIN_USERS = [];
+  let adminTab = 'view';
 
-/* ============================================================
-   HELPERS
-   ============================================================ */
-const $  = id => document.getElementById(id);
-const esc = s => String(s==null?'':s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
-const norm = r => (r||'PUBLIC').trim().toUpperCase();
-const roleClass = r => 'role-' + norm(r).toLowerCase();
+  /* ============================================================
+     HELPERS
+     ============================================================ */
+  const $  = id => document.getElementById(id);
+  const esc = s => String(s==null?'':s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+  const norm = r => (r||'PUBLIC').trim().toUpperCase();
+  const roleClass = r => 'role-' + norm(r).toLowerCase();
 
-/* ============================================================
-   SESSION — PERSISTENT (cleared only on manual logout / revoke)
-   ============================================================ */
-function getSession(){
-  try{
-    const raw = localStorage.getItem('uc_sess') || sessionStorage.getItem('uc_sess');
-    if(!raw) return null;
-    return JSON.parse(raw);
-  }catch(e){ return null; }
-}
-function setSession(data, remember){
-  const payload = { ...data };
-  if(remember === false){
-    sessionStorage.setItem('uc_sess', JSON.stringify(payload));
+  /* ============================================================
+     SESSION
+     ============================================================ */
+  function getSession(){
+    try{
+      const raw = localStorage.getItem('uc_sess') || sessionStorage.getItem('uc_sess');
+      if(!raw) return null;
+      return JSON.parse(raw);
+    }catch(e){ return null; }
+  }
+  function setSession(data, remember){
+    const payload = { ...data };
+    if(remember === false){
+      sessionStorage.setItem('uc_sess', JSON.stringify(payload));
+      localStorage.removeItem('uc_sess');
+    } else {
+      localStorage.setItem('uc_sess', JSON.stringify(payload));
+      sessionStorage.removeItem('uc_sess');
+    }
+  }
+  function clearSession(){
     localStorage.removeItem('uc_sess');
-  } else {
-    localStorage.setItem('uc_sess', JSON.stringify(payload));
     sessionStorage.removeItem('uc_sess');
+    if(permWatcherTimer){ clearInterval(permWatcherTimer); permWatcherTimer = null; }
   }
-}
-function clearSession(){
-  localStorage.removeItem('uc_sess');
-  sessionStorage.removeItem('uc_sess');
-  if(permWatcherTimer){ clearInterval(permWatcherTimer); permWatcherTimer = null; }
-}
-function touchSession(){ /* no-op */ }
+  function touchSession(){ /* no-op */ }
 
-/* ============================================================
-   JSONP
-   ============================================================ */
-let jsonpCounter = 0;
-function jsonp(action, params = {}, timeout = 15000){
-  return new Promise(resolve => {
-    const cb = '__cb_' + (++jsonpCounter) + '_' + Date.now();
-    const sc = document.createElement('script');
-    const done = ok => { delete window[cb]; if(sc.parentNode) sc.parentNode.removeChild(sc); resolve(ok); };
-    const t = setTimeout(() => done({success:false, message:'Timed out'}), timeout);
-    window[cb] = d => { clearTimeout(t); done(d); };
-    const q = new URLSearchParams({ action, callback: cb, ...params }).toString();
-    sc.src = `${API_URL}?${q}`;
-    sc.onerror = () => { clearTimeout(t); done({success:false, message:'Network error'}); };
-    document.body.appendChild(sc);
-  });
-}
-const callApi = (action, data={}) => jsonp(action, data);
-
-/* ============================================================
-   TOAST
-   ============================================================ */
-let toastTimer=null;
-function toast(msg, kind=''){
-  const t = $('toast');
-  const ico = kind==='ok' ? 'fa-circle-check' : kind==='err' ? 'fa-circle-exclamation' : 'fa-circle-info';
-  t.className = 'toast ' + kind;
-  t.innerHTML = `<i class="fas ${ico}"></i> <span>${esc(msg)}</span>`;
-  t.classList.add('on');
-  if(toastTimer) clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => t.classList.remove('on'), 2600);
-}
-
-/* ============================================================
-   CHROME REFRESH
-   ============================================================ */
-function refreshChrome(){
-  const s = getSession();
-  const level = s ? norm(s.role) : 'PUBLIC';
-  const initial = s ? (s.name || 'U').trim().charAt(0).toUpperCase() : '?';
-
-  const ab = $('appbar');
-  ab.className = 'appbar ' + roleClass(level);
-  $('abTitle').textContent = 'জিম ক্লাব, সাঞ্চিয়া, মালদা';
-  $('abSub').textContent   = 'স্থাপিত - ২০০৮';
-  $('abAvatar').textContent = initial;
-
-  $('greetName').textContent = s ? `Hello, ${s.name.split(' ')[0]}!` : 'Hello, Guest!';
-  $('greetSub').textContent  = s
-    ? `You are signed in as ${level}`
-    : 'Sign in to unlock more features';
-
-  const perm = s ? norm(s.permission) : 'PUBLIC';
-  $('greetChips').innerHTML = s
-    ? `<span class="chip">${level}</span>
-       <span class="chip ${perm==='ALLOWED'?'allowed':'denied'}">${perm}</span>`
-    : `<span class="chip">PUBLIC</span>`;
-
-  $('drAvatar').textContent = initial;
-  $('drName').textContent   = s ? s.name : 'Guest';
-  $('drMobile').textContent = s ? s.username : 'Not signed in';
-  $('drChips').innerHTML    = s
-    ? `<span class="chip">${level}</span>
-       <span class="chip ${perm==='ALLOWED'?'allowed':'denied'}">${perm}</span>`
-    : `<span class="chip">PUBLIC</span>`;
-
-  $('btnSignOut').style.display = s ? 'flex' : 'none';
-
-  document.body.className = document.body.className.replace(/\brole-\w+\b/g,'').trim();
-  document.body.classList.add('role-' + level.toLowerCase());
-
-  renderHub(level);
-  renderDrawerMenu(level);
-  renderBottomNav(level);
-}
-
-/* ============================================================
-   HUB GRID
-   ============================================================ */
-function renderHub(level){
-  const items = MENU_ITEMS.filter(m => m.levels.includes(level));
-  $('appCount').textContent = items.length;
-  const grid = $('appGrid');
-  grid.innerHTML = items.map(it => `
-    <button class="tile" data-id="${it.id}">
-      <span class="ic ${it.color}"><i class="fas ${it.icon}"></i></span>
-      <span class="lb">${esc(it.label)}</span>
-    </button>
-  `).join('');
-  grid.querySelectorAll('.tile').forEach(t => {
-    t.addEventListener('click', () => openMenu(t.dataset.id));
-  });
-}
-function openMenu(id){
-  const it = MENU_ITEMS.find(m => m.id === id);
-  if(!it) return;
-  const s = getSession();
-  const level = s ? norm(s.role) : 'PUBLIC';
-  if(!it.levels.includes(level)){
-    toast('Access denied for your level.', 'err');
-    return;
+  /* ============================================================
+     JSONP
+     ============================================================ */
+  let jsonpCounter = 0;
+  function jsonp(action, params = {}, timeout = 15000){
+    return new Promise(resolve => {
+      const cb = '__cb_' + (++jsonpCounter) + '_' + Date.now();
+      const sc = document.createElement('script');
+      const done = ok => { delete window[cb]; if(sc.parentNode) sc.parentNode.removeChild(sc); resolve(ok); };
+      const t = setTimeout(() => done({success:false, message:'Timed out'}), timeout);
+      window[cb] = d => { clearTimeout(t); done(d); };
+      const q = new URLSearchParams({ action, callback: cb, ...params }).toString();
+      sc.src = `${API_URL}?${q}`;
+      sc.onerror = () => { clearTimeout(t); done({success:false, message:'Network error'}); };
+      document.body.appendChild(sc);
+    });
   }
-  if(it.url === '#admin'){
-    if(level === 'ADMIN'){ openAdmin(); }
-    else toast('Admin only.', 'err');
-    return;
-  }
-  if(!it.url){ toast(`${it.label} — page not built yet`); return; }
-  showFrame(it.label, it.url);
-}
+  const callApi = (action, data={}) => jsonp(action, data);
 
-/* ============================================================
-   DRAWER MENU
-   ============================================================ */
-function renderDrawerMenu(level){
-  const items = MENU_ITEMS.filter(m => m.levels.includes(level));
-  const menu = $('drMenu');
-  menu.innerHTML = `<div class="dr-label">Access: ${level}</div>` +
-    items.map(it => `
-      <button class="mi" data-id="${it.id}">
-        <span class="mi-ic ${it.color}"><i class="fas ${it.icon}"></i></span>
-        <span class="mi-lb">${esc(it.label)}</span>
-        <span class="mi-ar"><i class="fas fa-chevron-right"></i></span>
+  /* ============================================================
+     TOAST
+     ============================================================ */
+  let toastTimer=null;
+  function toast(msg, kind=''){
+    const t = $('toast');
+    const ico = kind==='ok' ? 'fa-circle-check' : kind==='err' ? 'fa-circle-exclamation' : 'fa-circle-info';
+    t.className = 'toast ' + kind;
+    t.innerHTML = `<i class="fas ${ico}"></i> <span>${esc(msg)}</span>`;
+    t.classList.add('on');
+    if(toastTimer) clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove('on'), 2600);
+  }
+
+  /* ============================================================
+     CHROME REFRESH
+     ============================================================ */
+  function refreshChrome(){
+    const s = getSession();
+    const level = s ? norm(s.role) : 'PUBLIC';
+    const initial = s ? (s.name || 'U').trim().charAt(0).toUpperCase() : '?';
+
+    const ab = $('appbar');
+    ab.className = 'appbar ' + roleClass(level);
+    $('abTitle').textContent = 'জিম ক্লাব, সাঞ্চিয়া, মালদা';
+    $('abSub').textContent   = 'স্থাপিত - ২০০৮';
+    $('abAvatar').textContent = initial;
+
+    $('greetName').textContent = s ? `Hello, ${s.name.split(' ')[0]}!` : 'Hello, Guest!';
+    $('greetSub').textContent  = s
+      ? `You are signed in as ${level}`
+      : 'Sign in to unlock more features';
+
+    const perm = s ? norm(s.permission) : 'PUBLIC';
+    $('greetChips').innerHTML = s
+      ? `<span class="chip">${level}</span>
+         <span class="chip ${perm==='ALLOWED'?'allowed':'denied'}">${perm}</span>`
+      : `<span class="chip">PUBLIC</span>`;
+
+    $('drAvatar').textContent = initial;
+    $('drName').textContent   = s ? s.name : 'Guest';
+    $('drMobile').textContent = s ? s.username : 'Not signed in';
+    $('drChips').innerHTML    = s
+      ? `<span class="chip">${level}</span>
+         <span class="chip ${perm==='ALLOWED'?'allowed':'denied'}">${perm}</span>`
+      : `<span class="chip">PUBLIC</span>`;
+
+    $('btnSignOut').style.display = s ? 'flex' : 'none';
+
+    document.body.className = document.body.className.replace(/\brole-\w+\b/g,'').trim();
+    document.body.classList.add('role-' + level.toLowerCase());
+
+    renderHub(level);
+    renderDrawerMenu(level);
+    renderBottomNav(level);
+  }
+
+  /* ============================================================
+     HUB GRID
+     ============================================================ */
+  function renderHub(level){
+    const items = MENU_ITEMS.filter(m => m.levels.includes(level));
+    $('appCount').textContent = items.length;
+    const grid = $('appGrid');
+    grid.innerHTML = items.map(it => `
+      <button class="tile" data-id="${it.id}">
+        <span class="ic ${it.color}"><i class="fas ${it.icon}"></i></span>
+        <span class="lb">${esc(it.label)}</span>
       </button>
     `).join('');
-  menu.querySelectorAll('.mi').forEach(b => {
-    b.addEventListener('click', () => { closeDrawer(); openMenu(b.dataset.id); });
-  });
-}
-
-/* ============================================================
-   BOTTOM NAV
-   ============================================================ */
-function renderBottomNav(level){
-  const pinned = MENU_ITEMS.filter(m => m.levels.includes(level) && m.bottom);
-  const navItems = pinned.slice(0, 4).map(m => ({
-    id:m.id, icon:m.bottomIcon || m.icon,
-    label: m.label.length > 9 ? m.label.split(' ')[0] : m.label
-  }));
-  navItems.push({ id:'__more', icon:'fa-ellipsis', label:'More' });
-
-  const nav = $('bottomNav');
-  nav.innerHTML = navItems.map((n, i) => `
-    <button class="bn-item ${i===0?'active':''}" data-id="${n.id}">
-      <i class="fas ${n.icon}"></i>
-      <span>${esc(n.label)}</span>
-    </button>
-  `).join('');
-  nav.querySelectorAll('.bn-item').forEach(b => {
-    b.addEventListener('click', () => {
-      nav.querySelectorAll('.bn-item').forEach(x => x.classList.remove('active'));
-      b.classList.add('active');
-      const id = b.dataset.id;
-      if(id === '__more'){ openDrawer(); return; }
-      openMenu(id);
+    grid.querySelectorAll('.tile').forEach(t => {
+      t.addEventListener('click', () => openMenu(t.dataset.id));
     });
-  });
-}
+  }
+  function openMenu(id){
+    const it = MENU_ITEMS.find(m => m.id === id);
+    if(!it) return;
+    const s = getSession();
+    const level = s ? norm(s.role) : 'PUBLIC';
+    if(!it.levels.includes(level)){
+      toast('Access denied for your level.', 'err');
+      return;
+    }
+    if(it.url === '#admin'){
+      if(level === 'ADMIN'){ openAdmin(); }
+      else toast('Admin only.', 'err');
+      return;
+    }
+    if(!it.url){ toast(`${it.label} — page not built yet`); return; }
+    showFrame(it.label, it.url);
+  }
 
-/* ============================================================
-   DRAWER OPEN/CLOSE
-   ============================================================ */
-function openDrawer(){
-  $('drawer').classList.add('on');
-  $('scrim').classList.add('on');
-}
-function closeDrawer(){
-  $('drawer').classList.remove('on');
-  $('scrim').classList.remove('on');
-}
-$('btnMenu').addEventListener('click', openDrawer);
-$('scrim').addEventListener('click', closeDrawer);
+  /* ============================================================
+     DRAWER MENU
+     ============================================================ */
+  function renderDrawerMenu(level){
+    const items = MENU_ITEMS.filter(m => m.levels.includes(level));
+    const menu = $('drMenu');
+    menu.innerHTML = `<div class="dr-label">Access: ${level}</div>` +
+      items.map(it => `
+        <button class="mi" data-id="${it.id}">
+          <span class="mi-ic ${it.color}"><i class="fas ${it.icon}"></i></span>
+          <span class="mi-lb">${esc(it.label)}</span>
+          <span class="mi-ar"><i class="fas fa-chevron-right"></i></span>
+        </button>
+      `).join('');
+    menu.querySelectorAll('.mi').forEach(b => {
+      b.addEventListener('click', () => { closeDrawer(); openMenu(b.dataset.id); });
+    });
+  }
 
-/* ============================================================
-   AUTH SHEET
-   ============================================================ */
-function openAuth(pane='login'){
-  $('authSheet').classList.add('on');
-  $('authScrim').classList.add('on');
-  switchAuthPane(pane);
-}
-function closeAuth(){
-  $('authSheet').classList.remove('on');
-  $('authScrim').classList.remove('on');
-  $('loginMsg').classList.add('hide');
-  $('signupMsg').classList.add('hide');
-}
-function switchAuthPane(pane){
+  /* ============================================================
+     BOTTOM NAV
+     ============================================================ */
+  function renderBottomNav(level){
+    const pinned = MENU_ITEMS.filter(m => m.levels.includes(level) && m.bottom);
+    const navItems = pinned.slice(0, 4).map(m => ({
+      id:m.id, icon:m.bottomIcon || m.icon,
+      label: m.label.length > 9 ? m.label.split(' ')[0] : m.label
+    }));
+    navItems.push({ id:'__more', icon:'fa-ellipsis', label:'More' });
+
+    const nav = $('bottomNav');
+    nav.innerHTML = navItems.map((n, i) => `
+      <button class="bn-item ${i===0?'active':''}" data-id="${n.id}">
+        <i class="fas ${n.icon}"></i>
+        <span>${esc(n.label)}</span>
+      </button>
+    `).join('');
+    nav.querySelectorAll('.bn-item').forEach(b => {
+      b.addEventListener('click', () => {
+        nav.querySelectorAll('.bn-item').forEach(x => x.classList.remove('active'));
+        b.classList.add('active');
+        const id = b.dataset.id;
+        if(id === '__more'){ openDrawer(); return; }
+        openMenu(id);
+      });
+    });
+  }
+
+  /* ============================================================
+     DRAWER OPEN/CLOSE
+     ============================================================ */
+  function openDrawer(){
+    $('drawer').classList.add('on');
+    $('scrim').classList.add('on');
+  }
+  function closeDrawer(){
+    $('drawer').classList.remove('on');
+    $('scrim').classList.remove('on');
+  }
+  $('btnMenu').addEventListener('click', openDrawer);
+  $('scrim').addEventListener('click', closeDrawer);
+
+  /* ============================================================
+     AUTH SHEET
+     ============================================================ */
+  function openAuth(pane='login'){
+    $('authSheet').classList.add('on');
+    $('authScrim').classList.add('on');
+    switchAuthPane(pane);
+  }
+  function closeAuth(){
+    $('authSheet').classList.remove('on');
+    $('authScrim').classList.remove('on');
+    $('loginMsg').classList.add('hide');
+    $('signupMsg').classList.add('hide');
+  }
+  function switchAuthPane(pane){
+    document.querySelectorAll('#authSeg button').forEach(b => {
+      b.classList.toggle('on', b.dataset.pane === pane);
+    });
+    $('paneLogin').style.display  = pane === 'login'  ? '' : 'none';
+    $('paneSignup').style.display = pane === 'signup' ? '' : 'none';
+    $('authTitle').innerHTML = pane === 'login'
+      ? '<i class="fas fa-id-card"></i> Sign In'
+      : '<i class="fas fa-user-plus"></i> Sign Up';
+  }
+  $('authClose').addEventListener('click', closeAuth);
+  $('authScrim').addEventListener('click', closeAuth);
   document.querySelectorAll('#authSeg button').forEach(b => {
-    b.classList.toggle('on', b.dataset.pane === pane);
+    b.addEventListener('click', () => switchAuthPane(b.dataset.pane));
   });
-  $('paneLogin').style.display  = pane === 'login'  ? '' : 'none';
-  $('paneSignup').style.display = pane === 'signup' ? '' : 'none';
-  $('authTitle').innerHTML = pane === 'login'
-    ? '<i class="fas fa-id-card"></i> Sign In'
-    : '<i class="fas fa-user-plus"></i> Sign Up';
-}
-$('authClose').addEventListener('click', closeAuth);
-$('authScrim').addEventListener('click', closeAuth);
-document.querySelectorAll('#authSeg button').forEach(b => {
-  b.addEventListener('click', () => switchAuthPane(b.dataset.pane));
-});
 
-$('abAvatar').addEventListener('click', () => {
-  if(!getSession()) openAuth('login');
-  else openDrawer();
-});
+  $('abAvatar').addEventListener('click', () => {
+    if(!getSession()) openAuth('login');
+    else openDrawer();
+  });
 
-/* ---- LOGIN ---- */
-$('formLogin').addEventListener('submit', async e => {
-  e.preventDefault();
-  const mobile = $('loginMobile').value.trim();
-  const pass   = $('loginPass').value;
-  const rem    = $('loginRemember').checked;
-  const msg    = $('loginMsg');
-  const btn    = $('btnLogin');
+  /* ---- LOGIN ---- */
+  $('formLogin').addEventListener('submit', async e => {
+    e.preventDefault();
+    const mobile = $('loginMobile').value.trim();
+    const pass   = $('loginPass').value;
+    const rem    = $('loginRemember').checked;
+    const msg    = $('loginMsg');
+    const btn    = $('btnLogin');
 
-  if(!mobile || !pass){
-    msg.className = 'msg er';
-    msg.textContent = 'Please enter mobile and password.';
-    return;
+    if(!mobile || !pass){
+      msg.className = 'msg er';
+      msg.textContent = 'Please enter mobile and password.';
+      return;
+    }
+
+    const original = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spin"></span> Signing in...';
+
+    const res = await callApi('login', { mobile, password: pass });
+
+    btn.disabled = false;
+    btn.innerHTML = original;
+
+    if(!res.success){
+      msg.className = 'msg er';
+      msg.textContent = res.message || 'Login failed.';
+      return;
+    }
+
+    const u = res.data;
+    setSession({
+      username: u.username, mobile: u.mobile,
+      name: u.name, role: u.role, level: u.level,
+      permission: u.permission
+    }, rem);
+
+    CURRENT_USER = getSession();
+    msg.className = 'msg ok';
+    msg.textContent = `Welcome ${u.name}!`;
+
+    refreshChrome();
+    startHeartbeat();
+    startActiveCount();
+    startPermWatcher();
+
+    setTimeout(() => { closeAuth(); toast(`Signed in as ${u.name}`, 'ok'); }, 500);
+  });
+
+  /* ---- SIGNUP ---- */
+  $('formSignup').addEventListener('submit', async e => {
+    e.preventDefault();
+    const name   = $('suName').value.trim();
+    const mobile = $('suMobile').value.trim();
+    const pass   = $('suPass').value;
+    const terms  = $('suTerms').checked;
+    const msg    = $('signupMsg');
+    const btn    = $('btnSignup');
+
+    if(!name || !mobile || !pass){
+      msg.className = 'msg er'; msg.textContent = 'All fields are required.'; return;
+    }
+    if(mobile.length < 10){
+      msg.className = 'msg er'; msg.textContent = 'Enter a valid 10-digit mobile number.'; return;
+    }
+    if(pass.length < 4){
+      msg.className = 'msg er'; msg.textContent = 'Password must be at least 4 characters.'; return;
+    }
+    if(!terms){
+      msg.className = 'msg er'; msg.textContent = 'Please accept the terms.'; return;
+    }
+
+    const original = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spin"></span> Creating...';
+
+    const res = await callApi('signup', { name, mobile, password: pass });
+
+    btn.disabled = false;
+    btn.innerHTML = original;
+
+    if(res.success){
+      msg.className = 'msg in';
+      msg.textContent = '✅ Account created! Awaiting admin approval.';
+      $('formSignup').reset();
+      setTimeout(() => {
+        switchAuthPane('login');
+        $('loginMobile').value = mobile;
+      }, 1600);
+    } else {
+      msg.className = 'msg er';
+      msg.textContent = res.message || 'Signup failed.';
+    }
+  });
+
+  /* ---- SIGN OUT ---- */
+  $('btnSignOut').addEventListener('click', () => {
+    closeDrawer();
+    clearSession();
+    CURRENT_USER = null;
+    stopTrackers();
+    refreshChrome();
+    toast('Signed out', 'ok');
+  });
+
+  /* ============================================================
+     IFRAME VIEW
+     ============================================================ */
+  function showFrame(title, url){
+    $('frameTitle').textContent = title;
+    $('frameContent').src = url;
+    $('frameWrap').classList.add('on');
+  }
+  $('frameBack').addEventListener('click', () => {
+    $('frameWrap').classList.remove('on');
+    $('frameContent').src = 'about:blank';
+    touchSession();
+  });
+
+  /* ============================================================
+     ADMIN
+     ============================================================ */
+  function openAdmin(){
+    const s = getSession();
+    if(!s || norm(s.role) !== 'ADMIN'){ toast('Admin only.', 'err'); return; }
+    $('adminView').classList.add('on');
+    switchAdminTab('view');
+    loadAdminUsers();
+  }
+  function closeAdmin(){
+    $('adminView').classList.remove('on');
+  }
+  $('adminBack').addEventListener('click', closeAdmin);
+  $('adminRefresh').addEventListener('click', () => loadAdminUsers());
+  $('adminSearch').addEventListener('input', () => renderAdminContent());
+
+  document.querySelectorAll('.atab').forEach(t => {
+    t.addEventListener('click', () => switchAdminTab(t.dataset.tab));
+  });
+  function switchAdminTab(tab){
+    adminTab = tab;
+    document.querySelectorAll('.atab').forEach(t => t.classList.toggle('on', t.dataset.tab === tab));
+    renderAdminContent();
   }
 
-  const original = btn.innerHTML;
-  btn.disabled = true;
-  btn.innerHTML = '<span class="spin"></span> Signing in...';
+  async function loadAdminUsers(){
+    if(!CURRENT_USER || norm(CURRENT_USER.role) !== 'ADMIN') return;
+    const list = $('adminList');
+    list.innerHTML = '<div class="empty"><span class="spin" style="border-color:rgba(139,92,246,.25);border-top-color:#8b5cf6;"></span><div style="margin-top:12px;">Loading…</div></div>';
 
-  const res = await callApi('login', { mobile, password: pass });
-
-  btn.disabled = false;
-  btn.innerHTML = original;
-
-  if(!res.success){
-    msg.className = 'msg er';
-    msg.textContent = res.message || 'Login failed.';
-    return;
+    const res = await callApi('getUsers');
+    if(!res.success || !res.data || !res.data.users){
+      list.innerHTML = '<div class="empty"><i class="fas fa-triangle-exclamation"></i>Failed to load users.</div>';
+      return;
+    }
+    ADMIN_USERS = res.data.users;
+    updateStats();
+    renderAdminContent();
   }
 
-  const u = res.data;
-  setSession({
-    username: u.username, mobile: u.mobile,
-    name: u.name, role: u.role, level: u.level,
-    permission: u.permission
-  }, rem);
-
-  CURRENT_USER = getSession();
-  msg.className = 'msg ok';
-  msg.textContent = `Welcome ${u.name}!`;
-
-  refreshChrome();
-  startHeartbeat();
-  startActiveCount();
-  startPermWatcher();
-
-  setTimeout(() => { closeAuth(); toast(`Signed in as ${u.name}`, 'ok'); }, 500);
-});
-
-/* ---- SIGNUP ---- */
-$('formSignup').addEventListener('submit', async e => {
-  e.preventDefault();
-  const name   = $('suName').value.trim();
-  const mobile = $('suMobile').value.trim();
-  const pass   = $('suPass').value;
-  const terms  = $('suTerms').checked;
-  const msg    = $('signupMsg');
-  const btn    = $('btnSignup');
-
-  if(!name || !mobile || !pass){
-    msg.className = 'msg er'; msg.textContent = 'All fields are required.'; return;
-  }
-  if(mobile.length < 10){
-    msg.className = 'msg er'; msg.textContent = 'Enter a valid 10-digit mobile number.'; return;
-  }
-  if(pass.length < 4){
-    msg.className = 'msg er'; msg.textContent = 'Password must be at least 4 characters.'; return;
-  }
-  if(!terms){
-    msg.className = 'msg er'; msg.textContent = 'Please accept the terms.'; return;
+  function updateStats(){
+    const total = ADMIN_USERS.length;
+    const allowed = ADMIN_USERS.filter(u => u.permission === 'ALLOWED').length;
+    const pending = total - allowed;
+    $('stTotal').textContent   = total;
+    $('stAllowed').textContent = allowed;
+    $('stDenied').textContent  = pending;
   }
 
-  const original = btn.innerHTML;
-  btn.disabled = true;
-  btn.innerHTML = '<span class="spin"></span> Creating...';
+  function renderAdminContent(){
+    const q = $('adminSearch').value.trim().toLowerCase();
+    const list = $('adminList');
 
-  const res = await callApi('signup', { name, mobile, password: pass });
+    let users = ADMIN_USERS;
+    if(q) users = users.filter(u =>
+      String(u.name).toLowerCase().includes(q) ||
+      String(u.username).toLowerCase().includes(q));
 
-  btn.disabled = false;
-  btn.innerHTML = original;
+    if(!users.length){
+      list.innerHTML = '<div class="empty"><i class="fas fa-users-slash"></i>No users found.</div>';
+      return;
+    }
 
-  if(res.success){
-    msg.className = 'msg in';
-    msg.textContent = '✅ Account created! Awaiting admin approval.';
-    $('formSignup').reset();
-    setTimeout(() => {
-      switchAuthPane('login');
-      $('loginMobile').value = mobile;
-    }, 1600);
-  } else {
-    msg.className = 'msg er';
-    msg.textContent = res.message || 'Signup failed.';
-  }
-});
-
-/* ---- SIGN OUT ---- */
-$('btnSignOut').addEventListener('click', () => {
-  closeDrawer();
-  clearSession();
-  CURRENT_USER = null;
-  stopTrackers();
-  refreshChrome();
-  toast('Signed out', 'ok');
-});
-
-/* ============================================================
-   IFRAME VIEW
-   ============================================================ */
-function showFrame(title, url){
-  $('frameTitle').textContent = title;
-  $('frameContent').src = url;
-  $('frameWrap').classList.add('on');
-}
-$('frameBack').addEventListener('click', () => {
-  $('frameWrap').classList.remove('on');
-  $('frameContent').src = 'about:blank';
-  touchSession();
-});
-
-/* ============================================================
-   ADMIN
-   ============================================================ */
-function openAdmin(){
-  const s = getSession();
-  if(!s || norm(s.role) !== 'ADMIN'){ toast('Admin only.', 'err'); return; }
-  $('adminView').classList.add('on');
-  switchAdminTab('view');
-  loadAdminUsers();
-}
-function closeAdmin(){
-  $('adminView').classList.remove('on');
-}
-$('adminBack').addEventListener('click', closeAdmin);
-$('adminRefresh').addEventListener('click', () => loadAdminUsers());
-$('adminSearch').addEventListener('input', () => renderAdminContent());
-
-document.querySelectorAll('.atab').forEach(t => {
-  t.addEventListener('click', () => switchAdminTab(t.dataset.tab));
-});
-function switchAdminTab(tab){
-  adminTab = tab;
-  document.querySelectorAll('.atab').forEach(t => t.classList.toggle('on', t.dataset.tab === tab));
-  renderAdminContent();
-}
-
-async function loadAdminUsers(){
-  if(!CURRENT_USER || norm(CURRENT_USER.role) !== 'ADMIN') return;
-  const list = $('adminList');
-  list.innerHTML = '<div class="empty"><span class="spin" style="border-color:rgba(139,92,246,.25);border-top-color:#8b5cf6;"></span><div style="margin-top:12px;">Loading…</div></div>';
-
-  const res = await callApi('getUsers');
-  if(!res.success || !res.data || !res.data.users){
-    list.innerHTML = '<div class="empty"><i class="fas fa-triangle-exclamation"></i>Failed to load users.</div>';
-    return;
-  }
-  ADMIN_USERS = res.data.users;
-  updateStats();
-  renderAdminContent();
-}
-
-function updateStats(){
-  const total = ADMIN_USERS.length;
-  const allowed = ADMIN_USERS.filter(u => u.permission === 'ALLOWED').length;
-  const pending = total - allowed;
-  $('stTotal').textContent   = total;
-  $('stAllowed').textContent = allowed;
-  $('stDenied').textContent  = pending;
-}
-
-function renderAdminContent(){
-  const q = $('adminSearch').value.trim().toLowerCase();
-  const list = $('adminList');
-
-  let users = ADMIN_USERS;
-  if(q) users = users.filter(u =>
-    String(u.name).toLowerCase().includes(q) ||
-    String(u.username).toLowerCase().includes(q));
-
-  if(!users.length){
-    list.innerHTML = '<div class="empty"><i class="fas fa-users-slash"></i>No users found.</div>';
-    return;
+    if(adminTab === 'view')       list.innerHTML = renderView(users);
+    if(adminTab === 'perm')       list.innerHTML = renderPerm(users);
+    if(adminTab === 'del')        list.innerHTML = renderDel(users);
+    if(adminTab === 'add')        list.innerHTML = renderAdd();
+    bindAdminEvents();
   }
 
-  if(adminTab === 'view')       list.innerHTML = renderView(users);
-  if(adminTab === 'perm')       list.innerHTML = renderPerm(users);
-  if(adminTab === 'del')        list.innerHTML = renderDel(users);
-  if(adminTab === 'add')        list.innerHTML = renderAdd();
-  bindAdminEvents();
-}
+  function renderView(users){
+    const self = CURRENT_USER && CURRENT_USER.mobile;
+    return users.map(u => {
+      const isSelf = self && u.username === self;
+      return `
+        <div class="ucard ${isSelf?'self':''}" data-id="${esc(u.slNo)}">
+          <div class="ucard-top">
+            <div class="ucard-info">
+              <div class="nm">
+                ${esc(u.name)}
+                ${isSelf ? '<span style="font-size:10px;color:#f59e0b;font-weight:800;">★ YOU</span>' : ''}
+              </div>
+              <div class="mb"><i class="fas fa-phone"></i> ${esc(u.username)}</div>
+            </div>
+            <div class="ucard-pills">
+              <span class="pill ${u.level}">${esc(u.level)}</span>
+              <span class="pill ${u.permission}">${esc(u.permission)}</span>
+            </div>
+          </div>
+          <div class="ucard-controls">
+            <button class="btn-save" data-act="toggle" data-id="${esc(u.slNo)}" data-perm="${u.permission === 'ALLOWED' ? 'DENIED' : 'ALLOWED'}">
+              <i class="fas ${u.permission === 'ALLOWED' ? 'fa-toggle-on' : 'fa-toggle-off'}"></i>
+              ${u.permission === 'ALLOWED' ? 'Deny' : 'Allow'}
+            </button>
+            <span></span>
+            <span></span>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
 
-function renderView(users){
-  const self = CURRENT_USER && CURRENT_USER.mobile;
-  return users.map(u => {
-    const isSelf = self && u.username === self;
-    return `
-      <div class="ucard ${isSelf?'self':''}" data-id="${esc(u.slNo)}">
+  function renderPerm(users){
+    return users.map(u => {
+      const self = CURRENT_USER && CURRENT_USER.mobile;
+      const isSelf = self && u.username === self;
+      return `
+        <div class="ucard ${isSelf?'self':''}" data-id="${esc(u.slNo)}">
+          <div class="ucard-top">
+            <div class="ucard-info">
+              <div class="nm">${esc(u.name)}</div>
+              <div class="mb"><i class="fas fa-phone"></i> ${esc(u.username)}</div>
+            </div>
+            <div class="ucard-pills">
+              <span class="pill ${u.permission}">${esc(u.permission)}</span>
+            </div>
+          </div>
+          <div class="ucard-controls">
+            <select data-role="${esc(u.slNo)}">
+              <option value="PUBLIC"  ${u.level==='PUBLIC'  ? 'selected':''}>PUBLIC</option>
+              <option value="MEMBER"  ${u.level==='MEMBER'  ? 'selected':''}>MEMBER</option>
+              <option value="CASHIER" ${u.level==='CASHIER' ? 'selected':''}>CASHIER</option>
+              <option value="ADMIN"   ${u.level==='ADMIN'   ? 'selected':''}>ADMIN</option>
+            </select>
+            <button class="btn-save" data-act="toggle" data-id="${esc(u.slNo)}" data-perm="${u.permission === 'ALLOWED' ? 'DENIED' : 'ALLOWED'}">
+              <i class="fas fa-shield"></i> ${u.permission === 'ALLOWED' ? 'Deny' : 'Allow'}
+            </button>
+            <button class="btn-save" data-act="save-role" data-id="${esc(u.slNo)}" data-name="${esc(u.name)}">
+              <i class="fas fa-check"></i> Save
+            </button>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function renderDel(users){
+    return users.map(u => `
+      <div class="ucard" data-id="${esc(u.slNo)}">
         <div class="ucard-top">
           <div class="ucard-info">
-            <div class="nm">
-              ${esc(u.name)}
-              ${isSelf ? '<span style="font-size:10px;color:#f59e0b;font-weight:800;">★ YOU</span>' : ''}
-            </div>
+            <div class="nm">${esc(u.name)}</div>
             <div class="mb"><i class="fas fa-phone"></i> ${esc(u.username)}</div>
           </div>
           <div class="ucard-pills">
@@ -1465,328 +1677,268 @@ function renderView(users){
           </div>
         </div>
         <div class="ucard-controls">
-          <button class="btn-save" data-act="toggle" data-id="${esc(u.slNo)}" data-perm="${u.permission === 'ALLOWED' ? 'DENIED' : 'ALLOWED'}">
-            <i class="fas ${u.permission === 'ALLOWED' ? 'fa-toggle-on' : 'fa-toggle-off'}"></i>
-            ${u.permission === 'ALLOWED' ? 'Deny' : 'Allow'}
+          <button class="btn-del" style="grid-column:1/-1;justify-content:center;" data-act="delete" data-id="${esc(u.slNo)}" data-name="${esc(u.name)}">
+            <i class="fas fa-trash"></i> Delete permanently
           </button>
-          <span></span>
-          <span></span>
         </div>
       </div>
-    `;
-  }).join('');
-}
+    `).join('');
+  }
 
-function renderPerm(users){
-  return users.map(u => {
-    const self = CURRENT_USER && CURRENT_USER.mobile;
-    const isSelf = self && u.username === self;
+  function renderAdd(){
     return `
-      <div class="ucard ${isSelf?'self':''}" data-id="${esc(u.slNo)}">
-        <div class="ucard-top">
-          <div class="ucard-info">
-            <div class="nm">${esc(u.name)}</div>
-            <div class="mb"><i class="fas fa-phone"></i> ${esc(u.username)}</div>
-          </div>
-          <div class="ucard-pills">
-            <span class="pill ${u.permission}">${esc(u.permission)}</span>
+      <form id="adminAddForm" style="background:#fff;border:1px solid #e9d5ff;border-radius:22px;padding:14px;">
+        <div class="field">
+          <label>Full Name</label>
+          <div class="in"><i class="fas fa-user"></i>
+            <input type="text" id="aName" placeholder="Full name" required>
           </div>
         </div>
-        <div class="ucard-controls">
-          <select data-role="${esc(u.slNo)}">
-            <option value="PUBLIC"  ${u.level==='PUBLIC'  ? 'selected':''}>PUBLIC</option>
-            <option value="MEMBER"  ${u.level==='MEMBER'  ? 'selected':''}>MEMBER</option>
-            <option value="CASHIER" ${u.level==='CASHIER' ? 'selected':''}>CASHIER</option>
-            <option value="ADMIN"   ${u.level==='ADMIN'   ? 'selected':''}>ADMIN</option>
-          </select>
-          <button class="btn-save" data-act="toggle" data-id="${esc(u.slNo)}" data-perm="${u.permission === 'ALLOWED' ? 'DENIED' : 'ALLOWED'}">
-            <i class="fas fa-shield"></i> ${u.permission === 'ALLOWED' ? 'Deny' : 'Allow'}
-          </button>
-          <button class="btn-save" data-act="save-role" data-id="${esc(u.slNo)}" data-name="${esc(u.name)}">
-            <i class="fas fa-check"></i> Save
-          </button>
+        <div class="field">
+          <label>Mobile Number</label>
+          <div class="in"><i class="fas fa-phone-alt"></i>
+            <input type="tel" id="aMobile" placeholder="9876543210" inputmode="numeric" required>
+          </div>
         </div>
-      </div>
-    `;
-  }).join('');
-}
-
-function renderDel(users){
-  return users.map(u => `
-    <div class="ucard" data-id="${esc(u.slNo)}">
-      <div class="ucard-top">
-        <div class="ucard-info">
-          <div class="nm">${esc(u.name)}</div>
-          <div class="mb"><i class="fas fa-phone"></i> ${esc(u.username)}</div>
+        <div class="field">
+          <label>Password</label>
+          <div class="in"><i class="fas fa-key"></i>
+            <input type="password" id="aPass" placeholder="Min 4 characters" required>
+          </div>
         </div>
-        <div class="ucard-pills">
-          <span class="pill ${u.level}">${esc(u.level)}</span>
-          <span class="pill ${u.permission}">${esc(u.permission)}</span>
+        <div class="field">
+          <label>Level</label>
+          <div class="in"><i class="fas fa-layer-group"></i>
+            <select id="aLevel">
+              <option value="PUBLIC">PUBLIC</option>
+              <option value="MEMBER" selected>MEMBER</option>
+              <option value="CASHIER">CASHIER</option>
+              <option value="ADMIN">ADMIN</option>
+            </select>
+          </div>
         </div>
-      </div>
-      <div class="ucard-controls">
-        <button class="btn-del" style="grid-column:1/-1;justify-content:center;" data-act="delete" data-id="${esc(u.slNo)}" data-name="${esc(u.name)}">
-          <i class="fas fa-trash"></i> Delete permanently
+        <div class="field">
+          <label>Permission</label>
+          <div class="in"><i class="fas fa-shield"></i>
+            <select id="aPerm">
+              <option value="DENIED">DENIED (pending)</option>
+              <option value="ALLOWED">ALLOWED</option>
+            </select>
+          </div>
+        </div>
+        <button type="submit" class="btn" id="aSave">
+          <i class="fas fa-user-plus"></i> Create User
         </button>
-      </div>
-    </div>
-  `).join('');
-}
+        <div class="msg hide" id="aMsg"></div>
+      </form>
+    `;
+  }
 
-function renderAdd(){
-  return `
-    <form id="adminAddForm" style="background:#fff;border:1px solid #e9d5ff;border-radius:14px;padding:14px;">
-      <div class="field">
-        <label>Full Name</label>
-        <div class="in"><i class="fas fa-user"></i>
-          <input type="text" id="aName" placeholder="Full name" required>
-        </div>
-      </div>
-      <div class="field">
-        <label>Mobile Number</label>
-        <div class="in"><i class="fas fa-phone-alt"></i>
-          <input type="tel" id="aMobile" placeholder="9876543210" inputmode="numeric" required>
-        </div>
-      </div>
-      <div class="field">
-        <label>Password</label>
-        <div class="in"><i class="fas fa-key"></i>
-          <input type="password" id="aPass" placeholder="Min 4 characters" required>
-        </div>
-      </div>
-      <div class="field">
-        <label>Level</label>
-        <div class="in"><i class="fas fa-layer-group"></i>
-          <select id="aLevel">
-            <option value="PUBLIC">PUBLIC</option>
-            <option value="MEMBER" selected>MEMBER</option>
-            <option value="CASHIER">CASHIER</option>
-            <option value="ADMIN">ADMIN</option>
-          </select>
-        </div>
-      </div>
-      <div class="field">
-        <label>Permission</label>
-        <div class="in"><i class="fas fa-shield"></i>
-          <select id="aPerm">
-            <option value="DENIED">DENIED (pending)</option>
-            <option value="ALLOWED">ALLOWED</option>
-          </select>
-        </div>
-      </div>
-      <button type="submit" class="btn" id="aSave">
-        <i class="fas fa-user-plus"></i> Create User
-      </button>
-      <div class="msg hide" id="aMsg"></div>
-    </form>
-  `;
-}
+  function bindAdminEvents(){
+    document.querySelectorAll('#adminList [data-act]').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const act = btn.dataset.act;
+        const slNo = btn.dataset.id;
 
-function bindAdminEvents(){
-  document.querySelectorAll('#adminList [data-act]').forEach(btn => {
-    btn.addEventListener('click', async () => {
-      const act = btn.dataset.act;
-      const slNo = btn.dataset.id;
+        if(act === 'toggle'){
+          const newPerm = btn.dataset.perm;
+          const r = await callApi('updatePermission', { slNo, permission: newPerm });
+          if(r.success){ toast(`Permission → ${newPerm}`, 'ok'); await loadAdminUsers(); await syncSession(); }
+          else toast(r.message || 'Failed', 'err');
+        }
 
-      if(act === 'toggle'){
-        const newPerm = btn.dataset.perm;
-        const r = await callApi('updatePermission', { slNo, permission: newPerm });
-        if(r.success){ toast(`Permission → ${newPerm}`, 'ok'); await loadAdminUsers(); await syncSession(); }
-        else toast(r.message || 'Failed', 'err');
-      }
+        if(act === 'save-role'){
+          const sel = document.querySelector(`#adminList select[data-role="${slNo}"]`);
+          const newLevel = sel ? sel.value : null;
+          if(!newLevel) return;
+          const r = await callApi('updatePermission', { slNo, role: newLevel });
+          if(r.success){ toast(`Level → ${newLevel}`, 'ok'); await loadAdminUsers(); await syncSession(); }
+          else toast(r.message || 'Failed', 'err');
+        }
 
-      if(act === 'save-role'){
-        const sel = document.querySelector(`#adminList select[data-role="${slNo}"]`);
-        const newLevel = sel ? sel.value : null;
-        if(!newLevel) return;
-        const r = await callApi('updatePermission', { slNo, role: newLevel });
-        if(r.success){ toast(`Level → ${newLevel}`, 'ok'); await loadAdminUsers(); await syncSession(); }
-        else toast(r.message || 'Failed', 'err');
-      }
-
-      if(act === 'delete'){
-        const name = btn.dataset.name;
-        if(!confirm(`Delete "${name}" permanently?`)) return;
-        const r = await callApi('deleteUser', { slNo });
-        if(r.success){ toast(`Deleted ${name}`, 'ok'); await loadAdminUsers(); }
-        else toast(r.message || 'Failed', 'err');
-      }
+        if(act === 'delete'){
+          const name = btn.dataset.name;
+          if(!confirm(`Delete "${name}" permanently?`)) return;
+          const r = await callApi('deleteUser', { slNo });
+          if(r.success){ toast(`Deleted ${name}`, 'ok'); await loadAdminUsers(); }
+          else toast(r.message || 'Failed', 'err');
+        }
+      });
     });
+
+    const f = $('adminAddForm');
+    if(f){
+      f.addEventListener('submit', async e => {
+        e.preventDefault();
+        const name   = $('aName').value.trim();
+        const mobile = $('aMobile').value.trim();
+        const password = $('aPass').value;
+        const level  = $('aLevel').value;
+        const permission = $('aPerm').value;
+        const msg = $('aMsg');
+        const btn = $('aSave');
+        const o = btn.innerHTML;
+
+        if(!name || !mobile || !password){
+          msg.className = 'msg er'; msg.textContent = 'All fields required.'; return;
+        }
+        btn.disabled = true; btn.innerHTML = '<span class="spin"></span> Creating...';
+
+        const r = await callApi('addUser', { name, mobile, password, level, permission });
+        btn.disabled = false; btn.innerHTML = o;
+
+        if(r.success){
+          msg.className = 'msg ok'; msg.textContent = '✅ ' + r.message;
+          f.reset();
+          await loadAdminUsers();
+        } else {
+          msg.className = 'msg er'; msg.textContent = '❌ ' + r.message;
+        }
+        setTimeout(() => { msg.classList.add('hide'); }, 3000);
+      });
+    }
+  }
+
+  /* ============================================================
+     LIVE USER COUNTER
+     ============================================================ */
+  function genSessionId(){
+    return 'sid_' + Date.now() + '_' + Math.random().toString(36).slice(2,12);
+  }
+  async function registerActive(){
+    const s = getSession();
+    if(!sessionId) sessionId = genSessionId();
+    const r = await callApi('registerView', {
+      sessionId,
+      username: s ? (s.name || s.username) : 'Guest',
+      role    : s ? s.role : 'PUBLIC'
+    });
+    if(r.success && r.data && typeof r.data.activeCount === 'number'){
+      $('abLiveCount').textContent = r.data.activeCount;
+    }
+  }
+  async function fetchActive(){
+    const r = await callApi('getActiveCount');
+    if(r.success && r.data && typeof r.data.count === 'number'){
+      $('abLiveCount').textContent = r.data.count;
+    }
+  }
+  function startHeartbeat(){
+    if(heartbeatTimer) clearInterval(heartbeatTimer);
+    registerActive();
+    heartbeatTimer = setInterval(registerActive, 30000);
+  }
+  function startActiveCount(){
+    if(activeCountTimer) clearInterval(activeCountTimer);
+    fetchActive();
+    activeCountTimer = setInterval(fetchActive, 15000);
+  }
+  function stopTrackers(){
+    if(heartbeatTimer)   clearInterval(heartbeatTimer);
+    if(activeCountTimer) clearInterval(activeCountTimer);
+    heartbeatTimer = activeCountTimer = null;
+  }
+
+  /* ============================================================
+     SCROLLING TEXT
+     ============================================================ */
+  async function loadScrollingText(){
+    const r = await callApi('getScrollingText');
+    if(!r.success || !r.data || !Array.isArray(r.data.texts)) return;
+    renderScrollingText(r.data.texts);
+  }
+
+  function renderScrollingText(texts){
+    const strip = $('scrollStrip');
+    const track = $('scrollTrack');
+
+    if(!texts || !texts.length){
+      strip.classList.remove('on');
+      track.innerHTML = '';
+      return;
+    }
+
+    const html = texts
+      .map(t => `<span>${esc(t)}</span>`)
+      .join('<span class="sep">◆</span>');
+
+    track.innerHTML = html + '<span class="sep">◆</span>' + html + '<span class="sep">◆</span>';
+
+    track.style.animation = 'none';
+    void track.offsetWidth;
+    track.style.animation = '';
+
+    strip.classList.add('on');
+  }
+
+  document.addEventListener('visibilitychange', () => {
+    const track = $('scrollTrack');
+    if(!track) return;
+    track.style.animationPlayState = document.hidden ? 'paused' : 'running';
   });
 
-  const f = $('adminAddForm');
-  if(f){
-    f.addEventListener('submit', async e => {
-      e.preventDefault();
-      const name   = $('aName').value.trim();
-      const mobile = $('aMobile').value.trim();
-      const password = $('aPass').value;
-      const level  = $('aLevel').value;
-      const permission = $('aPerm').value;
-      const msg = $('aMsg');
-      const btn = $('aSave');
-      const o = btn.innerHTML;
+  /* ============================================================
+     PERMISSION WATCHER
+     ============================================================ */
+  async function syncSession(){
+    const s = getSession();
+    if(!s || !s.mobile) return;
 
-      if(!name || !mobile || !password){
-        msg.className = 'msg er'; msg.textContent = 'All fields required.'; return;
-      }
-      btn.disabled = true; btn.innerHTML = '<span class="spin"></span> Creating...';
+    const r = await callApi('validateSession', { mobile: s.mobile });
+    if(!r.success || !r.data) return;
 
-      const r = await callApi('addUser', { name, mobile, password, level, permission });
-      btn.disabled = false; btn.innerHTML = o;
+    const newLevel = norm(r.data.role);
+    const newPerm  = norm(r.data.permission);
 
-      if(r.success){
-        msg.className = 'msg ok'; msg.textContent = '✅ ' + r.message;
-        f.reset();
-        await loadAdminUsers();
-      } else {
-        msg.className = 'msg er'; msg.textContent = '❌ ' + r.message;
-      }
-      setTimeout(() => { msg.classList.add('hide'); }, 3000);
-    });
+    if(newPerm !== 'ALLOWED'){
+      clearSession();
+      CURRENT_USER = null;
+      stopTrackers();
+      refreshChrome();
+      $('frameWrap').classList.remove('on');
+      toast('⚠️ Your access has been revoked.', 'err');
+      return;
+    }
+
+    if(norm(s.role) !== newLevel){
+      s.role = newLevel;
+      s.name = r.data.name || s.name;
+      localStorage.setItem('uc_sess', JSON.stringify(s));
+      CURRENT_USER = getSession();
+      refreshChrome();
+      toast(`🔁 Level updated to ${newLevel}`, 'ok');
+      $('frameWrap').classList.remove('on');
+    }
   }
-}
-
-/* ============================================================
-   LIVE USER COUNTER
-   ============================================================ */
-function genSessionId(){
-  return 'sid_' + Date.now() + '_' + Math.random().toString(36).slice(2,12);
-}
-async function registerActive(){
-  const s = getSession();
-  if(!sessionId) sessionId = genSessionId();
-  const r = await callApi('registerView', {
-    sessionId,
-    username: s ? (s.name || s.username) : 'Guest',
-    role    : s ? s.role : 'PUBLIC'
-  });
-  if(r.success && r.data && typeof r.data.activeCount === 'number'){
-    $('abLiveCount').textContent = r.data.activeCount;
-  }
-}
-async function fetchActive(){
-  const r = await callApi('getActiveCount');
-  if(r.success && r.data && typeof r.data.count === 'number'){
-    $('abLiveCount').textContent = r.data.count;
-  }
-}
-function startHeartbeat(){
-  if(heartbeatTimer) clearInterval(heartbeatTimer);
-  registerActive();
-  heartbeatTimer = setInterval(registerActive, 30000);
-}
-function startActiveCount(){
-  if(activeCountTimer) clearInterval(activeCountTimer);
-  fetchActive();
-  activeCountTimer = setInterval(fetchActive, 15000);
-}
-function stopTrackers(){
-  if(heartbeatTimer)   clearInterval(heartbeatTimer);
-  if(activeCountTimer) clearInterval(activeCountTimer);
-  heartbeatTimer = activeCountTimer = null;
-}
-
-/* ============================================================
-   SCROLLING TEXT
-   ============================================================ */
-async function loadScrollingText(){
-  const r = await callApi('getScrollingText');
-  if(!r.success || !r.data || !Array.isArray(r.data.texts)) return;
-  renderScrollingText(r.data.texts);
-}
-
-function renderScrollingText(texts){
-  const strip = $('scrollStrip');
-  const track = $('scrollTrack');
-
-  if(!texts || !texts.length){
-    strip.classList.remove('on');
-    track.innerHTML = '';
-    return;
+  function startPermWatcher(){
+    if(permWatcherTimer) clearInterval(permWatcherTimer);
+    permWatcherTimer = setInterval(() => { if(getSession()) syncSession(); }, 20000);
   }
 
-  const html = texts
-    .map(t => `<span>${esc(t)}</span>`)
-    .join('<span class="sep">◆</span>');
-
-  track.innerHTML = html + '<span class="sep">◆</span>' + html + '<span class="sep">◆</span>';
-
-  track.style.animation = 'none';
-  void track.offsetWidth;
-  track.style.animation = '';
-
-  strip.classList.add('on');
-}
-
-document.addEventListener('visibilitychange', () => {
-  const track = $('scrollTrack');
-  if(!track) return;
-  track.style.animationPlayState = document.hidden ? 'paused' : 'running';
-});
-
-/* ============================================================
-   PERMISSION WATCHER
-   ============================================================ */
-async function syncSession(){
-  const s = getSession();
-  if(!s || !s.mobile) return;
-
-  const r = await callApi('validateSession', { mobile: s.mobile });
-  if(!r.success || !r.data) return;
-
-  const newLevel = norm(r.data.role);
-  const newPerm  = norm(r.data.permission);
-
-  if(newPerm !== 'ALLOWED'){
-    clearSession();
-    CURRENT_USER = null;
-    stopTrackers();
-    refreshChrome();
-    $('frameWrap').classList.remove('on');
-    toast('⚠️ Your access has been revoked.', 'err');
-    return;
-  }
-
-  if(norm(s.role) !== newLevel){
-    s.role = newLevel;
-    s.name = r.data.name || s.name;
-    localStorage.setItem('uc_sess', JSON.stringify(s));
+  /* ============================================================
+     INIT
+     ============================================================ */
+  function init(){
     CURRENT_USER = getSession();
     refreshChrome();
-    toast(`🔁 Level updated to ${newLevel}`, 'ok');
-    $('frameWrap').classList.remove('on');
-  }
-}
-function startPermWatcher(){
-  if(permWatcherTimer) clearInterval(permWatcherTimer);
-  permWatcherTimer = setInterval(() => { if(getSession()) syncSession(); }, 20000);
-}
 
-/* ============================================================
-   INIT
-   ============================================================ */
-function init(){
-  CURRENT_USER = getSession();
-  refreshChrome();
+    sessionId = genSessionId();
+    startHeartbeat();
+    startActiveCount();
 
-  sessionId = genSessionId();
-  startHeartbeat();
-  startActiveCount();
-
-  loadScrollingText();
-  if(scrollTimer) clearInterval(scrollTimer);
-  scrollTimer = setInterval(loadScrollingText, 60000);
-
-  if(CURRENT_USER) startPermWatcher();
-
-  window.addEventListener('beforeunload', () => {
-    stopTrackers();
+    loadScrollingText();
     if(scrollTimer) clearInterval(scrollTimer);
-  });
-}
+    scrollTimer = setInterval(loadScrollingText, 60000);
 
-init();
+    if(CURRENT_USER) startPermWatcher();
+
+    window.addEventListener('beforeunload', () => {
+      stopTrackers();
+      if(scrollTimer) clearInterval(scrollTimer);
+    });
+  }
+
+  init();
 </script>
 </body>
 </html>
