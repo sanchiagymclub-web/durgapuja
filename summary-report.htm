@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Summary Report</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#0b1020">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+  :root{
+    --bg1:#0b1020; --bg2:#131a35;
+    --card:rgba(30,41,59,.72);
+    --txt:#eef2ff; --muted:#94a3b8;
+    --line:rgba(148,163,184,.18);
+    --c-special:#f59e0b;
+    --c-collection:#22c55e;
+    --c-expenditure:#ef4444;
+    --c-balance:#38bdf8;
+    --c-balance-neg:#f43f5e;
+    --accent:#a78bfa;
+    --safe-top:env(safe-area-inset-top, 0px);
+    --safe-bot:env(safe-area-inset-bottom, 0px);
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{
+    margin:0;padding:0;
+    overscroll-behavior-y:contain;
+  }
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    color:var(--txt);min-height:100vh;
+    background:
+      radial-gradient(700px 500px at 10% -10%, rgba(167,139,250,.30), transparent 60%),
+      radial-gradient(600px 500px at 100% 5%,  rgba(56,189,248,.22), transparent 60%),
+      radial-gradient(600px 600px at 50% 110%, rgba(34,197,94,.18),  transparent 60%),
+      linear-gradient(160deg,var(--bg1),var(--bg2) 60%,var(--bg1));
+    background-attachment:fixed;
+    padding: calc(var(--safe-top) + 16px) 14px calc(var(--safe-bot) + 90px);
+    max-width:520px;margin:0 auto;
+    font-size:15px;
+  }
+
+  /* ---------- HEADER ---------- */
+  .head{
+    display:flex;align-items:center;justify-content:space-between;
+    gap:12px;margin-bottom:16px;
+  }
+  h1{
+    margin:0;font-size:1.5rem;font-weight:800;letter-spacing:.2px;
+    background:linear-gradient(120deg,#a78bfa,#38bdf8 50%,#22c55e);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+    line-height:1.15;
+  }
+  .sub{color:var(--muted);font-size:.72rem;margin-top:4px;line-height:1.4}
+  .badge{
+    padding:5px 11px;border-radius:999px;font-size:.62rem;font-weight:700;
+    letter-spacing:.5px;text-transform:uppercase;
+    background:rgba(56,189,248,.14);color:#7dd3fc;
+    border:1px solid rgba(56,189,248,.35);
+    white-space:nowrap;
+  }
+  .badge.b-cache{background:rgba(34,197,94,.14);color:#86efac;border-color:rgba(34,197,94,.35)}
+  .badge.b-err  {background:rgba(239,68,68,.14);color:#fca5a5;border-color:rgba(239,68,68,.35)}
+
+  /* ---------- CARD ---------- */
+  .card{
+    background:var(--card);
+    backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+    border:1px solid var(--line);border-radius:18px;
+    padding:16px 16px 18px;margin-bottom:14px;
+    position:relative;overflow:hidden;
+  }
+  .card::before{
+    content:'';position:absolute;inset:0 0 auto 0;height:3px;
+    background:linear-gradient(90deg,var(--accent),#38bdf8,#22c55e,#f59e0b,#ef4444);
+    opacity:.9;
+  }
+  .card h2{
+    margin:2px 0 3px;font-size:.95rem;font-weight:700;letter-spacing:.2px;
+  }
+  .card .meta{color:var(--muted);font-size:.7rem;margin-bottom:12px;line-height:1.4}
+
+  /* ---------- TABLE ---------- */
+  .rows{display:flex;flex-direction:column;gap:2px}
+  .row{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:13px 4px;gap:10px;
+    border-bottom:1px solid var(--line);
+    font-size:.95rem;
+  }
+  .row:last-child{border-bottom:none}
+  .row .cat{display:flex;align-items:center;gap:10px;min-width:0;flex:1}
+  .row .cat span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .row .amt{
+    font-variant-numeric:tabular-nums;font-weight:700;
+    white-space:nowrap;font-size:.98rem;
+  }
+  .dot{
+    width:10px;height:10px;border-radius:50%;flex:0 0 10px;
+    box-shadow:0 0 10px currentColor;
+  }
+  .row.balance{
+    background:linear-gradient(90deg,rgba(56,189,248,.12),rgba(167,139,250,.10));
+    border-radius:12px;padding:15px 12px;margin-top:4px;
+    border-bottom:none;
+  }
+  .row.balance .cat span{font-weight:800}
+  .row.balance .amt{font-size:1.12rem;font-weight:800}
+
+  /* ---------- CHART ---------- */
+  .chart-box{position:relative;width:100%;height:250px}
+  .chart-box.bar{height:260px}
+  .chart-box.doughnut{height:280px}
+
+  /* ---------- FIXED SYNC BUTTON ---------- */
+  .sync-bar{
+    position:fixed;left:0;right:0;bottom:0;
+    padding:12px 14px calc(var(--safe-bot) + 14px);
+    background:linear-gradient(to top, rgba(11,16,32,.96), rgba(11,16,32,.85) 60%, transparent);
+    z-index:50;pointer-events:none;
+  }
+  .sync-btn{
+    display:block;width:100%;max-width:520px;margin:0 auto;
+    cursor:pointer;font-family:inherit;font-size:1rem;font-weight:700;
+    padding:15px 20px;border-radius:14px;border:none;color:#fff;
+    background:linear-gradient(135deg,#8b5cf6,#6366f1);
+    box-shadow:0 10px 26px -8px rgba(139,92,246,.75);
+    transition:transform .12s,filter .15s;
+    pointer-events:auto;
+    letter-spacing:.3px;
+  }
+  .sync-btn:active{transform:scale(.97);filter:brightness(1.1)}
+  .sync-btn:disabled{opacity:.6;cursor:wait;transform:none}
+  .spin{display:inline-block;animation:rot .9s linear infinite;margin-right:6px}
+  @keyframes rot{to{transform:rotate(360deg)}}
+
+  /* ---------- TOAST ---------- */
+  .toast{
+    position:fixed;left:50%;bottom:calc(var(--safe-bot) + 90px);
+    transform:translateX(-50%) translateY(160%);
+    background:linear-gradient(135deg,#8b5cf6,#6366f1);
+    color:#fff;padding:11px 20px;border-radius:11px;
+    font-size:.82rem;font-weight:600;
+    box-shadow:0 12px 32px -8px rgba(139,92,246,.7);
+    transition:transform .3s ease;z-index:60;
+    white-space:nowrap;max-width:90vw;
+  }
+  .toast.show{transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+
+  <div class="head">
+    <div style="min-width:0">
+      <h1>Summary Report</h1>
+      <div class="sub" id="updated">Loading…</div>
+    </div>
+    <span id="badge" class="badge">Loading</span>
+  </div>
+
+  <!-- TABLE -->
+  <div class="card">
+    <h2>Category Breakdown</h2>
+    <div class="meta">Balance = Special + Collection − Expenditure</div>
+    <div class="rows" id="rows">
+      <div class="row"><span class="cat">Loading…</span></div>
+    </div>
+  </div>
+
+  <!-- BAR CHART -->
+  <div class="card">
+    <h2>Amount Comparison</h2>
+    <div class="meta">Side-by-side view</div>
+    <div class="chart-box bar"><canvas id="barChart"></canvas></div>
+  </div>
+
+  <!-- DOUGHNUT -->
+  <div class="card">
+    <h2>Distribution</h2>
+    <div class="meta">Share of each category</div>
+    <div class="chart-box doughnut"><canvas id="doughnutChart"></canvas></div>
+  </div>
+
+  <!-- STICKY SYNC -->
+  <div class="sync-bar">
+    <button class="sync-btn" id="syncBtn">⟳ Sync Now</button>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+<script>
+/* ============================================================
+   ★★★  REPLACE with your Web App /exec URL  ★★★
+   ============================================================ */
+const WEBAPP_URL =
+  'https://script.google.com/macros/s/AKfycbwVmazORt7zRoBUm7UJ3MHNsQAiS2jMLSlLo5XmKFdpc4jfHT8_WfW50JNG0pbJw7_A/exec';
+
+const POLL_MS      = 30000;
+const AUTO_REFRESH = true;
+const LS_KEY       = 'c26_summary_mobile_v1';
+
+/* ------------------------------------------------------------
+   COLORS
+   ------------------------------------------------------------ */
+const COLORS = {
+  'Special Balance': { solid:'#f59e0b', glow:'rgba(245,158,11,.55)'  },
+  'Collection2026':  { solid:'#22c55e', glow:'rgba(34,197,94,.55)'   },
+  'Expenditure2026': { solid:'#ef4444', glow:'rgba(239,68,68,.55)'   },
+  'Balance':         { solid:'#38bdf8', glow:'rgba(56,189,248,.55)'  }
+};
+const BALANCE_NEG_COLOR = '#f43f5e';
+
+const colorFor = (category, amount) => {
+  if (category === 'Balance' && amount < 0) return BALANCE_NEG_COLOR;
+  return COLORS[category] ? COLORS[category].solid : '#a78bfa';
+};
+
+/* ------------------------------------------------------------
+   HELPERS
+   ------------------------------------------------------------ */
+const fmt = n => {
+  const v = Number(n || 0);
+  const sign = v < 0 ? '-' : '';
+  return sign + '₹' + Math.abs(v).toLocaleString('en-IN',
+    { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+};
+const fmtShort = n => {
+  const v = Number(n || 0);
+  const a = Math.abs(v);
+  const sign = v < 0 ? '-' : '';
+  if (a >= 1e7) return sign + '₹' + (a/1e7).toFixed(2) + 'Cr';
+  if (a >= 1e5) return sign + '₹' + (a/1e5).toFixed(2) + 'L';
+  if (a >= 1e3) return sign + '₹' + (a/1e3).toFixed(1) + 'K';
+  return sign + '₹' + a.toFixed(0);
+};
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c =>
+  ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+
+let _seq = 0;
+function jsonp(params, timeoutMs) {
+  return new Promise((resolve, reject) => {
+    const cb = '__c26cb' + (++_seq) + '_' + Date.now();
+    const qs = Object.keys(params)
+      .map(k => encodeURIComponent(k) + '=' + encodeURIComponent(params[k]))
+      .concat('callback=' + cb).join('&');
+
+    const script = document.createElement('script');
+    script.src = WEBAPP_URL + '?' + qs;
+
+    const timer = setTimeout(() => { cleanup(); reject(new Error('timeout')); },
+                             timeoutMs || 15000);
+
+    function cleanup() {
+      clearTimeout(timer);
+      try { delete window[cb]; } catch (e) { window[cb] = undefined; }
+      if (script.parentNode) script.parentNode.removeChild(script);
+    }
+
+    window[cb] = d => { cleanup(); resolve(d); };
+    script.onerror = () => { cleanup(); reject(new Error('JSONP failed')); };
+    document.body.appendChild(script);
+  });
+}
+
+function lsSave(p){ try{ localStorage.setItem(LS_KEY, JSON.stringify(p)); }catch(e){} }
+function lsLoad(){ try{ const r = localStorage.getItem(LS_KEY); return r?JSON.parse(r):null; }catch(e){ return null; } }
+
+let toastTimer;
+function toast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2400);
+}
+
+function setBadge(text, cls){
+  const b = document.getElementById('badge');
+  b.textContent = text;
+  b.className = 'badge ' + (cls || '');
+}
+
+/* ------------------------------------------------------------
+   STATE
+   ------------------------------------------------------------ */
+let currentVersion = null;
+let lastPayload    = null;
+let barChart = null, doughnutChart = null;
+
+/* ------------------------------------------------------------
+   LOAD
+   ------------------------------------------------------------ */
+function load(forceFresh) {
+  const btn = document.getElementById('syncBtn');
+  if (forceFresh) { btn.disabled = true; btn.innerHTML = '<span class="spin">⟳</span>Syncing…'; }
+  setBadge(forceFresh ? 'Syncing' : 'Loading', '');
+
+  const api = forceFresh ? 'sync' : 'summary';
+
+  return jsonp({ api: api, t: Date.now() }, 20000)
+    .then(p => {
+      lastPayload    = p;
+      currentVersion = p.version;
+      lsSave(p);
+      render(p);
+      setBadge(p.cached ? 'Cached' : 'Fresh', p.cached ? 'b-cache' : '');
+      if (p.syncedManually) toast('Synced · v' + p.version);
+    })
+    .catch(err => {
+      console.error(err);
+      const cached = lsLoad();
+      if (cached) { lastPayload = cached; render(cached); toast('Offline – cached'); setBadge('Offline','b-err'); }
+      else { document.getElementById('updated').textContent = 'Failed: ' + err.message; setBadge('Error','b-err'); }
+    })
+    .finally(() => {
+      btn.disabled = false;
+      btn.innerHTML = '⟳ Sync Now';
+    });
+}
+
+/* ------------------------------------------------------------
+   RENDER
+   ------------------------------------------------------------ */
+function render(p) {
+  document.getElementById('updated').textContent =
+    (p.cached ? 'Cached' : 'Fresh') + ' · v' + (p.version || '?') +
+    ' · ' + (p.generatedAt ? new Date(p.generatedAt).toLocaleTimeString() : '–');
+
+  const rows = p.rows || [];
+  renderTable(rows);
+  renderBarChart(rows);
+  renderDoughnutChart(rows);
+}
+
+function renderTable(rows) {
+  const host = document.getElementById('rows');
+  if (!rows.length) {
+    host.innerHTML = '<div class="row"><span class="cat" style="color:var(--muted)">No data</span></div>';
+    return;
+  }
+
+  host.innerHTML = rows.map(r => {
+    const isBalance = r.category === 'Balance';
+    const color = colorFor(r.category, r.amount);
+    return '<div class="row' + (isBalance ? ' balance' : '') + '">' +
+             '<div class="cat">' +
+               '<span class="dot" style="background:' + color + ';color:' + color + '"></span>' +
+               '<span>' + esc(r.category) + '</span>' +
+             '</div>' +
+             '<div class="amt" style="color:' + color + '">' + fmt(r.amount) + '</div>' +
+           '</div>';
+  }).join('');
+}
+
+/* ------------------------------------------------------------
+   BAR CHART
+   ------------------------------------------------------------ */
+function renderBarChart(rows) {
+  const labels = rows.map(r => r.category.replace('2026',''));
+  const values = rows.map(r => r.amount);
+  const colors = rows.map(r => colorFor(r.category, r.amount));
+
+  const ctx = document.getElementById('barChart').getContext('2d');
+  if (barChart) barChart.destroy();
+  barChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: labels,
+      datasets: [{
+        data: values,
+        backgroundColor: colors,
+        borderColor: colors,
+        borderWidth: 0,
+        borderRadius: 8,
+        borderSkipped: false,
+        barPercentage: 0.68,
+        categoryPercentage: 0.78
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      animation: { duration: 650, easing: 'easeOutQuart' },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: 'rgba(15,23,42,.96)',
+          titleColor: '#eef2ff',
+          bodyColor: '#eef2ff',
+          borderColor: 'rgba(148,163,184,.3)',
+          borderWidth: 1,
+          padding: 10,
+          cornerRadius: 8,
+          displayColors: false,
+          titleFont: { size: 12, weight: '700' },
+          bodyFont:  { size: 13, weight: '700' },
+          callbacks: {
+            label: ctx => fmt(ctx.parsed.y)
+          }
+        }
+      },
+      scales: {
+        x: {
+          grid: { display: false, drawBorder: false },
+          ticks: { color: '#cbd5e1', font: { size: 11, weight: '600' }, padding: 4 }
+        },
+        y: {
+          beginAtZero: true,
+          grid: { color: 'rgba(148,163,184,.10)', drawBorder: false },
+          ticks: {
+            color: '#94a3b8',
+            font: { size: 10 },
+            maxTicksLimit: 5,
+            callback: v => fmtShort(v)
+          }
+        }
+      }
+    }
+  });
+}
+
+/* ------------------------------------------------------------
+   DOUGHNUT CHART
+   ------------------------------------------------------------ */
+function renderDoughnutChart(rows) {
+  const labels = rows.map(r => r.category.replace('2026',''));
+  const values = rows.map(r => Math.abs(r.amount));
+  const colors = rows.map(r => colorFor(r.category, r.amount));
+
+  const ctx = document.getElementById('doughnutChart').getContext('2d');
+  if (doughnutChart) doughnutChart.destroy();
+  doughnutChart = new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      labels: labels,
+      datasets: [{
+        data: values,
+        backgroundColor: colors,
+        borderColor: 'rgba(15,23,42,.9)',
+        borderWidth: 3,
+        hoverOffset: 10,
+        hoverBorderColor: '#fff',
+        hoverBorderWidth: 2
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      cutout: '60%',
+      animation: { duration: 750, easing: 'easeOutQuart' },
+      plugins: {
+        legend: {
+          position: 'bottom',
+          labels: {
+            color: '#cbd5e1',
+            font: { size: 11, weight: '600' },
+            padding: 12,
+            usePointStyle: true,
+            pointStyle: 'circle',
+            boxWidth: 8,
+            boxHeight: 8
+          }
+        },
+        tooltip: {
+          backgroundColor: 'rgba(15,23,42,.96)',
+          titleColor: '#eef2ff',
+          bodyColor: '#eef2ff',
+          borderColor: 'rgba(148,163,184,.3)',
+          borderWidth: 1,
+          padding: 10,
+          cornerRadius: 8,
+          callbacks: {
+            label: ctx => {
+              const total = ctx.dataset.data.reduce((a,b) => a+b, 0);
+              const pct = total ? (ctx.parsed / total * 100).toFixed(1) : '0.0';
+              return ' ' + fmt(ctx.parsed) + '  (' + pct + '%)';
+            }
+          }
+        }
+      }
+    }
+  });
+}
+
+/* ------------------------------------------------------------
+   POLLING + BOOT
+   ------------------------------------------------------------ */
+function poll() {
+  if (!AUTO_REFRESH) return;
+  jsonp({ api: 'version', t: Date.now() }, 8000)
+    .then(v => {
+      if (v && v.ok && v.version && v.version !== currentVersion) load(false);
+    })
+    .catch(() => {});
+}
+
+(function boot() {
+  const cached = lsLoad();
+  if (cached) { lastPayload = cached; currentVersion = cached.version || null; render(cached); }
+  load(false);
+
+  document.getElementById('syncBtn').addEventListener('click', () => load(true));
+
+  if (AUTO_REFRESH) setInterval(poll, POLL_MS);
+
+  let lastFocus = 0;
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible' && Date.now() - lastFocus > 15000) {
+      lastFocus = Date.now();
+      poll();
+    }
+  });
+})();
+</script>
+</body>
+</html>
