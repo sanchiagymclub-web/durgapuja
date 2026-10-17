@@ -119,11 +119,13 @@ body{
 .tile.expenditure .icon{background:linear-gradient(135deg,#f59e0b,#d97706);}
 .tile.dues        .icon{background:linear-gradient(135deg,#ef4444,#b91c1c);}
 .tile.budget      .icon{background:linear-gradient(135deg,#8b5cf6,#6d28d9);}
+.tile.summary     .icon{background:linear-gradient(135deg,#10b981,#059669);}
 
 .tile.collection  {border-color:#dbeafe;}
 .tile.expenditure {border-color:#fef3c7;}
 .tile.dues        {border-color:#fee2e2;}
 .tile.budget      {border-color:#ede9fe;}
+.tile.summary     {border-color:#d1fae5;}
 
 /* ============================================================
    FOOTER NOTE
@@ -145,7 +147,7 @@ body{
 
     <div class="sec-title">
       <span>Available Reports</span>
-      <span class="count">4</span>
+      <span class="count">5</span>
     </div>
 
     <div class="grid">
@@ -178,6 +180,13 @@ body{
         <span class="sub">Budget vs actual</span>
       </button>
 
+      <!-- 5. Brief Summary Report -->
+      <button class="tile summary" data-report="summary">
+        <span class="icon"><i class="fas fa-chart-simple"></i></span>
+        <span class="label">Brief<br>Summary Report</span>
+        <span class="sub">Balance at a glance</span>
+      </button>
+
     </div>
 
     <div class="footnote">
@@ -192,16 +201,13 @@ body{
 <script>
 /* ============================================================
    REPORT ROUTES
-   ------------------------------------------------------------
-   👉  Later, replace each '' with the filename of the
-       HTML page you build for that report.
-       Example:  collection: 'report-collection.html'
    ============================================================ */
 const ROUTES = {
   collection  : '',   // → Head-wise Collection page
   expenditure : '',   // → Head-wise Expenditure page
   dues        : '',   // → Members Collection vs Due page
-  budget      : ''    // → Summary Budget Report page
+  budget      : '',   // → Summary Budget Report page
+  summary     : ''    // → Brief Summary Report page
 };
 
 /* ============================================================
