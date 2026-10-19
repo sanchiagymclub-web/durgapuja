@@ -884,7 +884,7 @@ body::after {
 /* ================================================================
    CONFIG — paste your Apps Script Web App URL here
    ================================================================ */
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxSrP_pS0bWSQp9Mfim6s62Y_3h9MoSEQURQ8F8_XELhCNxdraeO_nY0egYUIbzIBhFBQ/exec';
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz_nXW3fF6LsfE3nSy9LyTeJBZO8b60Q9_TpuiQFAOY3_AnSXg6eZ04tKnNFoqtI922dA/exec';
 const MAX_VIDEO_SECONDS = 180;
 
 /* ================================================================
@@ -926,7 +926,6 @@ let videoDuration = 0;
 
 /* ================================================================
    OPTION A — Native inputs (Camera / Camcorder / Gallery)
-   These open the OS camera or file picker directly.
    ================================================================ */
 
 /* 📷 Camera — photo only */
@@ -1106,10 +1105,31 @@ function uploadFile() {
         showStatus('success', '✅ ' + data.message);
         displayLinks(data);
         uploadBtn.innerHTML = `✅ Uploaded`;
+
+        /* ----------------------------------------------------
+           CLEAR FIELDS after successful upload
+           - reset the staged file & preview
+           - CLEAR the generated links too
+           - re-enable source cards so a new file can be picked
+           ---------------------------------------------------- */
+        selectedFile = null;
+        videoDuration = 0;
+        cameraInput.value = camcorderInput.value = folderInput.value = '';
+        previewBox.classList.remove('active');
+        previewWrap.innerHTML = '';
+        details.innerHTML = '';
+        warnBox.classList.remove('active');
+        [cameraBtn, camcorderBtn, folderBtn].forEach(b => b.disabled = false);
+
         setTimeout(() => {
           progressBar.classList.remove('active');
           progressFill.style.width = '0%';
-          uploadBtn.disabled = false;
+
+          /* also clear the link list */
+          linkBox.classList.remove('active');
+          linksContent.innerHTML = '';
+
+          uploadBtn.disabled = true;
           uploadBtn.innerHTML = `
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
               <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
@@ -1132,16 +1152,16 @@ function uploadFile() {
 }
 
 /* ================================================================
-   LINKS
+   LINKS — only View + Direct (backend no longer returns downloadUrl)
    ================================================================ */
 function displayLinks(r) {
   linkBox.classList.add('active');
   linksContent.innerHTML =
-    linkRow('View',     r.viewUrl) +
-    linkRow('Download', r.downloadUrl) +
-    linkRow('Direct',   r.directLink);
+    linkRow('View',   r.viewUrl) +
+    linkRow('Direct', r.directLink);
 }
 function linkRow(label, url) {
+  if (!url) return '';
   return `
     <div class="link-row">
       <span class="lbl">${label}</span>
@@ -1201,6 +1221,7 @@ function resetUI() {
   details.innerHTML = '';
   warnBox.classList.remove('active');
   linkBox.classList.remove('active');
+  linksContent.innerHTML = '';
   statusDiv.classList.remove('active');
   progressBar.classList.remove('active');
   progressFill.style.width = '0%';
